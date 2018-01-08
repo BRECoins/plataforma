@@ -1,0 +1,26 @@
+<section class="">
+    <nav class="navbar is-white">
+        <div class="container is-fluid">
+            <div class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item" data-tab="basic_orders" data-group="basic">
+                        Comprar e Vender
+                    </a>
+                    <a class="navbar-item" data-tab="basic_market" data-group="basic" data-do="chartload">
+                        Mercado e Volume
+                    </a>
+                    <a class="navbar-item" data-tab="basic_offerbook" data-group="basic">
+                        Livro de ofertas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div data-tabname="basic_orders" data-tabgroup="basic" w3-include-html="views/basic_orders.html"></div>
+    <div data-tabname="basic_market" data-tabgroup="basic" class="is-invisible" w3-include-html="views/basic_market.html"></div>
+    <div data-tabname="basic_offerbook" data-tabgroup="basic" class="is-invisible" w3-include-html="views/basic_offerbook.html"></div>
+</section>
+
+
+

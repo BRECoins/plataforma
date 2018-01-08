@@ -1,0 +1,70 @@
+<div class="modal-background"></div>
+<div class="modal-card">
+    <section class="modal-card-body" id="ordertypeform">
+        <nav class="panel">
+          <p class="panel-heading">
+            Tipos de ordens
+          </p>
+          <label class="panel-block">
+            <div class="columns">
+              <div class="column">
+                  <input type="checkbox" name="ordertype[]" value="buy_limit">
+                  Limite: compra
+                  <p class="help">Defina um preço máximo para sua compra.</p>
+                  <div class="clearfix"></div>
+              </div>
+            </div>
+            
+          </label>
+          <label class="panel-block">
+            <div class="columns">
+              <div class="column">
+            <input type="checkbox" name="ordertype[]" value="sell_limit">
+            Limite: venda
+            <p class="help">Defina um preço mínimo para a sua venda.</p>
+            </div>
+            </div>
+          </label>
+          <label class="panel-block">
+            <div class="columns">
+              <div class="column">
+            <input type="checkbox" name="ordertype[]" value="buy_market">
+            Mercado: compra
+            <p class="help">Compre das ofertas disponíveis, começando pela mais vantajosa.</p>
+            </div>
+            </div>
+          </label>
+          <label class="panel-block">
+            <div class="columns">
+              <div class="column">
+            <input type="checkbox" name="ordertype[]" value="sell_market">
+            Mercado: venda
+            <p class="help">Venda às ofertas disponíveis, começando pela mais vantajosa.</p>
+            </div>
+            </div>
+          </label>
+          <label class="panel-block">
+            <div class="columns">
+              <div class="column">
+            <input type="checkbox" name="ordertype[]" value="buy_stop_limit">
+            Stop-limite: compra
+            <p class="help">Defina um gatilho de valor para lançar uma ordem de limite de compra</p>
+            </div>
+            </div>
+          </label>
+          <label class="panel-block">
+            <div class="columns">
+              <div class="column">
+            <input type="checkbox" name="ordertype[]" value="sell_stop_limit">
+            Stop-limite: venda
+            <p class="help">Defina um gatilho para lançar uma ordem de limite de venda</p>
+            </div>
+            </div>
+          </label>
+          
+        </nav>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success close-modal is-pulled-right">Salvar</button>
+    </footer>
+</div>

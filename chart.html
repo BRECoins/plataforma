@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+</head>
+<body>
+    <div id="chart"></div>
+    
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+
+    $(function() {
+        $.getJSON('http://'+(location.host || 'localhost').split(':')[0]+':8000/chart', function(data) {
+            var trace = {
+            x: data.date,
+            close: data.close,
+            decreasing: {
+                line: {
+                    color: '#7F7F7F'
+                }
+            },
+            high: data.high,
+            increasing: {
+                line: {
+                    color: '#17BECF'
+                }
+            },
+            line: {
+                color: 'rgba(31,119,180,1)'
+            },
+            low: data.low,
+            open: data.open,
+            type: 'candlestick',
+            xaxis: 'x',
+            yaxis: 'y',
+            // cutomise colors
+            increasing: {
+                line: {
+                    color: 'green'
+                }
+            },
+            decreasing: {
+                line: {
+                    color: 'red'
+                }
+            }
+        };
+
+        var data = [trace];
+
+        var layout = {
+            dragmode: 'zoom',
+            margin: {
+                r: 10,
+                t: 25,
+                b: 40,
+                l: 60
+            },
+            showlegend: false,
+            xaxis: {
+                autorange: true,
+                type: 'date',
+                rangeselector: {
+                    x: 0,
+                    y: 1.2,
+                    xanchor: 'left',
+                    font: {
+                        size: 8
+                    },
+                    buttons: [{
+                        step: 'month',
+                        stepmode: 'backward',
+                        count: 1,
+                        label: '1 mês'
+                    }, {
+                        step: 'month',
+                        stepmode: 'backward',
+                        count: 6,
+                        label: '6 meses'
+                    }, {
+                        step: 'year',
+                        stepmode: 'backward',
+                        count: 1,
+                        label: '1 ano'
+                    }, {
+                        step: 'all',
+                        label: 'Tudo'
+                    }]
+                }
+            },
+            yaxis: {
+                autorange: true,
+                type: 'linear'
+            }
+        };
+
+        
+
+        Plotly.plot('chart', data, layout);
+        });
+    })
+</script>
+</html>

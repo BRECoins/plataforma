@@ -1,0 +1,22 @@
+<div class="basic-orders">
+        <div class="tabs is-centered is-boxed is-fullwidth is-large">
+            <ul>
+                <li class="is-active">
+                    <a data-tab="basic_orders_buy" data-group="basic_orders">
+                            <i class="icon-comprar-33x26"></i>
+                        Comprar
+                    </a>
+                </li>
+                <li>
+                    <a data-tab="basic_orders_sell" data-group="basic_orders">
+                            <i class="icon-vender-33x26"></i>
+                        Vender
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+
+        <div data-tabname="basic_orders_buy" data-tabgroup="basic_orders" w3-include-html="views/basic_orders_buy.html"></div>
+        <div data-tabname="basic_orders_sell" data-tabgroup="basic_orders" class="is-invisible" w3-include-html="views/basic_orders_sell.html"></div>
+</div>

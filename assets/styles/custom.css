@@ -1,0 +1,353 @@
+/* Notifications positioning styles */
+
+.is-floating {
+	position: fixed;
+	z-index: 300000;
+}
+
+.is-floating.is-top-right {
+	top: 64px;
+	right: 9px;
+}
+
+.is-floating.is-top-left {
+	top: 64px;
+	left: 9px;
+}
+
+.is-floating.is-top-center {
+	top: 64px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.is-floating.is-middle-right {
+	right: 9px;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.is-floating.is-middle-left {
+	left: 9px;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.is-floating.is-middle-center {
+	left: 50%;
+	transform: translateX(-50%);
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+
+.is-floating.is-bottom-right {
+	bottom: 32px;
+	right: 9px;
+}
+
+.is-floating.is-bottom-left {
+	bottom: 32px;
+	left: 9px;
+}
+
+.is-floating.is-bottom-center {
+	bottom: 32px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.is-fullscreen {
+	position: fixed;
+	z-index: 999999999999999999;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height; 100%;
+}
+
+.fa-gravatar:before {
+    content: "\f1a0"; }
+.fa-gravatar {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+  -webkit-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  transform: rotate(270deg); }
+
+/**
+ * Profile image component
+ */
+
+figure.image img {
+    border: 2px solid #51D2B7;
+}
+
+/**
+ * Ranking component
+ */
+.rank-label-container {
+    margin-top: -19px;
+    /* z-index: 1000; */
+    text-align: center;
+}
+
+.tag.rank-label {
+    background-color: rgb(81, 210, 183);
+    padding: 2px 5px 2px 5px !important;
+    font-size: 10px;
+    border-radius: 27px;
+}
+
+.addallbtc {
+	cursor: pointer;
+}
+
+.card-header-icon {
+	display: none;
+}
+
+[data-do=offerclick] {
+	cursor: crosshair;
+}
+
+.transactions-feed .is-hoverable tr td:first-child,
+.transactions-feed .is-hoverable tr th:first-child,
+.is-acumulado tr th:first-child,
+.is-acumulado tr td:first-child {
+	display: none;
+}
+
+.transactions-feed .is-hoverable tr {
+	border-bottom: 1px solid #ccc;
+}
+
+.user_orders .tags {
+	width: 61.25px;
+}
+
+.trader-button {
+	transform: rotate(180deg);
+}
+
+.is-danger {
+    background: #cb0033 !important;
+}
+
+.is-sidebar-menu.is-basic {
+	background: #E8EDEE !important;
+}
+
+.is-success {
+	background: #0aa58a !important;
+}
+
+.hero-body {
+	padding-top: 0px !important;
+}
+
+.basic-offerbook-orders {
+	transform: translateY(-3em);
+}
+
+.basic-offerbook-orders .card-content {
+	padding: 0 !important;
+}
+
+.basic-sell-orders, .basic-buy-orders {
+	min-height: calc(100vh - 8em);
+}
+
+.basic-sell-orders, .basic-buy-orders {
+	width: 37.5% !important;
+}
+
+.basic-offerbook-orders .addallbtc, .basic-offerbook-orders .addallbrl {
+	text-align:center !important;
+	vertical-align:middle !important;
+}
+
+.basic-offerbook-orders {
+	width: 25% !important;
+}
+
+.basic-sell-orders tbody td, .basic-buy-orders tbody td {
+	font-size: 0.8rem !important;
+}
+
+.orderform_preview {
+	margin-bottom: 3px;
+	font-size: 0.8rem;
+	display: none;
+}
+
+.acumulado {
+	font-size: 0.8rem !important;
+	float: right;
+	height: 20px !important;
+    font-size: 0.8em !important;
+}
+
+.volume-widget .table tbody {
+	max-height: unset !important;
+	overflow-y: unset !important;
+	display: unset !important;
+}
+
+/* loading */
+#splash section {background: #eceff0;}
+@keyframes rotate-loading {
+    0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+    100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+}
+
+@-moz-keyframes rotate-loading {
+    0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+    100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+}
+
+@-webkit-keyframes rotate-loading {
+    0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+    100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+}
+
+@-o-keyframes rotate-loading {
+    0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+    100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+}
+
+@keyframes rotate-loading {
+    0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+    100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+}
+
+@-moz-keyframes rotate-loading {
+    0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+    100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+}
+
+@-webkit-keyframes rotate-loading {
+    0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+    100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+}
+
+@-o-keyframes rotate-loading {
+    0%  {transform: rotate(0deg);-ms-transform: rotate(0deg); -webkit-transform: rotate(0deg); -o-transform: rotate(0deg); -moz-transform: rotate(0deg);}
+    100% {transform: rotate(360deg);-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); -o-transform: rotate(360deg); -moz-transform: rotate(360deg);}
+}
+
+@keyframes loading-text-opacity {
+    0%  {opacity: 0}
+    20% {opacity: 0}
+    50% {opacity: 1}
+    100%{opacity: 0}
+}
+
+@-moz-keyframes loading-text-opacity {
+    0%  {opacity: 0}
+    20% {opacity: 0}
+    50% {opacity: 1}
+    100%{opacity: 0}
+}
+
+@-webkit-keyframes loading-text-opacity {
+    0%  {opacity: 0}
+    20% {opacity: 0}
+    50% {opacity: 1}
+    100%{opacity: 0}
+}
+
+@-o-keyframes loading-text-opacity {
+    0%  {opacity: 0}
+    20% {opacity: 0}
+    50% {opacity: 1}
+    100%{opacity: 0}
+}
+.loading-container,
+.loading {
+    height: 100px;
+    position: relative;
+    width: 100px;
+    border-radius: 100%;
+}
+
+.loading-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-top: -50px;
+  margin-left: -50px;
+}
+
+.loading {
+    border: 1px solid transparent;
+    border-color: transparent #cb0033 transparent #cb0033;
+    -moz-animation: rotate-loading 2s linear 0s infinite normal;
+    -moz-transform-origin: 50% 50%;
+    -o-animation: rotate-loading 2s linear 0s infinite normal;
+    -o-transform-origin: 50% 50%;
+    -webkit-animation: rotate-loading 2s linear 0s infinite normal;
+    -webkit-transform-origin: 50% 50%;
+    animation: rotate-loading 2s linear 0s infinite normal;
+    transform-origin: 50% 50%;
+}
+
+.loading-container:hover .loading {
+    border-color: transparent #b5bdc9 transparent #b5bdc9;
+}
+.loading-container:hover .loading,
+.loading-container .loading {
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+
+#loading-img {
+    -moz-animation: loading-text-opacity 4s ease-in-out 0s infinite normal;
+    -o-animation: loading-text-opacity 4s ease-in-outr 0s infinite normal;
+    -webkit-animation: loading-text-opacity 4s ease-in-out 0s infinite normal;
+    animation: loading-text-opacity 4s ease-in-out 0s infinite normal;
+    margin-top: 20px;
+    opacity: 0;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    width: 100px;
+}
+
+#splash_account .card-header {
+    background: #262F37;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+#splash_account .card-header img {
+    float: center;
+    margin: auto;
+    min-height: 64px;
+}
+
+#splash_account .input {
+    border-bottom: 1px solid #F0F1F2;
+}
+
+progress[value]::-webkit-progress-value {
+  background-image:
+       -webkit-linear-gradient(-45deg, 
+                               transparent 33%, rgba(0, 0, 0, .1) 33%, 
+                               rgba(0,0, 0, .1) 66%, transparent 66%),
+       -webkit-linear-gradient(top, 
+                               rgba(255, 255, 255, .25), 
+                               rgba(0, 0, 0, .25)),
+       -webkit-linear-gradient(left, #09c, #f44);
+
+    border-radius: 2px; 
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+
+h1.title,h2.subtitle {
+    margin-top: 20px;
+}

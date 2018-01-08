@@ -1,0 +1,17 @@
+<div class="modal-background"></div>
+<div class="modal-card">
+    <header class="modal-card-head">
+        <p class="modal-card-title">
+            <input class="input" type="text" id="algorithName" value="Algoritmo Sem Título" onClick="if(this.value==this.defaultValue) this.value=''" onBlur="if(this.value=='') this.value=this.defaultValue" />
+        </p>
+    </header>
+    <section class="modal-card-body">
+        <pre id="algorithm-editor" style="height: 30vh"></pre>
+        <hr/>
+        <p>Para aprender a desenvolver robôs de trading, por favor <a href="https://docs.brecoins.com/algoritmos" target="_blank">acesse nossa documentação</a>.</p>
+    </section>
+    <footer class="modal-card-foot">
+        <button class="button is-primary" data-do="saveAlgorithm"><i class="fa fa-fw fa-save"></i> Salvar</button>
+        <button class="button close-modal">Cancelar</button>
+    </footer>
+</div>

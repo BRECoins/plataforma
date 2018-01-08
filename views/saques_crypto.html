@@ -1,0 +1,75 @@
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            Sacar bitcoin
+        </p>
+    </header>
+    <div class="card-content">
+        <div class="content">
+            <div class="field">
+                <label class="label">
+                    Valor do saque:
+                </label>
+                <div class="control has-icons-left">
+                    <input class="input" id="valorCryptoSaque" />
+                    <span class="icon is-small is-left">
+                        &#579;
+                    </span>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">
+                    Taxa:
+                </label>
+                <div class="control">
+                    <div class="select">
+                        <select id="feeSaque">
+                            <option value="300000">Confirmação lenta (0.003)</option>
+                            <option value="600000" selected>Confirmação padrão (0.006)</option>
+                            <option value="900000">Confirmação rápida (0.009)</option>
+                        </select>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">
+                    Carteira de destino
+                </label>
+                <div class="control">
+                    <input class="input" id="walletSaque" />
+                </div>
+                <p class="help">
+                	Certifique-se de que o endereço da carteira está correto. 
+					Lembre-se: <b>é impossível estornar uma transação bitcoin!</b>
+				</p>
+            </div>
+            <footer class="card-footer">
+                <a href="javascript:void(0)" data-do="createCryptoWithdraw" class="card-footer-item">
+                    <i class="fa fa-fw fa-plus"></i> Criar ordem</a>
+            </footer>
+        </div>
+    </div>
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                Histórico
+            </p>
+        </header>
+        <div class="card-content">
+            <div class="content">
+                <table class="is_table" data-var="deposits">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th>Transação</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody data-var="saqueslist_crypto_tbl"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

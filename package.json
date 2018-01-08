@@ -1,0 +1,28 @@
+{
+  "name": "bolt-panel",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "bootstrap-slider": "^10.0.0",
+    "bulma": "^0.6.1",
+    "font-awesome": "^4.7.0",
+    "open": "^0.0.5",
+    "techan": "^0.8.0"
+  },
+  "devDependencies": {
+    "livereload": "^0.6.3",
+    "node-sass-chokidar": "^0.0.3",
+    "npm-run-all": "^4.1.2",
+    "opener": "^1.4.3",
+    "serve": "^6.4.1",
+    "sleep-ms": "^2.0.1"
+  },
+  "scripts": {
+    "start": "run-p watch-css livereload serve open",
+    "livereload": "livereload assets",
+    "serve": "serve -s . -p 3000",
+    "open": "sleepms 1000 && opener http://localhost:3000",
+    "watch-css": "node-sass-chokidar --include-path ./assets/styles --include-path ./node_modules ./assets/styles -o ./assets/styles --watch --recursive"
+  }
+}

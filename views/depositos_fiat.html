@@ -1,0 +1,68 @@
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            Depositar reais
+        </p>
+    </header>
+    <div class="card-content">
+        <div class="content">
+            <div class="dropdown is-hoverable">
+                <div class="dropdown-trigger">
+                    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                        <span>Método de depósito</span>
+                        <span class="icon is-small">
+                            <i class="fa fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                    </button>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                    <div class="dropdown-content" data-var="sitebanklist"></div>
+                </div>
+            </div>
+            <input type="hidden" id="bank_id" />
+            <div id="bankdetail">
+            </div>
+            <hr/>
+            <div class="field">
+                <label class="label">
+                    Valor do depósito:
+                </label>
+                <div class="control has-icons-left">
+                    <input class="input" id="valorDeposito" />
+                    <span class="icon is-small is-left">
+                        R$
+                    </span>
+                </div>
+            </div>
+            <hr />
+            <span class="tag is-danger">Atenção</span> Seu limite de depósito é: <b data-var="fiat_deposit_limit"></b>
+            <footer class="card-footer">
+                <a href="javascript:void(0)" data-do="createFiatDeposit" class="card-footer-item">
+                    <i class="fa fa-fw fa-plus"></i> Criar ordem</a>
+            </footer>
+        </div>
+    </div>
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                Histórico
+            </p>
+        </header>
+        <div class="card-content">
+            <div class="content">
+                <table class="is_table" data-var="deposits">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th>Transação</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="depositos_fiat_tbl">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

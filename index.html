@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRE Coins</title>
+    <link rel="stylesheet" href="assets/styles/main.css" />
+    <link rel="stylesheet" href="assets/styles/sweetalert2.min.css" />
+    <link rel="stylesheet" href="assets/styles/hint.min.css" />
+    <link rel="stylesheet" href="assets/styles/custom.css" />
+</head>
+
+<body>
+    <div id="splash">
+        <section class="hero is-fullheight is-medium is-bold is-fullscreen">
+            <div class="hero-body">
+                <div class="container">
+                    <center>
+                        <img id="loading-logo" src="./assets/fonts/svg/bre-logo-150x33-23.svg" alt="BRE Coins" style="width: 160px; margin-bottom: 5px; display: none">
+
+                        <div style="font-size: 8px;" id="splash_loading">
+                            <div class="loading-container">
+							    <div class="loading"></div>
+							  	<div id="loading-img">
+							  		<img src="http://svgshare.com/i/4k4.svg" height="60" width="60"></img>
+							  	</div>
+							</div>
+                        </div>
+
+                        <div id="splash_account" class="columns is-centered" style="display: none; opacity: 0">
+                            <div class="card">
+                                <div class="card-header">
+                                      <img id="loading-logo" src="./assets/fonts/svg/bre-logo-150x33-23.svg" alt="BRE Coins" style="width: 80%;">
+                                </div>
+                                <article id="loginSplash" class="splashwnd is-rounded" w3-include-html="views/login.html?v=1"></article>
+                                <article id="signupSplash" class="splashwnd is-rounded" style="display: none" w3-include-html="views/signup.html?v=1"></article>
+                                <article id="recoverSplash" class="splashwnd is-rounded" style="display: none" w3-include-html="views/recover.html?v=1"></article>
+                            </div>
+                        </div>
+
+                    </center>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- START: menu -->
+    <nav class="main-navbar navbar is-black">
+        <a class="trader-button" data-do="toggleTrader chartload">
+            TRADER
+        </a>
+        <div class="container is-fluid">
+            <div class="navbar-brand">
+                <a class="navbar-item no-hover-effect" data-do="togglemenu">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <a class="navbar-item navbar-brand" data-do="go_main" href="javascript:void(0);">
+                    <img src="./assets/fonts/svg/bre-logo-150x33-23.svg" alt="BRE Coins" width="160">
+                </a>
+                <div class="navbar-burger burger" data-target="navMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div id="navMenu" class="navbar-menu">
+                <div class="navbar-start">
+                    <div class="navbar-item notifications has-dropdown is-hoverable">
+                        <a class="navbar-link">
+                            <i class="fa fa-bell-o"></i>
+                        </a>
+                        <div class="navbar-dropdown is-boxed">
+                            <a class="item is-fullwidth">
+                                Sem notificações
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="font-size: 8px; margin-top: 26px" id="loading">
+                    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                </div>
+
+                <div class="navbar-end">
+                    <span class="navbar-item">
+                        <div>
+                            <b class="has-text-grey-light">Último </b> <span id="ticker_last"></span>
+                        </div>
+                    </span>
+                    <span class="navbar-item">
+                        <div>
+                            <b class="has-text-grey-light">Alta </b> <span id="ticker_high"></span>
+                        </div>
+                    </span>
+                    <span class="navbar-item">
+                        <div>
+                            <b class="has-text-grey-light">Baixa </b> <span id="ticker_low"></span>
+                        </div>
+                    </span>
+                    <span class="navbar-item">
+                        <div>
+                            <b class="has-text-grey-light">Volume </b> <span id="ticker_vol_fiat"></span>
+                        </div>
+                    </span>
+                    <span class="navbar-item">
+                        <div>
+                            <b class="has-text-grey-light">Volume </b> <span id="ticker_vol_crypto"></span>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- END NAV -->
+    <!-- container -->
+    <div class="columns is-gapless is-fullheight">
+        <!-- sidebar -->
+        <div class="is-sidebar-menu is-hidden-mobile" id="sidebar-menu">
+            <aside class="menu">
+                <div class="account-overview has-text-centered">
+                    <span class="title is-7" style="color: #b5bdc9">SALDO ATUAL</span>
+                    <br>
+                    <span class="title is-3" data-var="user_funds_crypto">Carregando...</span>
+                    <br>
+                    <span class="title is-7  tooltip is-tooltip-right hint--right" data-var="user_funds_btc-brl" aria-label="Este valor é estimado, com base nas ofertas de mercado atual.">Carregando...</span>
+                    <br>
+                    <span class="title is-3" data-var="user_funds_fiat">Carregando...</span>
+                    <br>
+                    <span class="title is-7  tooltip is-tooltip-right hint--right" data-var="user_funds_brl-btc" aria-label="Este valor é estimado, com base nas ofertas de mercado atual.">Carregando...</span>
+                </div>
+                <ul class="menu-list" id="main-menu">
+                    <li>
+                        <a class="is-active" data-do="go_main">
+                            <i class="icon-home-broker-19x20"></i>
+                            <span>Home Broker</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a data-goto="depositos">
+                            <i class="icon-depositos-19x20"></i>
+                            <span>Depósitos</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a data-goto="saques">
+                            <i class="icon-saques-19x20 "></i>
+                            <span>Saques</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a data-goto="ordens">
+                            <i class="icon-historico-19x20 "></i>
+                            <span>Histórico de Ordens</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a data-goto="contabil">
+                            <i class="icon-livro-razao-19x20"></i>
+                            <span>Livro Razão</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a data-goto="algoritmos">
+                            <i class="icon-algoritmos-19x20 "></i>
+                            <span>Algoritmos</span>
+                        </a>
+                    </li>
+                </ul>
+            </aside>`
+            <aside class="menu is-fixed-bottom  ">
+                <div class="dropdown is-up is-right is-hoverable">
+                    <div class="dropdown-trigger">
+                        <a class="profile">
+                            <figure class="image">
+                                <img src="//placehold.it/30" data-var="gravatar" />
+                            </figure>
+                            <span class="padding7">
+                                <span data-var="user_fullname"></span>
+                                <br>
+                                <span class="tag is-primary rank-label">Nível <span data-var="user_level"></span></span>
+                                <small style="font-size: 9px" data-var="user_nick"></small>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="dropdown-menu" role="menu">
+                        <div class="dropdown-content">
+                            <a data-goto="account" href="javascript:void(0);" class="dropdown-item" style="color: black">
+                                Minha Conta
+                            </a>
+                            <a href="https://docs.brecoins.com/taxas_e_limites" class="dropdown-item" style="color: black">
+                                Taxas e Limites
+                            </a>
+                            <a href="https://status.brecoins.com" class="dropdown-item" style="color: black">
+                                Status do Serviço
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" data-do="logout" class="dropdown-item" style="color: black">
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+        <!-- main content -->
+        <div class="column is-main-content" data-view="main" w3-include-html="views/main.html?v=1"></div>
+        <!-- basic -->
+        <div class="column is-main-content" data-view="basic" w3-include-html="views/basic.html?v=1"></div>
+        <!-- depósitos -->
+        <div class="column is-main-content" data-view="depositos" w3-include-html="views/depositos.html?v=1"></div>
+        <!-- saques -->
+        <div class="column is-main-content" data-view="saques" w3-include-html="views/saques.html?v=1"></div>
+        <!-- histórico de ordens -->
+        <div class="column is-main-content" data-view="ordens" w3-include-html="views/ordens.html?v=1"></div>
+        <!-- livro contábil -->
+        <div class="column is-main-content" data-view="contabil" w3-include-html="views/contabil.html?v=1"></div>
+        <!-- algoritmos -->
+        <div class="column is-main-content is-dark" data-view="algoritmos" w3-include-html="views/algoritmos.html?v=1"></div>
+        <!-- account -->
+        <div class="column is-main-content is-dark" data-view="account" w3-include-html="views/account.html?v=1"></div>
+        <!-- modais -->
+        <!-- mercado -->
+        <div class="modal" data-modal="mercado" w3-include-html="views/modal_mercado.html?v=1"></div>
+        <!-- volume -->
+        <div class="modal" data-modal="volume" w3-include-html="views/modal_volume.html?v=1"></div>
+        <!-- offerbook -->
+        <div class="modal" data-modal="offerbook" w3-include-html="views/modal_offerbook.html?v=1"></div>
+        <!-- ordens -->
+        <div class="modal" data-modal="ordens" w3-include-html="views/modal_ordens.html?v=1"></div>
+        <!-- nova ordem -->
+        <div class="modal" data-modal="depositModal" w3-include-html="views/modal_depositModal.html?v=1"></div>
+        <!-- adicionar algoritmo -->
+        <div class="modal" data-modal="add-algorithm" w3-include-html="views/modal_add-algorithm.html?v=1"></div>
+        <!-- notificacoes -->
+        <div class="modal" data-modal="notifications" w3-include-html="views/modal_notifications.html?v=1"></div>
+        <!-- tipos de ordens -->
+        <div class="modal" data-modal="tiposdeordens" w3-include-html="views/modal_tiposdeordens.html?v=1"></div>
+        <!-- /modais -->
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="/assets/scripts/jquery-ui.min.js"></script>
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+    <script src="/assets/scripts/libs/accounting.min.js"></script>
+    <script src="assets/scripts/ace/ace.min.js"></script>
+    <script src="./node_modules/bootstrap-slider/dist/bootstrap-slider.min.js"></script>
+    <script src="/assets/scripts/sweetalert2.min.js"></script>
+    <script src="/assets/scripts/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/store2/2.5.9/store2.min.js"></script>
+    <script src="/assets/scripts/moment-with-locales.min.js"></script>
+    <script src="/assets/scripts/base32.js"></script>
+    <script src="/assets/scripts/qrcode.js"></script>
+    <script src="/assets/scripts/app.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-111516222-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-111516222-1');
+    </script>
+
+</body>
+
+</html>

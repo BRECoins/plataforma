@@ -1,0 +1,50 @@
+<div class="modal-background"></div>
+<div class="modal-card">
+    <header class="modal-card-head">
+        <p class="modal-card-title">Volume</p>
+        <button class="delete close-modal" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+        <div class="card">
+            <div class="card-content volume-widget">
+                <div class="has-text-centered">
+                    <span class="currency">Bitcoin / Brasil (BTCBRL)</span>
+                    <h3 class="price title" data-var="volumeavg"></h3>
+                    <small class="variation" data-var="volincrease"></small>
+                </div>
+
+                <div class="low-high columns">
+                    <div class="item low column">
+                        <div>
+                            <span data-var="volumelow"></span>
+                        </div>
+                    </div>
+                    <div class="item high column">
+                        <div>
+                            <span data-var="volumehigh"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="text" class="is-fullwidth volume-slider" id="volume-slider" value="" data-slider-min="0" data-slider-tooltip="hide" data-slider-max="23"
+                    data-slider-step="5" data-slider-value="[1,24]" />
+                <div class="has-text-centered">
+                    <span class="slider-subtitle">Intervalo do dia</span>
+                </div>
+
+                <table class="table has-text-right is-narrow is-fullwidth" style="width: 100%">
+                    <!-- <thead>
+                        <tr>
+                            <th>Faixa</th>
+                            <th>Volume</th>
+                        </tr>
+                    </thead> -->
+                    <tbody data-var="volumechart"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    <footer class="modal-card-foot">
+        <button class="button close-modal">&times; Fechar</button>
+    </footer>
+</div>

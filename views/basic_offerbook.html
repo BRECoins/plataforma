@@ -1,0 +1,121 @@
+<div class="">
+    <div class="columns is-gapless">
+        <div class="column is-4 basic-buy-orders" style="border-right: 1px solid #ccc;">
+            <nav class="navbar is-light">
+                <div class="container has-text-centered">
+                    <div class="navbar-item is-centered">
+                        <span class="title is-5">Ofertas de Compra</span>
+                    </div>
+                </div>
+            </nav>
+            <table class="table is-fullwidth is-hoverable">
+                <thead>
+                    <tr>
+                        <th>Usuário</th>
+                        <th>Quantidade</th>
+                        <th>
+                            Preço
+                            <a data-do="toggleAcumulado" class="button is-small is-outlined acumulado">Acumulado</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody data-var="offerbook_buy">
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="column is-4 basic-sell-orders" style="border-right: 1px solid #ccc;">
+            <nav class="navbar is-light">
+                <div class="container has-text-centered">
+                    <div class="navbar-item is-centered">
+                        <span class="title is-5">Ofertas de Venda</span>
+                    </div>
+                </div>
+            </nav>
+            <table class="table is-fullwidth is-hoverable">
+                <thead>
+                    <tr>
+                        <th>Usuário</th>
+                        <th>Quantidade</th>
+                        <th>
+                            Preço
+                            <a data-do="toggleAcumulado" class="button is-small is-outlined acumulado">Acumulado</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody data-var="offerbook_sell">
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="column is-4 basic-offerbook-orders">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Ordem de Compra
+                    </p>
+                    <!-- <a href="#" class="card-header-icon" aria-label="more options">
+                        <span class="icon">
+                            <i class="fa  fa-ellipsis-v" aria-hidden="true"></i>
+                       </span>
+                    </a> -->
+                </header>
+                <div class="card-content">
+                    <table class="table is-bordered is-fullwidth">
+                        <tr>
+                            <td class="addallbrl" data-target="limitbuy_maxprice_basic">R$ </td>
+                            <td>
+                                <input type="text" class="input has-float-label is-fullwidth | offerbuy_price" id="limitbuy_maxprice_basic" required>
+                                <label><span>Preço máximo</span></label>
+                            </td>
+                        </tr>
+                       
+                        <tr>
+                            <td class="addallbtc" data-target="limitbuy_amount_basic">&#579; </td>
+                            <td>
+                                <input type="text" class="input  has-float-label is-fullwidth | offerbuy_amount" id="limitbuy_amount_basic" required>
+                                <label><span>Quantidade</span></label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <p align="center" style="margin-bottom: 15px">Total (estimado): <span id="limitbuy_basic_preview"></span></p> 
+            <button class="button is-success is-fullwidth" data-do="limit_buy_basic">Enviar Ordem</button>
+            <hr/>
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Ordem de Venda
+                    </p>
+                    <!-- <a href="#" class="card-header-icon" aria-label="more options">
+                        <span class="icon">
+                            <i class="fa  fa-ellipsis-v" aria-hidden="true"></i>
+                        </span>
+                    </a> -->
+                </header>
+                <div class="card-content">
+                    <table class="table is-bordered is-fullwidth">
+                        <tr>
+                            <td class="addallbrl" data-target="limitsell_minprice_basic">R$ </td>
+                            <td>
+                                <input type="text" class="input has-float-label is-fullwidth | offersell_price" id="limitsell_minprice_basic" required>
+                                <label><span>Preço mínimo</span></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="addallbtc" data-target="limitsell_amount_basic">&#579; </td>
+                            <td>
+                                <input type="text" class="input has-float-label is-fullwidth | offersell_amount" id="limitsell_amount_basic" required>
+                                <label><span>Quantidade</span></label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <p align="center" style="margin-bottom: 15px">Total (estimado): <span id="limitsell_basic_preview"></span></p> 
+            <button class="button is-danger is-fullwidth" data-do="limit_sell_basic">Enviar Ordem</button>
+        </div>
+    </div>
+
+</div>

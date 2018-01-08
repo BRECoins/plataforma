@@ -1,0 +1,63 @@
+<div class="card-content">
+  <div id="recover_1">
+    <div class="field">
+        <input class="input has-float-label is-fullwidth" required type="email" data-var="recover-email">
+        <label><span>E-mail</span></label>
+    </div>
+    <div class="columns">
+      <div class="column">
+        <a href="javascript:void(0);" data-do="linklogin"><i class="fa fa-arrow-left"></i> Voltar</a>
+      </div>
+      <div class="column">
+          <button class="button is-medium is-fullwidth is-light" data-do="recover_requesttoken">
+            Próximo <i class="fa fa-arrow-right"></i>
+          </button>
+      </div>
+    </div>
+  </div>
+  <div id="recover_2" style="display: none">
+    <p>
+      Um token foi enviado ao seu endereço de e-mail. Por favor, digite-o abaixo.
+    </p>
+    <div class="field">
+        <input class="input has-float-label is-fullwidth" required type="text" data-var="recover-token">
+        <label><span>Token</span></label>
+    </div>
+    <div class="field">
+      <div class="g-recaptcha" id="recover-recaptcha"></div>
+    </div>
+    <div class="columns">
+      <div class="column">
+        <a href="javascript:void(0);" data-do="linklogin"><i class="fa fa-arrow-left"></i> Voltar</a>
+      </div>
+      <div class="column">
+          <button class="button is-medium is-fullwidth is-light" data-do="recover_verify">
+            Próximo <i class="fa fa-arrow-right"></i>
+          </button>
+      </div>
+    </div>
+  </div>
+  <div id="recover_3" style="display: none">
+    <p>
+      Insira, abaixo, a nova senha desejada.
+    </p>
+    <div class="field">
+        <input class="input has-float-label is-fullwidth" required type="password" data-var="recover-newpwd">
+        <label><span>Nova senha</span></label>
+    </div>
+    <div class="field">
+        <input class="input has-float-label is-fullwidth" required type="password" data-var="recover-newpwd-2">
+        <label><span>Nova senha (confirmação)</span></label>
+    </div>
+    <div class="columns">
+      <div class="column">
+        <a href="javascript:void(0);" data-do="linklogin"><i class="fa fa-arrow-left"></i> Voltar</a>
+      </div>
+      <div class="column">
+          <button class="button is-medium is-fullwidth is-light" data-do="recover_changepwd">
+            Alterar senha
+          </button>
+      </div>
+    </div>
+  </div>
+</div>

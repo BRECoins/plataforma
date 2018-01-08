@@ -1,0 +1,29 @@
+<section>
+        <div class="tabs is-centered is-boxed is-fullwidth is-large">
+            <ul>
+                <li class="is-active">
+                    <a data-tab="deposit_crypto" data-group="deposit">
+                        <span class="icon is-small">
+                            <i class="fa fa-btc"></i>
+                        </span>
+                        Depositar Bitcoin
+                    </a>
+                </li>
+                <li>
+                    <a data-tab="deposit_fiat" data-group="deposit">
+                        <span class="icon is-small">
+                            <i class="fa fa-dollar"></i>
+                        </span>
+                        Depositar Reais
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <div data-tabname="deposit_crypto" data-tabgroup="deposit" w3-include-html="views/depositos_crypto.html"></div>
+            <div data-tabname="deposit_fiat" data-tabgroup="deposit" class="is-invisible" w3-include-html="views/depositos_fiat.html"></div>
+
+        </div>
+
+</section>

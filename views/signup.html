@@ -1,0 +1,73 @@
+<div class="card-content">
+    <div id="signup_1">
+        <div class="field">
+            <input class="input has-float-label is-fullwidth" required type="tel" data-var="signup_name">
+            <label><span>Nome</span></label>
+        </div>
+        <div class="field">
+            <input class="input has-float-label is-fullwidth" required type="email" data-var="signup_email">
+            <label><span>E-mail</span></label>
+        </div>
+        <div class="field">
+            <input class="input has-float-label is-fullwidth" required type="password" data-var="signup_password">
+            <label><span>Senha</span></label>
+        </div>
+        <div class="field">
+            <input class="input has-float-label is-fullwidth" required type="password" data-var="signup_password2">
+            <label><span>Confirmar senha</span></label>
+        </div>
+        <div class="columns">
+            <div class="column">
+              <p style="float: left">
+                Já possui registro?<br>
+                <a href="javascript:void(0);" data-do="linklogin">Efetuar login</a>
+              </p>
+            </div>
+            <div class="column">
+                <button class="button is-medium is-fullwidth is-light" data-do="signup_2">
+                  Criar conta
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="signup_2" style="display: none">
+        <div class="field">
+                <input class="input has-float-label is-fullwidth" required type="tel" data-var="signup_telephone">
+                <label><span>Telefone</span></label>
+        </div>
+        <div class="field">
+            <div class="select">
+                <select data-var="signup_country" class="countrylist" data-do="georegions">
+                    <option selected disabled>País</option>
+                </select>
+            </div>
+        </div>
+        <div class="field">
+            <div class="select">
+                <select class="regionlist" data-var="signup_region">
+                    <option selected disabled>Estado/região</option>
+                </select>
+            </div>
+        </div>
+        <div class="field">
+                <input class="input has-float-label is-fullwidth" required type="text" data-var="signup_city">
+                <label><span>Cidade</span></label>
+        </div>
+        <div class="field">
+          <div class="g-recaptcha"></div>
+        </div>
+        <div class="columns">
+            <div class="column">
+              <p style="float: left">
+                Já possui registro?<br>
+                <a href="javascript:void(0);" data-do="linklogin">Efetuar login</a>
+              </p>
+            </div>
+            <div class="column">
+                <button class="button is-medium is-fullwidth is-light" data-do="signup">
+                  Criar conta
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

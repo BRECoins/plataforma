@@ -1,0 +1,31 @@
+<div class="tabs is-centered is-boxed is-fullwidth is-medium">
+    <ul>
+        <li class="is-active">
+            <a data-tab="account_general" data-group="account">
+                <span class="icon is-small">
+                    <i class="fa fa-user"></i>
+                </span>
+                Geral
+            </a>
+        </li>
+        <li>
+            <a data-tab="account_security" data-group="account">
+                <span class="icon is-small">
+                    <i class="fa fa-shield"></i>
+                </span>
+                Segurança
+            </a>
+        </li>
+        <li>
+            <a data-tab="account_docs" data-group="account">
+                <span class="icon is-small">
+                    <i class="fa fa-id-card-o"></i>
+                </span>
+                Documentação
+            </a>
+        </li>
+    </ul>
+</div>
+<div data-tabname="account_general" data-tabgroup="account" w3-include-html="views/account_general.html"></div>
+<div data-tabname="account_security" data-tabgroup="account" class="is-invisible" w3-include-html="views/account_security.html"></div>
+<div data-tabname="account_docs" data-tabgroup="account" class="is-invisible" w3-include-html="views/account_docs.html"></div>

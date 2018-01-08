@@ -1,0 +1,72 @@
+<section class="hero is-white">
+    <div class="section is-fluid">
+
+        <div class="columns">
+
+            <div class="column">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title">
+                            Alterar senha
+                        </p>
+                    </header>
+                    <div class="card-content">
+                        <div class="content">
+                            <div class="field">
+                                <div class="control">
+                                    <input class="input" data-var="current_pwd" type="password" placeholder="Senha atual">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="control">
+                                    <input class="input" data-var="new_pwd" type="password" placeholder="Nova senha">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="control">
+                                    <input class="input" data-var="new_pwd2" type="password" placeholder="Nova senha (confirmação)">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="control">
+                                    <a href="javascript:void(0);" data-do="change_password" class="button is-primary is-medium">Confirmar e-mail</a>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title">
+                            Autenticação de dois fatores
+                        </p>
+                    </header>
+                    <div class="card-content">
+                        <div class="content">
+                            <p>Sincronize sua conta para gerar tokens utilizando um aplicativo TOTP em seu smartphone, como o
+                                <a href="https://www.authy.com" class="link" target="_blank">Authy</a> ou
+                                <a href="https://support.google.com/accounts/answer/1066447" class="link" target="_blank">Google Authenticator</a>.
+                                <hr>
+                                <span data-if="otp_enabled">
+                                    <a href="javascript:void(0);" data-do="disable_otp" class="button is-warning">Desativar OTP</a>
+                                </span>
+                                <span data-ifnot="otp_enabled">
+                                    <a href="javascript:void(0);" data-do="enable_otp" class="button is-primary">Ativar OTP</a>
+                                </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</section>

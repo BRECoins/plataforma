@@ -1,0 +1,171 @@
+<nav class="main-content-navbar navbar is-white">
+    <div class="container is-fluid">
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <a href="#" class="navbar-item" data-openmodal="mercado" data-do="chartload">Mercado</a>
+                <a href="#" class="navbar-item" data-openmodal="volume">Volume</a>
+                <a href="#" class="navbar-item" data-openmodal="offerbook">Livro de Ofertas</a>
+                <a href="#" class="navbar-item" data-openmodal="ordens">Historico de Ordens</a>
+            </div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <b style="margin-right: 5px">Preço Ref:  </b>
+                    <span data-var="coinmarketcap" class="hint--bottom" aria-label="Preço médio do Bitcoin nas exchanges mundiais ponderado por seus respectivos volumes"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="main-content">
+    <div class="operations">
+        <div class="columns is-multiline">
+            <div class="column is-9">
+                <div class="card market">
+                    <header class="card-header">
+                        <p class="card-header-title">
+                            Mercado
+                        </p>
+                        <a href="#" class="card-header-icon" aria-label="more options">
+                            <span class="icon">
+                                <i class="fa  fa-ellipsis-v" aria-hidden="true"></i>
+                            </span>
+                        </a>
+                    </header>
+                    <div class="card-content" style="padding: 0">
+                        <iframe class="chart" style="height: 100%; width: 100%" src="/chart.html"></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="column is-3">
+                <div class="card">
+                    <!-- <header class="card-header">
+                        <p class="card-header-title">
+                            Volume
+                        </p>
+                        <a href="#" class="card-header-icon" aria-label="more options">
+                            <span class="icon">
+                                <i class="fa  fa-ellipsis-v" aria-hidden="true"></i>
+                            </span>
+                        </a>
+                    </header> -->
+                    <div class="card-content volume-widget">
+                        <div class="has-text-centered">
+                            <span class="currency">Bitcoin / Brasil (BTCBRL)</span>
+                            <h3 class="price title" data-var="volumeavg"></h3>
+                            <small class="variation" data-var="volincrease"></small>
+                        </div>
+
+                        <div class="low-high columns">
+                            <div class="item low column">
+                                <div>
+                                    <span data-var="volumelow"></span>
+                                </div>
+                            </div>
+                            <div class="item high column">
+                                <div>
+                                    <span data-var="volumehigh"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="text" class="is-fullwidth volume-slider" id="volume-slider" value="" data-slider-min="0" data-slider-tooltip="hide" data-slider-max="23"
+                            data-slider-step="5" data-slider-value="[1,24]" />
+                        <div class="has-text-centered">
+                            <span class="slider-subtitle">Intervalo do dia</span>
+                        </div>
+
+                        <!-- <table class="table has-text-right is-narrow is-fullwidth" style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th>Faixa</th>
+                                    <th>Volume</th>
+                                </tr>
+                            </thead>
+                            <tbody data-var="volumechart"></tbody>
+                        </table> -->
+
+                        <table class="table has-text-right is-narrow is-fullwidth" style="width: 100%">
+                            <!-- <thead>
+                                <tr>
+                                    <th>Faixa</th>
+                                    <th>Volume</th>
+                                </tr>
+                            </thead> -->
+                            <tbody data-var="volumechart"></tbody>
+                        </table>
+
+                        
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="transactions">
+    <div class="columns" w3-include-html="views/main_orderforms.html"></div>
+</div>
+<aside class="transactions-feed">
+    <nav class="navbar is-light">
+        <div class="container has-text-centered">
+            <div class="navbar-item is-centered">
+                <span>Minhas Ordens</span>
+            </div>
+        </div>
+    </nav>
+    <div class="is-scroll">
+        <table class="table is-fullwidth">
+            <tbody data-var="user_orders">
+                
+            </tbody>
+        </table>
+    </div>
+    <nav class="navbar is-light">
+        <div class="container has-text-centered">
+            <div class="navbar-item is-centered">
+                <span>Ofertas de Compra</span>
+            </div>
+        </div>
+    </nav>
+    <div class="is-scroll">
+        <table class="table is-fullwidth is-hoverable">
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th>Quantidade</th>
+                    <th>
+                        Preço
+                        <a data-do="toggleAcumulado" class="button is-small is-outlined acumulado">Acumulado</a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody data-var="offerbook_buy">
+            </tbody>
+        </table>
+    </div>
+    <nav class="navbar is-light">
+        <div class="container has-text-centered">
+            <div class="navbar-item is-centered">
+                <span>Ofertas de Venda</span>
+            </div>
+        </div>
+    </nav>
+    <div class="is-scroll">
+        <table class="table is-fullwidth is-hoverable">
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th>Quantidade</th>
+                    <th>
+                        Preço
+                        <a data-do="toggleAcumulado" class="button is-small is-outlined acumulado">Acumulado</a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody data-var="offerbook_sell">
+            </tbody>
+        </table>
+    </div>
+</aside>

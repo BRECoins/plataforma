@@ -1,0 +1,47 @@
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            Depositar bitcoin
+        </p>
+    </header>
+    <div class="card-content">
+        <div class="content">
+            <center>
+                <!-- // olha aí embaixo, eu tentei... -->
+                <img data-var="userwallet_qrcode" src="about:blank"
+                    class="is-centered" style="width: 300px" />
+                <br>
+                <code data-var="userwallet"></code>
+            </center>
+        </div>
+    </div>
+    <footer class="card-footer">
+        <a href="javascript:void(0)" data-do="gennewwallet" class="card-footer-item">
+            <i class="fa fa-fw fa-refresh"></i> Gerar nova carteira</a>
+        <a href="javascript:void(0)" data-do="copyuserwallet" class="card-footer-item">
+            <i class="fa fa-fw fa-clipboard"></i> Copiar</a>
+    </footer>
+</div>
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            Histórico
+        </p>
+    </header>
+    <div class="card-content">
+        <div class="content">
+            <table class="is_table" data-var="deposits">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Quantidade</th>
+                        <th>Transação</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="depositos_crypto_tbl">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

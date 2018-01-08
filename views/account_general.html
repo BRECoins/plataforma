@@ -1,0 +1,140 @@
+<section class="hero  is-medium is-white">
+
+	<div class="hero-body">
+
+		<div class="columns">
+			<div class="column">
+				<div class="content has-text-centered">
+
+					<figure class="image is-128x128" style="margin: 0 auto ">
+						<img data-var="gravatar" class="is-rounded">
+					</figure>
+
+
+					<strong class="title is-2" data-var="user_fullname"></strong>
+					<br>
+					<span class="subtitle" data-var="user_nick"></span>
+					<br>
+					<br>
+					<a href="https://en.gravatar.com/connect/" target="_blank" class="button is-link is-small">
+						<i class="fa fa-fw fa-gravatar"></i> Alterar Gravatar</a>
+					</p>
+
+				</div>
+			</div>
+
+
+			<div class="column">
+
+				<div class="card">
+					<header class="card-header">
+						<p class="card-header-title">
+							Alterar nome
+						</p>
+					</header>
+					<div class="card-content">
+						<div class="content">
+							<article class="media">
+								<div class="media-content">
+									<div class="content">
+										<p>
+											<input class="input" type="text" value="Nome" data-var="user_fullname_input" data-do="change_profile">
+										</p>
+									</div>
+								</div>
+							</article>
+						</div>
+					</div>
+				</div>
+
+				<hr>
+
+				<div class="card">
+					<header class="card-header">
+						<p class="card-header-title">
+							Alterar e-mail
+						</p>
+					</header>
+					<div class="card-content">
+
+						<div class="field has-addons is-fullwidth">
+							<p class="control is-expanded">
+								<input class="input" data-var="user_email_input" type="email" value="Email">
+							</p>
+							<p class="control">
+								<a href="javascript:void(0);" data-do="changeEmail" class="button is-primary">Confirmar e-mail</a>
+							</p>
+						</div>
+
+
+					</div>
+				</div>
+
+			</div>
+
+
+		</div>
+
+		<div class="columns">
+			<div class="column">
+				<div class="card">
+					<header class="card-header">
+						<p class="card-header-title">
+							Alterar telefone
+						</p>
+					</header>
+					<div class="card-content">
+						<div class="content">
+							<article class="media">
+								<div class="media-content">
+									<div class="content">
+										<p>
+											<input class="input" type="tel"  data-var="user_telephone_input" data-do="change_profile">
+										</p>
+									</div>
+								</div>
+							</article>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="column">
+				<div class="card">
+					<header class="card-header">
+						<p class="card-header-title">
+							Alterar dados geográficos
+						</p>
+					</header>
+					<div class="card-content">
+						<div class="content">
+							<article class="media">
+								<div class="media-content">
+									<div class="content">
+										<div class="columns">
+											<div class="column is-4">
+												<div class="select">
+													<select data-var="signup_country" class="countrylist" data-do="georegions">
+								                        <option selected disabled>País</option>
+								                    </select>
+								                </div>
+											</div>
+											<div class="column is-4">
+												<div class="select">
+													<select class="regionlist" data-var="user_region" data-do="change_profile">
+								                        <option selected disabled>Estado/região</option>
+								                    </select>
+								                </div>
+											</div>
+											<div class="column is-4">
+												<input class="input" type="text" placeholder="Cidade" data-var="user_city">
+											</div>
+										</div>
+									</div>
+								</div>
+							</article>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</section>

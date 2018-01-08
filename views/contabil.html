@@ -1,0 +1,31 @@
+<section class="hero is-light">
+    <div class="hero-body">
+        <div class="container is-fluid">
+            <h1 class="title">
+                Livro Razão
+            </h1>
+            <h2 class="subtitle">
+                Toda a movimentação financeira de sua conta
+            </h2>
+            <hr>
+            <table class="table is-fullwidth is-stripped">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Acumulado</th>
+                    </tr>
+                </thead>
+                <tbody data-var="ledger_list">
+                </tbody>
+            </table>
+    
+            <p>Página <span data-var="ledger_page"></span></p>
+            <div class="buttons has-addons">
+                <span class="button" data-do="statementPrev"><i class="fa fa-fw fa-arrow-left"></i></span>
+                <span class="button" data-do="statementNext"><i class="fa fa-fw fa-arrow-right"></i></span>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,97 @@
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            Sacar reais
+        </p>
+    </header>
+    <div class="card-content">
+        <div class="content">
+            <div class="field">
+                <label class="label">
+                    Valor do saque:
+                </label>
+                <div class="control has-icons-left">
+                    <input class="input" id="valorFiatSaque" />
+                    <span class="icon is-small is-left">
+                        R$
+                    </span>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">
+                    Seu banco:
+                </label>
+                <div class="control">
+                    <select id="bancoSaque" class="select" data-var="sitebanknames">
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">
+                    Sua agência:
+                </label>
+                <div class="control">
+                    <input class="input" id="usragenciaSaque" />
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">
+                    Sua conta:
+                </label>
+                <div class="control">
+                    <input class="input" id="usrcontaSaque" />
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">
+                    CPF:
+                </label>
+                <div class="control">
+                    <input class="input" id="usrcpfSaque" />
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">
+                    Tipo da conta:
+                </label>
+                <div class="control">
+                    <select id="usrtipoSaque" class="select">
+                        <option>Conta corrente pessoal</option>
+                        <option>Poupança pessoal</option>
+                        <option>Conta corrente empresarial</option>
+                        <option>Poupança empresarial</option>
+                        <option>Outros</option>
+                    </select>
+                </div>
+            </div>
+            <span class="tag is-warning">Aviso</span> Seu limite de saque é: <b data-var="fiat_withdraw_limit"></b>
+            <footer class="card-footer">
+                <a href="javascript:void(0)" data-do="createFiatWithdraw" class="card-footer-item">
+                    <i class="fa fa-fw fa-plus"></i> Criar ordem
+                </a>
+            </footer>
+        </div>
+    </div>
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                Histórico
+            </p>
+        </header>
+        <div class="card-content">
+            <div class="content">
+                <table class="is_table" data-var="deposits">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th>Transação</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="saqueslist_fiat_tbl"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

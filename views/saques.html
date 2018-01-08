@@ -1,0 +1,30 @@
+<section>
+    <div>
+        <div class="tabs is-centered is-toggle is-fullwidth is-large">
+            <ul>
+                <li class="is-active">
+                    <a data-tab="withdraw_crypto" data-group="withdraw">
+                        <span class="icon is-small">
+                            <i class="fa fa-btc"></i>
+                        </span>
+                        Sacar Bitcoin
+                    </a>
+                </li>
+                <li>
+                    <a data-tab="withdraw_fiat" data-group="withdraw">
+                        <span class="icon is-small">
+                            <i class="fa fa-dollar"></i>
+                        </span>
+                        Sacar Reais
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <div data-tabname="withdraw_crypto" data-tabgroup="withdraw" w3-include-html="views/saques_crypto.html"></div>
+            <div data-tabname="withdraw_fiat" data-tabgroup="withdraw" class="is-invisible" w3-include-html="views/saques_fiat.html"></div>
+        </div>
+    </div>
+
+</section>

@@ -1,0 +1,581 @@
+@import "./_variables.sass"
+@import "bulma/bulma"
+
+::-webkit-scrollbar-track
+	background-color: #e4e7e8
+
+::-webkit-scrollbar
+	width: 6px
+  height: 6px
+  border-radius: 2px !important
+	background-color: #b2b7bc
+  
+
+::-webkit-scrollbar-thumb
+	background-color: #b2b7bc
+*
+  outline: none !important
+
+html, body
+  background: #FAFAFA
+
+html
+  overflow: hidden !important
+body
+  overflow: auto
+  font-size: 13px !important
+
+.modal-card
+  &.is-large
+    width: 80%
+  &.is-medium
+    width: 65%
+
+.button.is-danger
+  background: $red !important
+
+img.is-rounded
+  border-radius: 200px
+
+.is-green
+  color: $green !important
+.is-red
+  color: $red !important
+
+.navbar-item:hover
+  background: none !important
+  color: $red !important
+  transition: 0.2s ease-in 
+.navbar-brand img:hover
+  opacity: 0.8
+  transition: 0.2s
+
+.card-header-title
+  font-size: 14px
+  font-weight: normal !important
+  color: #2b3441
+
+
+.tabs
+  margin-bottom: 0 !important
+  li
+    border-radius: 0
+    a
+      padding: 20px 0
+      background: whitesmoke
+      border-bottom: 2px solid white
+      font-weight: normal
+      border-color: white !important
+
+    &.is-active
+      a
+        background: white !important
+        color: $red !important
+        border-top: 3px solid $red !important
+
+.main-navbar
+  .navbar-end
+    transform: translateX(-25px)
+  .is-hoverable
+    .navbar-link
+      padding-right: 1rem
+      &::after
+        display: none
+  .notifications
+    color: $black
+    font-size: 13px
+    &:hover::after
+      display: block
+      opacity: 0
+    
+    .navbar-link
+      &:hover::after
+        content: ""
+        height: 10px
+        width: 10px
+        position: absolute
+        top: calc(#{$navbar-height} - 2px)
+        left: 20px
+        transform: rotate(45deg)
+        background: #fafafa
+        display: block !important
+        transition: .3s
+        opacity: 1
+      &:hover ~ .navbar-dropdown  
+        display: block
+    .navbar-dropdown
+      left: -105px
+      width: 280px
+      &:hover
+          display: block
+    
+
+
+    .navbar-dropdown
+      left: -120px
+    .item
+      display: block
+      color: $black !important
+      padding: 25px 20px
+      border-bottom: 1px solid #EEE
+      &:hover
+        background: $red
+        color: white !important
+
+.is-sidebar-menu.is-basic .account-overview .title.is-3
+  color: $dark !important
+
+.is-sidebar-menu
+  background: $dark
+  padding-right: 0 !important
+  width: 280px !important
+  transition: .3s
+  
+  li
+    a
+      color: #b5bdc9
+      padding: 13px 18px !important
+      font-size: 13px 
+      font-weight: normal !important
+      transition: .3s
+      display: flex
+      align-items: center
+      &.is-active
+        background: #1c252b !important
+        border-left: #CA0033 2px solid
+      &:hover
+        background:  #212b33 !important
+        color: #fff
+        transform: translateX(-3px)
+      [class^="icon-"], [class*=" icon-"] 
+        color: #CA0033
+        margin-right: 15px
+      @media( min-height: 600px )
+        font-size: 13px !important
+        padding: 20px 15px 20px 25px !important
+
+  &.is-basic
+    background: rgb(205,214,217	)
+    li a 
+      color: $dark
+      &.is-active
+        background: #738192  !important
+        color: white
+      &:hover
+        background: $dark
+        color: $red
+      [class^="icon-"], [class*=" icon-"] 
+        filter: hue-rotate(179deg) saturate(70) saturate(6.25) brightness(73%)
+    .profile span
+      color: $dark !important
+    
+  &.is-colapsed
+    width: 75px !important
+    padding: 0
+    li a
+      padding-right: 0 
+      cursor: pointer
+      span
+        display: none
+    .account-overview
+      display: nonE
+
+  .is-fixed-bottom
+    position: absolute
+    bottom: 0
+    left: 0
+    width: 280px
+    padding: 15px
+    &:hover
+      background-color: #212b33
+      transition: 0.2s
+
+    .is-hoverable
+      width: 100%;
+
+    .profile
+      display: flex
+      align-items: center
+      font-size: 13px
+      color: $grey
+      line-height: 13px
+      width: 100%
+      figure img
+        height: auto
+        width: 30px
+        border-radius: 150px
+        border: none
+      .padding7
+        padding-left: 7px
+    .tag
+      color: $green
+      background: none
+      border-radius: 0
+      font-size: 9px
+      line-height: 0
+      height: 10px
+      width: 30px
+
+
+.columns
+  &.is-fullheight
+    height: calc(100vh -  #{$navbar-height} )
+    display: flex
+    flex-direction: row
+    justify-content: stretch
+    .column
+      overflow-y: no-scroll
+      .is-fullheight
+        min-height: calc(100vh - ( #{$navbar-height} - 0.75rem  ) )
+        max-height: calc(100vh - ( #{$navbar-height}  - 0.75rem ) )
+    
+.is-main-content
+  background: #ebeff1
+  position: relative
+  overflow-y: scroll
+
+  .navbar
+    min-height: 47px
+    border-bottom: 1px solid $grey
+    font-size: 13px !important
+    font-weight: normal
+    .container
+      min-height: auto
+
+.main-content-navbar
+  width: calc(100% - #{$transactions-feed-width})
+
+.account-overview
+  padding: 15px 0 !important
+  
+  .title
+    font-weight: normal
+    &.is-7
+      color: $green
+      font-size: 13px
+    &.is-3
+      color: white
+      font-size: 22px
+
+.is-centered
+  margin: 0 auto
+
+.main-content
+  height: calc(100% - 3rem - 235px )
+  width: 100%
+  display: flex
+  position: relative
+  background: #ebeff1
+  
+
+.operations
+  width: calc(100% - #{$transactions-feed-width})
+  padding: 0
+  padding: 10px 10px 0 10px
+  overflow-y: hidden
+  > .columns, >.columns >.column,.card
+    min-height: 100%
+    height: 100%
+    .card-content
+      overflow-y: auto
+      height: calc( 100% - 3rem )
+      position: relative
+      overflow: hidden
+      #chart
+        min-height: calc(100% - 3rem)
+        width: 100%
+  
+.transactions
+  box-shadow: none !important
+  position: absolute
+  bottom: 0
+  height: 235px
+  padding: 0 10px
+  width: calc(100% - #{$transactions-feed-width} + 1px)
+  overflow-x: scroll
+  overflow-y: hidden
+  .column
+    height: 100%
+    .card-content
+      padding: 0
+      &.is-scrolable
+        overflow-y: scroll !important
+    .table
+      border: none
+      padding: 5px 0
+      tr, td
+        vertical-align: middle
+        border: none
+        .button
+          font-weight: normal
+          font-size: 13px
+          height: 50px
+
+  .add button
+    background: #ebeff1
+    height: 205px
+    width: 100%
+    border: 1px solid $grey
+    background-size: 32px
+    border-radius: 3px
+    color: #999
+    font-size: 15px
+    font-weight: normal
+    cursor: pointer
+    transition: all .2s 
+
+  .add button:hover
+    margin-top: 3px
+    background: #e4e7e8
+  
+
+
+        
+  
+
+.transactions-feed
+  position: absolute
+  right: 0
+  bottom: 0
+  top: 0
+  background: #fff
+  border-left: 1px solid $grey
+  width: #{$transactions-feed-width}
+  height:  calc(100vh - #{$navbar-height} )
+  .navbar
+    background: #EEE
+    .container
+      min-height: 1.5rem
+  .table
+    font-size: 13px
+    margin: 0 !important
+    font-weight: normal
+    thead
+      background: #f4f6f7
+      font-weight: normal
+    td
+      padding-left: 15px !important
+      padding-left: 15px !important
+
+  .is-scroll
+    height: calc(((100% - (3rem * 3)) / 3)  )
+    overflow-y: scroll
+    position: relative
+
+.basic-orders
+  hr
+    background: #eeeeee
+    border-bottom: 1px solid #EEE
+    width: 100%
+    display: inline-flex
+    margin: 5px 0
+  .input.is-large
+    color: $red !important
+    font-size: 38px
+    text-align: center !important
+    border: none
+    box-shadow: none
+    &:focus,&:active,&:hover
+      border: none !important
+      box-shadow: none !important
+  small
+    color: #888
+
+
+.basic-market
+  min-height: calc(100vh - #{$navbar-height} - 3rem) !important
+  max-height: calc(100vh - #{$navbar-height} - 3rem) !important
+
+.volume-widget
+  padding: 10px 10px 0 10px !important
+  height: auto !important
+  overflow-y: hidden
+  +desktop
+    padding: 15px 10px 0 10px !important
+    .currency
+      font-size: 12px !important
+      line-height: 12px
+    .price
+      font-size: 16px
+    .variation
+      font-size: 10px
+    .low-high div 
+      font-size: 11px !important
+    .table
+      font-size: 9px !important
+  .price
+    margin: 0 auto !important
+    padding: 0 !important
+    font-size: 22px
+  .variation
+    color: $green
+  .low-high
+    padding-top: 10px
+    .low div, .high div
+      width: 100%
+      display: flex
+      align-items: center
+      padding: 5px 0px
+      border-radius: 100px
+      font-size: 14px
+      span
+        margin: 0 auto
+    .low div
+      background: #D3E6FF
+      color: #2050AD
+    .high div
+      background: #FDE0E8
+      color: #CE2501
+
+  .slider-subtitle
+    font-size: 13px
+
+  .slider
+    width: 100% !important
+    .slider-track
+      height: 2px !important
+      background: #D9D9D9 !important
+      margin-top: -3px
+      .slider-track-low
+      .slider-selection
+        height: 7px !important
+        height: 12px
+        margin-top: -2.5px
+        background: $green
+      .slider-track-high
+    .slider-handle
+      height: 12px 
+      width: 12px
+      margin-top: -13px
+      cursor: pointer
+      -webkit-box-sizing: content-box;
+      -moz-box-sizing: content-box;
+      box-sizing: content-box;
+      border: none;
+      border-radius: 80% 0 55% 50% / 55% 0 80% 50%;
+      font: normal 100%/normal Arial, Helvetica, sans-serif;
+      color: rgba(0,0,0,1);
+      text-overflow: clip;
+      transform: rotateZ(130deg) translate(-2px, -3px)
+    .min-slider-handle
+      background: #D3E6FF !important
+    .max-slider-handle
+      background: #FDE0E8 !important
+
+  .table
+    font-size: 12px
+    width: 100%
+    &.has-text-left
+
+    thead
+      display: block
+    tbody
+      max-height: 200px
+      overflow-y: scroll
+      display: block
+      width: 100%
+      th,tr
+        width: 100%
+        td
+          width: 50%
+
+  .interval
+    .columns .column
+        font-size: 9px
+        font-weight: normal
+
+  
+.trader-button
+  writing-mode: vertical-rl
+  position: absolute
+  text-align: center
+  height: 100%
+  background: #394954
+  padding-right: 5px
+  width: 30px
+  right: 0
+  top: 0
+  display: block
+  color: white
+  font-size: 11px
+  z-index: 9
+  transition: 0.2s
+  &:hover
+    color: white
+    background: $red
+
+input.has-float-label
+  font-weight: normal
+  margin: 0
+  width: 80%
+  background: rgba(0, 0, 0, 0)
+  overflow-x: hidden
+  z-index: 3
+  font-size: 13px
+  outline: none
+  border: none 
+  box-shadow: none
+  padding: 13px 0 0 0
+  &:focus
+    border: none 
+    box-shadow: none
+
+
+input.has-float-label + label
+  display: block
+  position: relative
+  white-space: nowrap
+  padding: 0
+  margin: 0
+  width: 100%
+  transition: width 0.4s ease
+  height: 0px
+
+
+
+input.has-float-label + label > span
+  font-weight: normal
+  margin: 0
+  position: absolute
+  color: #8F8F8F
+  top: -25px
+  left: 0px
+  transition: top 0.2s ease, font-size 0.2s ease, color 0.2s ease
+  z-index: 2
+  cursor: initial
+
+
+input.has-float-label:focus + label > span,
+input.has-float-label:valid + label > span,
+  top: -32px
+  font-size: 11px
+  color: #333
+  color: $red
+
+.container.has-text-centered
+  background: #ffffff
+  border-top: 1px solid $grey
+
+.card, .card-header
+  background-color: white
+  box-shadow: none !important
+  border: 0
+  color: #4a4a4a
+  max-width: 100%
+  position: relative
+  border-radius: 3px
+
+.card-header-title
+  border-bottom: 1px solid $grey
+  box-shadow: none !important
+
+.addallbrl, .addallbtc
+  border-right: 1px solid $grey !important
+  box-shadow: 0 1px 0 $grey !important
+
+.linha
+  box-shadow: 0 1px 0 $grey
+
+.dropdown .is-right
+  left: auto
+  right: 80px

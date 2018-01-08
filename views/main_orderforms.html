@@ -1,0 +1,243 @@
+
+<div class="column is-3 ordertype"  id="ordertype-buy_limit">
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                Compra: Limite
+            </p>
+            <!-- <a href="#" class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                    <i class="fa  fa-ellipsis-v" aria-hidden="true"></i>
+               </span>
+            </a> -->
+        </header>
+        <div class="card-content">
+            <table class="table is-fullwidth">
+                <tr>
+                    <td class="addallbrl" data-target="limitbuy_maxprice">R$ </td>
+                    <td class="linha">
+                        <input type="text" class="input has-float-label is-fullwidth | offerbuy_price" id="limitbuy_maxprice" required>
+                        <label><span>Preço máximo</span></label>
+                    </td>
+                </tr>
+               
+                <tr>
+                    <td class="addallbtc" data-target="limitbuy_amount">&#579; </td>
+                    <td class="linha">
+                        <input type="text" class="input  has-float-label is-fullwidth | offerbuy_amount" id="limitbuy_amount" required>
+                        <label><span>Quantidade</span></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <p align="center" class="orderform_preview">Total (est.): <span id="limitbuy_preview"></span></p>
+                        <button class="button is-success is-fullwidth" data-do="limit_buy">Enviar Ordem</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="column is-3 ordertype" id="ordertype-sell_limit">
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                Venda: Limite
+            </p>
+            <!-- <a href="#" class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                    <i class="fa  fa-ellipsis-v" aria-hidden="true"></i>
+                </span>
+            </a> -->
+        </header>
+        <div class="card-content">
+            <table class="table is-fullwidth">
+                <tr>
+                    <td class="addallbrl" data-target="limitsell_minprice">R$ </td>
+                    <td class="linha">
+                        <input type="text" class="input has-float-label is-fullwidth | offersell_price" id="limitsell_minprice" required>
+                        <label><span>Preço mínimo</span></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="addallbtc" data-target="limitsell_amount">&#579; </td>
+                    <td class="linha">
+                        <input type="text" class="input has-float-label is-fullwidth | offersell_amount" id="limitsell_amount" required>
+                        <label><span>Quantidade</span></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <p align="center" class="orderform_preview">Total (est.): <span id="limitsell_preview"></span></p>
+                        <button class="button is-danger is-fullwidth" data-do="limit_sell">Enviar Ordem</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="column is-3 ordertype" id="ordertype-buy_market"> 
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                Compra: Mercado
+            </p>
+            <!-- <a href="#" class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                    <i class="fa  fa-ellipsis-v" aria-hidden="true"></i>
+                </span>
+            </a> -->
+        </header>
+        <div class="card-content">
+            <table class="table is-fullwidth">
+                <tr>
+                    <td class="addallbrl" data-target="marketbuy_maxprice">R$ </td>
+                    <td class="linha">
+                        <input type="text" class="input has-float-label is-fullwidth | offerbuy_price" id="marketbuy_maxprice" required>
+                        <label ><span>Preço máximo</span></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="addallbtc" data-target="marketbuy_amount">&#579; </td>
+                    <td class="linha">
+                        <input type="text" class="input has-float-label is-fullwidth | offerbuy_amount" id="marketbuy_amount" required>
+                        <label ><span>Quantidade</span></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <p align="center" class="orderform_preview">Total (est.): <span id="marketbuy_preview"></span></p>
+                        <button class="button is-success is-fullwidth" data-do="market_buy">Enviar Ordem</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="column is-3 ordertype" id="ordertype-sell_market">
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                Venda: Mercado
+            </p>
+            <!-- <a href="#" class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                    <i class="fa  fa-ellipsis-v" aria-hidden="true"></i>
+                </span>
+            </a> -->
+        </header>
+        <div class="card-content">
+            <table class="table is-fullwidth">
+                <tr>
+                    <td class="addallbrl" data-target="marketsell_minprice">R$ </td>
+                    <td class="linha">
+                        <input type="text" class="input has-float-label is-fullwidth | offersell_price" id="marketsell_minprice" required>
+                        <label><span>Preço mínimo</span></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="addallbtc" data-target="marketsell_amount">&#579; </td>
+                    <td class="linha">
+                        <input type="text" class="input has-float-label is-fullwidth | offersell_amount" id="marketsell_amount" required>
+                        <label><span>Quantidade</span></label>                        
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <p align="center" class="orderform_preview">Total (est.): <span id="marketsell_preview"></span></p>
+                        <button class="button is-danger is-fullwidth" data-do="market_sell">Enviar Ordem</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="column is-3 ordertype" id="ordertype-buy_stop_limit">
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                Stop-limite: Compra
+            </p>
+            <!-- <a href="#" class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                    <i class="fa  fa-ellipsis-v" aria-hidden="true"></i>
+                </span>
+            </a> -->
+        </header>
+        <div class="card-content">
+            <table class="table is-fullwidth">
+
+                <tr>
+                    <td class="addallbrl" data-target="stoplimitsell_amount">R$ </td>
+                    <td class="linha">
+                        <input type="text" class="input has-float-label is-fullwidth" id="stoplimitbuy_trigger" required>
+                        <label><span>Preço-gatilho</span></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="addallbtc" data-target="stoplimitbuy_amount">&#579; </td>
+                    <td class="linha">
+                        <input type="text" class="input has-float-label is-fullwidth | offerbuy_amount" id="stoplimitbuy_amount" required>
+                        <label><span>Quantidade</span></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button class="button is-success is-fullwidth" data-do="stoplimit_buy">Enviar Ordem</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="column is-3 ordertype" style="display: none" id="ordertype-sell_stop_limit">
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                Stop-limite: Venda
+            </p>
+            <!-- <a href="#" class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                    <i class="fa  fa-ellipsis-v" aria-hidden="true"></i>
+                </span>
+            </a> -->
+        </header>
+        <div class="card-content is-scrolable">
+            <table class="table is-fullwidth">
+                <tr>
+                    <td class="addallbrl" data-target="stoplimitsell_amount">R$ </td>
+                    <td class="linha">
+                        <input type="text" class="input has-float-label is-fullwidth" id="stoplimitsell_trigger" required>
+                        <label><span>Preço-gatilho</span></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="addallbtc" data-target="stoplimitsell_amount">&#579; </td>
+                    <td class="linha">
+                        <input type="text" class="input has-float-label is-fullwidth | offerbuy_amount" id="stoplimitsell_amount" required>
+                        <label><span>Quantidade</span></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button class="button is-danger is-fullwidth" data-do="stoplimit_sell">Enviar Ordem</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="column is-3 add" data-openmodal="tiposdeordens">
+    <button>
+        <img src="/assets/fonts/svg/add-algo 32x32.svg" width="32" alt="">
+        <br>
+        <br> Meus Tipos de Ordens
+    </button>
+</div>
