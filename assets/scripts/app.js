@@ -1,6 +1,6 @@
 window.VERSION = "1.0.0b1";
-window.BACKEND = "https://cdn.brecoins.com.br:8000";
-window.CDN = "https://cdn.brecoins.com.br/";
+window.BACKEND = "http://104.200.67.85:8000";
+window.CDN = "https://cdn.brecoins.com.br/~bre/";
 window.EXCHANGE = 1;
 window.common = {
     crypto_currency: {
