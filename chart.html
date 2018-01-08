@@ -15,7 +15,7 @@
 <script>
 
     $(function() {
-        $.getJSON('http://'+(location.host || 'localhost').split(':')[0]+':8000/chart', function(data) {
+        $.getJSON('http://104.200.67.85:8000/chart', function(data) {
             var trace = {
             x: data.date,
             close: data.close,
