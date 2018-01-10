@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  </head>
+  <body>
+	<div class="container-fluid">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="#">AcessoBio SDK</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+				  <li class="nav-item active">
+					<a class="nav-link" href="#">Home<span class="sr-only">(current)</span></a>
+				  </li>
+				   <li class="nav-item">
+					<a class="nav-link" href="https://crediariohomolog.acesso.io/AcessoBioFrame/SDK/AcessoBioFrame_1.0.1.zip">Download</a>
+				  </li>
+				</ul>
+			</div>	
+		</nav>
+		
+		<br/>
+		
+		<div class="card">
+			<div class="card-heading" style="padding-left:2em">Inicie a câmera, posicione seu rosto e clique no botão tirar foto.</div>
+			<div class="card-body">
+				<div id="AcessoFrame"></div>
+			</div>
+			<div class="card-footer">
+				<button id="initAcesso"  type="button" class="btn btn-primary">Iniciar câmera</button>
+				<button id="getPhoto" type="button" class="btn btn-primary">Tirar foto</button>
+			</div>
+		</div>	
+		
+		<br/>
+		
+		<div class="card">
+			<div class="card-heading" style="padding-left:2em">Preview foto</div>
+			<div class="card-body">
+				<img id="AcessoFramePreview"/>
+			</div>
+		</div>	
+
+		<br/>
+		
+		<div class="card">
+			<div class="card-heading" style="padding-left:2em">Veja o email que você recebeu, e digite as seguintes infromações.</div>
+			<div class="card-body">
+				<div class='row'>
+					<div class="form-group col-md-4">
+						<label for="inputLogin" class="col-form-label">Usuário</label>
+						<input type="text" class="form-control" id="inputLogin">
+					</div>
+					<div class="form-group col-md-4">
+						<label for="inputPassword" class="col-form-label">Senha</label>
+						<input type="password" class="form-control" id="inputPassword">
+					</div>
+					<div class="form-group col-md-4">
+						<label for="inputInstancia" class="col-form-label">Instância</label>
+						<input type="text" class="form-control" id="inputInstancia" value="mateusdev">
+					</div>
+				</div>				
+			</div>
+		</div>	
+
+		<br/>
+		
+		<div class="card">
+			<div class="card-heading" style="padding-left:2em">Autenticando o usuário</div>
+			<div class="card-body">
+				<div>Para iniciar um processo, precisamos antes autenticar o usuário, isso é feito chamando o método GetAuthtoken da SKD.</div>	
+				<pre>
+					<code>
+//Parametros:
+//*usuario {login:'',password:''}
+//*callback de sucesso
+//*callback de erro
+$("#getAuthToken").click(function () {
+	AcessoCaptureFrame.getAuthToken({ login: $('#inputLogin').val(), password: $('#inputPassword').val() }, function (getAuthTokenResult) {
+		console.log("sucesso");
+	}, function (code, description) {
+		console.log("falha");
+	});
+});
+					</code>
+				</pre>				
+			</div>
+			<div class="card-footer">
+				<button id="getAuthToken" type="button" class="btn btn-primary">Obter token</button>
+			</div>
+		</div>	
+
+		<br/>
+		
+		<div class="card">
+			<div class="card-heading" style="padding-left:2em">Preencha os dados do cliente.</div>
+			<div class="card-body">
+				<div class='row'>
+					<div class="form-group col-md-4">
+						<label for="inputName" class="col-form-label">Nome</label>
+						<input type="text" class="form-control" id="inputName">
+					</div>
+					<div class="form-group col-md-4">
+						<label for="inputCPF" class="col-form-label">CPF</label>
+						<input type="text" class="form-control" id="inputCPF">
+					</div>
+				</div>				
+			</div>
+		</div>	
+		
+		<br/>
+		
+		<div class="card">
+			<div class="card-heading" style="padding-left:2em">Criando um processo </div>
+			<div class="card-body">
+				<div>Para enviar uma processo para análise, é necessário uma sequência de chamadas onde alguns passos são opcionais.</div>	
+				<div>Primeiramente chamamos o método CreateProcess. Este método retornar um objeto do tipo process que armazenará todas as informações do processo</div>	
+				<pre>
+					<code>
+//Cria um processo base
+//Parametros:
+//*subject {Code:'',Name:'',Gender:''}
+//*callback de sucesso
+//*callback de erro
+$("#createProcess").click(function () {				
+	subject.Code = $('#inputCPF').val()
+	subject.Name = $('#inputName').val()
+	subject.Gender = "M"
+
+	AcessoCaptureFrame.createProcess(subject, function (process) {
+		myProcess = process;
+		console.log("sucesso");
+	}, function (code, description) {
+		console.log("falha");
+	});
+});
+					</code>
+				</pre>					
+				<div>Em seguida chamamos o método FaceInsert. Este método é responsavel por adicionar uma face no processo. Este método pode retornar algumas excessões caso a foto não tenha uma biomatria válida.<br/> Neste exemplo vamos utilizar a foto tirada acima</div>	
+				<pre>
+					<code>
+//Insere uma face no processo informado
+//Parametros:
+//*processo
+//*base64 da face
+//*callback de sucesso
+//*callback de erro
+$("#faceInsert").click(function () {
+	AcessoCaptureFrame.faceInsert(myProcess, myBase64, function (process) {
+		myProcess = process;
+		console.log("sucesso");
+	}, function (code, description) {
+		console.log("falha");
+	});
+});
+					</code>
+				</pre>	
+				<div>Se caso você deseje adicionar outros documentos no processo você pode chamar o método DocumentInsert.<br/> Neste exemplo vamos utilizar a mesma foto tirada acima</div>	
+				<pre>
+					<code>
+//Insere um documento no processo informado
+//Parametros:
+//*processo
+//*base64 do documento
+//*tipo do documento
+//*callback de sucesso
+//*callback de erro
+$("#documentInsert").click(function () {
+	AcessoCaptureFrame.documentInsert(myProcess, myBase64, AcessoCaptureFrame.documentTypeEnum.cnh, function (process) {
+		myProcess = process;
+		console.log("sucesso");
+	}, function (code, description) {
+		console.log("falha");
+	});
+});					
+					</code>
+				</pre>	
+				<div>Para Finalizar chamamos o método ExecuteProcess.</div>	
+				<pre>
+					<code>
+//Inicia o processamento do processo informado
+//Parametros:
+//*processo
+//*callback de sucesso
+//*callback de erro
+$("#executeProcess").click(function () {
+	AcessoCaptureFrame.executeProcess(myProcess, function (process) {
+		myProcess = process; 
+		console.log("sucesso");
+	}, function (code, description) {
+		console.log("falha");
+	});
+});
+					</code>
+				</pre>					
+			</div>
+			<div class="card-footer">
+				<button id="createProcess" type="button" class="btn btn-primary">Criar Processo</button>
+				<button id="faceInsert" type="button" class="btn btn-primary">Inserir Foto</button>
+				<button id="documentInsert" type="button" class="btn btn-primary">Inserir Documento</button>
+				<button id="executeProcess" type="button" class="btn btn-primary">Executar Processo</button>
+			</div>
+		</div>			
+		
+		<br/>
+		
+		<div class="card">
+			<div class="card-heading" style="padding-left:2em">Acompanhar o processo</div>
+			<div class="card-body">
+					<div>Para acompanhar o status de um processo, utilizamos o getProcess</div>	
+					<pre>
+						<code>
+//Retorna o cliente com o cpf informado
+//Parametros:
+//*cpf do cliente
+//*callback de sucesso
+//*callback de erro
+$("#getSubject").click(function () {            
+	AcessoCaptureFrame.getSubject($('#inputCPF').val(), function (subject) {
+		console.log("sucesso");
+	}, function (code, description) {
+		console.log("falha");
+	});
+});
+						</code>
+					</pre>	
+					<div>Para retornar o dados de um cliente utilizamos o getSubject</div>	
+					<pre>
+						<code>
+//Retorna as informações do processo
+//Parametros:
+//*processo
+//*callback de sucesso
+//*callback de erro
+$("#getProcess").click(function () {
+	AcessoCaptureFrame.getProcess(myProcess, function (process) {
+		myProcess = process;
+		console.log("sucesso");
+	}, function (code, description) {
+		console.log("falha");
+	});
+});
+						</code>
+					</pre>	
+			</div>
+			<div class="card-footer">
+				<button id="getSubject" type="button" class="btn btn-primary">Retornar Cliente</button>
+				<button id="getProcess" type="button" class="btn btn-primary">Retornar Processo</button>
+			</div>
+		</div>	
+	</div>
+	
+	<div id="myModal" class="modal">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 id="modalTitle" class="modal-title"></h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<p id="modalbody"></p>
+		  </div>
+		</div>
+	  </div>
+	</div>  
+  
+	
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+	<script src="https://crediariohomolog.acesso.io/AcessoBioFrame/AcessoFrame.js"></script>
+	<script src="https://crediariohomolog.acesso.io/AcessoBioFrame/Dependency/getAcessoUserMedia.js"></script>
+	
+	<script>
+		$(document).ready(function () {	
+			var AcessoCaptureFrame = new CaptureFrame("https://crediariohomolog.acesso.io/" + $("#inputInstancia").val(), '7E426BC2-652E-4BCE-B6A1-7922FA44EBC9');;
+			var subject = {};
+			var myProcess;
+			var myBase64;
+			
+			$("#initAcesso").click(function () {
+				AcessoCaptureFrame.create(sucessCallback, function(){
+					AcessoCaptureFrame.create(sucessCallback, errorCallback, { enableIR: false, crop_on_capture: true, showIR: false, frameType: 'face', mirror: false, width: '320px', height: '240px' });
+				}, { enableIR: false, crop_on_capture: true, showIR: true, frameType: 'face', mirror: false, width: '640px', height: '360px' });
+				
+				function sucessCallback(){
+					$('#modalTitle').html("create");
+					$('#modalbody').html("Câmera inciada com sucesso");
+					$('#myModal').modal('show');
+				}
+				
+				function errorCallback(code, description){
+					$('#modalTitle').html("create");
+					$('#modalbody').html('Codigo: ' + code + ' Description: ' + description);
+					$('#myModal').modal('show');
+				}
+
+			});
+			
+			 $("#getPhoto").click(function () {
+				AcessoCaptureFrame.takeSnapshot(
+					function (base64, base64_Ir) {
+						myBase64 = base64;
+						$('#AcessoFramePreview').prop('src', base64);
+					}
+				);
+			});
+			
+			$("#getAuthToken").click(function () {			
+				AcessoCaptureFrame.getAuthToken({ login: $('#inputLogin').val(), password: $('#inputPassword').val() }, function (getAuthTokenResult) {
+					$('#modalTitle').html("getAuthToken");
+					$('#modalbody').html("Usuário autenticado com sucesso");
+					$('#myModal').modal('show');
+				}, function (code, description) {
+					$('#modalTitle').html("getAuthToken");
+					$('#modalbody').html('Codigo: ' + code + ' Description: ' + description);
+					$('#myModal').modal('show');
+				});
+
+			});
+			
+			$("#createProcess").click(function () {				
+				subject.Code = $('#inputCPF').val()
+				subject.Name = $('#inputName').val()
+				subject.Gender = "M"
+				
+				AcessoCaptureFrame.createProcess(subject, function (process) {
+					myProcess = process;
+
+					$('#modalTitle').html("createProcess");
+					$('#modalbody').html("Processo Criado com sucesso. Id do processo: "+ process.Id);
+					$('#myModal').modal('show');
+
+				}, function (code, description) {
+					$('#modalTitle').html("createProcess");
+					$('#modalbody').html('Codigo: ' + code + ' Description: ' + description);
+					$('#myModal').modal('show');
+				});
+			});
+			
+			$("#faceInsert").click(function () {
+				AcessoCaptureFrame.faceInsert(myProcess, myBase64, function (process) {
+					myProcess = process;
+					
+					$('#modalTitle').html("faceInsert");	
+					$('#modalbody').html("Foto inserida no processo com sucesso.");
+					$('#myModal').modal('show');
+				}, function (code, description) {
+					$('#modalTitle').html("faceInsert");
+					$('#modalbody').html('Codigo: ' + code + ' Description: ' + description);
+					$('#myModal').modal('show');
+				});
+
+			});
+			
+			$("#documentInsert").click(function () {
+				AcessoCaptureFrame.documentInsert(myProcess, myBase64, AcessoCaptureFrame.documentTypeEnum.cnh, function (process) {
+					myProcess = process;
+
+					$('#modalTitle').html("documentInsert");	
+					$('#modalbody').html("Documento inserido no processo com sucesso.");
+					$('#myModal').modal('show');
+				}, function (code, description) {
+					$('#modalTitle').html("documentInsert");
+					$('#modalbody').html('Codigo: ' + code + ' Description: ' + description);
+					$('#myModal').modal('show');
+				});
+			});
+			
+			$("#executeProcess").click(function () {
+				AcessoCaptureFrame.executeProcess(myProcess, function (process) {
+					myProcess = process; 
+					
+					$('#modalTitle').html("executeProcess");	
+					$('#modalbody').html("Processando a requisição");
+					$('#myModal').modal('show');
+				}, function (code, description) {
+					$('#modalTitle').html("executeProcess");
+					$('#modalbody').html('Codigo: ' + code + ' Description: ' + description);
+					$('#myModal').modal('show');
+				});
+			});
+			
+			$("#getSubject").click(function () {            
+				AcessoCaptureFrame.getSubject($('#inputCPF').val(), function (subject) {
+					$('#modalTitle').html("getSubject");	
+					$('#modalbody').html("Nome do Ciente: " + subject.Name);
+					$('#myModal').modal('show');
+				}, function (code, description) {
+					$('#modalTitle').html("getSubject");
+					$('#modalbody').html('Codigo: ' + code + ' Description: ' + description);
+					$('#myModal').modal('show');
+				});
+
+			});
+			
+			$("#getProcess").click(function () {
+				AcessoCaptureFrame.getProcess(myProcess, function (process) {
+					myProcess = process;
+					$('#modalTitle').html("getProcess");	
+					$('#modalbody').html("Status do Processo: " + process.Status);
+					switch (process.Status){
+						case 0:
+							$('#modalbody').html("Status do Processo: Aguardando foto" );
+							break;
+						case AcessoCaptureFrame.processEnum.waiting_for_documents:
+							$('#modalbody').html("Status do Processo: Aguardando documentos" );
+							break;
+						case AcessoCaptureFrame.processEnum.capturing_documents:
+							$('#modalbody').html("Status do Processo: Aguardando documentos" );
+							break;
+						case AcessoCaptureFrame.processEnum.proccessed_with_conflict:
+							$('#modalbody').html("Status do Processo: Concluído com divergência" );
+							break;
+						case AcessoCaptureFrame.processEnum.proccessed_without_conflict:
+							$('#modalbody').html("Status do Processo: Concluído" );
+							break;
+						case AcessoCaptureFrame.processEnum.cancelled:
+							$('#modalbody').html("Status do Processo: Cancelado" );
+							break;
+					}
+					$('#myModal').modal('show');
+
+				}, function (code, description) {
+					$('#modalTitle').html("getProcess");
+					$('#modalbody').html('Codigo: ' + code + ' Description: ' + description);
+					$('#myModal').modal('show');
+				});
+			});
+		})
+	</script>
+	
+	
+  </body>
+</html>
