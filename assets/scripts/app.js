@@ -1,5 +1,6 @@
 window.VERSION = "1.0.0b1";
-window.BACKEND = "http://104.200.67.85:8000";
+//window.BACKEND = "http://104.200.67.85:8000";
+window.BACKEND = "http://localhost:8000";
 window.CDN = "http://cdn.brecoins.com.br/~bre/";
 window.EXCHANGE = 1;
 window.common = {
@@ -54,6 +55,15 @@ $(function () {
             .animate({
                 opacity: 1
             }, 1000);
+        setTimeout(function() {
+            if(getQueryVariable('p')=='signup') {
+                $("[data-do=linksignup]").click();
+            }
+            if(getQueryVariable('email')) {
+                $("[data-var=signup_email]").val(getQueryVariable('email'));
+            }
+            history.pushState({}, "", "/");
+        }, 900);
 
         socket.emit('geo.countrylist');
 
@@ -183,18 +193,32 @@ $(function () {
             if(!window.common.UID) $("[data-do=signin]").click();
         });
         socket.on('memberconfirmdatafail', function() {
-            swal(
-              'Token inválido',
-              'O token digitado não é válido.',
-              'error'
-            )
+            swal({
+              title: 'Token Inválido',
+              text: 'Insira o código enviado ao seu endereço de e-mail:',
+              input: 'text',
+              showCancelButton: false,
+              confirmButtonText: 'Confirmar',
+              allowOutsideClick: false
+            }).then(function (code) {
+              socket.emit('member.confirm', {
+                token: code
+              })
+            })
         });
         socket.on('memberconfirmtokenfail', function() {
-            swal(
-              'Token inválido',
-              'O token digitado não é válido.',
-              'error'
-            )
+            swal({
+              title: 'Token Inválido',
+              text: 'Insira o código enviado ao seu endereço de e-mail:',
+              input: 'text',
+              showCancelButton: false,
+              confirmButtonText: 'Confirmar',
+              allowOutsideClick: false
+            }).then(function (code) {
+              socket.emit('member.confirm', {
+                token: code
+              })
+            })
         });
         socket.on('membersignup_emailfail', function() {
             swal(
@@ -271,6 +295,7 @@ $(function () {
                     socket.emit('orders.myspecialorders', { sess_key: args.sess_key });
                     socket.emit('limits.get_user_limits', { sess_key: args.sess_key });
                     socket.emit('ticker.get');
+                    socket.emit('sessions.listActiveSessions', { sess_key: args.sess_key });
                 };
                 socketio_emit_loop();
                 setInterval(socketio_emit_loop, 10000);
@@ -285,6 +310,7 @@ $(function () {
                 socket.emit('limits.get_user_limits', { sess_key: args.sess_key });
                 socket.emit('ticker.register');
                 socket.emit('ticker.get');
+                socket.emit('sessions.listActiveSessions', { sess_key: args.sess_key });
                 var range = [1,24];
                 socket.emit('volume.calc', range);
 
@@ -328,6 +354,9 @@ $(function () {
                     </tr>');
             });
         });
+        socket.on('withdrawcrypto_wrongpwd', function() {
+            swal("Erro", "Senha inválida.", "error");
+        })
         socket.on('user_limits', function(limits) {
             $("[data-var=fiat_deposit_limit]").text(money_format.fiat(limits.deposit));
             $("[data-var=fiat_withdraw_limit]").text(money_format.fiat(limits.withdraw));
@@ -516,12 +545,20 @@ $(function () {
         socket.on('simulatemarketsell', function(amount) {
             $("[data-var=user_funds_btc-brl]").text(money_format.fiat(amount));
         });
-
-        socket.on('chart', function(data) {
-
-        });
-        socket.on('interval', function(data) {
-
+        socket.on('activesessionslist', function(data) {
+            $("[data-var=activesessions] tr").remove();
+            data.forEach(function(as) {
+                $("[data-var=activesessions]").append('<tr>\
+                    <td><span aria-label="'+as.ua+'" class="hint--right">'+as.browser+'</span></td>\
+                    <td>'+as.ip+'</td>\
+                    <td>'+as.location+'</td>\
+                    <td>'+moment(as.created_at).locale('pt-br').format('llll')+'</td>\
+                    <td>'+moment(as.updated_at).locale('pt-br').calendar()+'</td>\
+                    <td>'+(localStorage.sess_key!=as.key ? '<button class="button is-danger is-small" data-do="closeactivesession" data-sess="'+as.key+'">\
+                        <i class="fa fa-times fa-fw"></i>\
+                    </button>' : '(atual)')+'</td>\
+                    </tr>');
+            })
         });
         socket.on('common', function(data) {
             window.common.fiat_currency_id = data.fiat_currency_id;
@@ -1366,6 +1403,43 @@ $(function () {
                         // it doesn't work when this is removed
                         break;
 
+                    case 'closeactivesession':
+                        $this.closest('tr').slideUp();
+                        var sess2close = $this.data('sess');
+                        socket.emit('sessions.closeactivesession', {
+                            sess2close: sess2close,
+                            sess_key: localStorage.sess_key
+                        })
+                        break;
+
+                    case 'create_upgrade_process':
+                        loadingOn();
+
+                        $(".docupload").each(function() {
+                            var $up = $(this);
+                            if(!$up.data('uploaded_url')) {
+                                upload($up[0].files[0], function(err, url) {
+                                    if(!err) {
+                                        $up.data('uploaded_url', url);
+
+                                        // check if all were uploaded
+                                        var alluploaded = true;
+                                        $(".docupload").each(function() {
+                                            if(!$(this).data('uploaded_url')) alluploaded = false;
+                                        });
+                                        if(alluploaded) {
+
+                                        }
+
+                                    } else {
+                                        swal("Erro", "Erro durante o upload. Verifique sua conexão e tente novamente.");
+                                    }
+                                });
+                            }
+                        });
+
+                        break;
+
                     case 'disable_otp':
                         swal({
                           title: 'Digite sua senha para desabilitar o OTP',
@@ -1436,12 +1510,23 @@ $(function () {
 
                     case 'createCryptoWithdraw':
                         var amount = money_format.from.crypto($("#valorCryptoSaque").val());
-                        socket.emit('withdrawals.withdraw_crypto', {
-                            sess_key: localStorage.getItem('sess_key'),
-                            wallet: $("#walletSaque").val(),
-                            fee: $("#feeSaque").val(),
-                            amount: amount,
-                            currency: window.common.crypto_currency_id
+                        swal({
+                            title: "Saque de Criptomoedas",
+                            text: "Insira sua senha para confirmar.",
+                            type: 'question',
+                            input: 'password',
+                            showCancelButton: true,
+                            confirmButtonText: "Confirmar Saque",
+                            cancelButtonText: "Cancelar Saque"
+                        }).then(function(pwd) {
+                            socket.emit('withdrawals.withdraw_crypto', {
+                                sess_key: localStorage.getItem('sess_key'),
+                                wallet: $("#walletSaque").val(),
+                                fee: $("#feeSaque").val(),
+                                amount: amount,
+                                password: pwd,
+                                currency: window.common.crypto_currency_id
+                            });
                         });
                         break;
 
@@ -1515,6 +1600,22 @@ window.upload = function(file, cb) {
         }
     });
 }
+
+window.getQueryVariable = function(variable, queryString){
+    queryString = queryString || window.location.search;
+
+    var query = queryString.substr(1),
+        vars  = query.split('&'),
+        pairs;
+
+    for(var i = 0, j = vars.length; i < j; i++){
+        pairs = vars[i].split('=');
+
+        if(decodeURIComponent(pairs[0]) == variable){
+            return decodeURIComponent(pairs[1]);
+        }
+    }
+};
 
 // loading animation
 window.loadingOn = function () {
@@ -1627,7 +1728,7 @@ function randomString(length)
 // order types
 window.updateordertypes = function() {
     var ordertypes = store.get('ordertypes'+window.common.UID);
-    if(typeof ordertypes != 'object') {
+    if(typeof ordertypes != 'object' || !ordertypes.length) {
         ordertypes = new Array();
         ordertypes.push('buy_limit');
         ordertypes.push('sell_limit');
