@@ -52,7 +52,7 @@
         </a>
         <div class="container is-fluid">
             <div class="navbar-brand">
-                <a class="navbar-item no-hover-effect" data-do="togglemenu">
+                <a class="navbar-item no-hover-effect hidden-mobile" id="collapse-menu" data-do="togglemenu">
                     <i class="fa fa-bars"></i>
                 </a>
                 <a class="navbar-item navbar-brand" data-do="go_main" href="javascript:void(0);">
@@ -188,10 +188,10 @@
                             <a data-goto="account" href="javascript:void(0);" class="dropdown-item" style="color: black">
                                 Minha Conta
                             </a>
-                            <a href="https://docs.brecoins.com/taxas_e_limites" class="dropdown-item" style="color: black">
+                            <a href="https://docs.brecoins.com.br/taxas_e_limites" class="dropdown-item" style="color: black">
                                 Taxas e Limites
                             </a>
-                            <a href="https://status.brecoins.com" class="dropdown-item" style="color: black">
+                            <a href="https://status.brecoins.com.br" class="dropdown-item" style="color: black">
                                 Status do Serviço
                             </a>
                             <hr class="dropdown-divider">
@@ -218,7 +218,7 @@
         <!-- algoritmos -->
         <div class="column is-main-content is-dark" data-view="algoritmos" w3-include-html="views/algoritmos.html?v=1"></div>
         <!-- account -->
-        <div class="column is-main-content is-dark" data-view="account" w3-include-html="views/account.html?v=1"></div>
+        <div class="column is-main-content is-dark" data-view="account" w3-include-html="views/account.html?v=201801091434"></div>
         <!-- modais -->
         <!-- mercado -->
         <div class="modal" data-modal="mercado" w3-include-html="views/modal_mercado.html?v=1"></div>
@@ -243,6 +243,7 @@
     <script src="https://www.w3schools.com/lib/w3.js"></script>
     <script src='https://www.google.com/recaptcha/api.js'></script>
     <script src="/assets/scripts/libs/accounting.min.js"></script>
+    <script src="/assets/scripts/libs/AcessoBioFrame_1.0.1/AcessoFrame.js"></script>
     <script src="assets/scripts/ace/ace.min.js"></script>
     <script src="./node_modules/bootstrap-slider/dist/bootstrap-slider.min.js"></script>
     <script src="/assets/scripts/sweetalert2.min.js"></script>
@@ -251,7 +252,7 @@
     <script src="/assets/scripts/moment-with-locales.min.js"></script>
     <script src="/assets/scripts/base32.js"></script>
     <script src="/assets/scripts/qrcode.js"></script>
-    <script src="http://cdn.brecoins.com.br/app.js"></script>
+    <script src="/assets/scripts/app.js"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-111516222-1"></script>

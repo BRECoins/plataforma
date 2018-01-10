@@ -5,22 +5,36 @@
         </p>
     </header>
     <div class="card-content">
-        <div class="content">
-            <center>
-                <!-- // olha aí embaixo, eu tentei... -->
-                <img data-var="userwallet_qrcode" src="about:blank"
-                    class="is-centered" style="width: 300px" />
-                <br>
-                <code data-var="userwallet"></code>
-            </center>
+
+        <div class="columns">
+            <div class="column">
+                <div class="content has-text-centered">
+
+                    <figure class="image is-128x128" style="margin: 0 auto ">
+                            <img data-var="userwallet_qrcode" src="about:blank"
+                            class="is-centered" style="width: 300px" />
+                    </figure>
+
+
+                    <code data-var="userwallet"></code>
+                    <br>
+                    <span class="subtitle" data-var="user_nick"></span>
+                    <br>
+                    <br>
+                    <a data-do="gennewwallet" class="button is-danger">
+                            <i class="fa fa-fw fa-refresh"></i> Gerar nova carteira
+                    </a>
+
+                    <a data-do="copyuserwallet" class="button">
+                            <i class="fa fa-fw fa-clipboard"></i> Copiar
+                        </a>
+                    
+
+                </div>
         </div>
+
+
     </div>
-    <footer class="card-footer">
-        <a href="javascript:void(0)" data-do="gennewwallet" class="card-footer-item">
-            <i class="fa fa-fw fa-refresh"></i> Gerar nova carteira</a>
-        <a href="javascript:void(0)" data-do="copyuserwallet" class="card-footer-item">
-            <i class="fa fa-fw fa-clipboard"></i> Copiar</a>
-    </footer>
 </div>
 <div class="card">
     <header class="card-header">

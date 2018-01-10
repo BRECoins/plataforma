@@ -35,11 +35,18 @@
                 </div>
             </div>
             <hr />
-            <span class="tag is-danger">Atenção</span> Seu limite de depósito é: <b data-var="fiat_deposit_limit"></b>
-            <footer class="card-footer">
-                <a href="javascript:void(0)" data-do="createFiatDeposit" class="card-footer-item">
-                    <i class="fa fa-fw fa-plus"></i> Criar Ordem</a>
-            </footer>
+
+            <div class="notification  is-warning">
+                <b>Atenção</b> Seu limite de depósito é: <b data-var="fiat_deposit_limit"></b>
+            </div>
+
+            <hr>
+
+
+            <button class="button is-danger is-medium" data-do="createFiatDeposit">
+                    <i class="fa fa-fw fa-plus"></i> Criar ordem
+            </button>
+            
         </div>
     </div>
     <div class="card">

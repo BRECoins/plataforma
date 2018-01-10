@@ -56,6 +56,10 @@ img.is-rounded
   color: #2b3441
 
 
+#collapse-menu
+  @media (max-width: 500px)
+    display: none
+
 .tabs
   margin-bottom: 0 !important
   li
@@ -178,7 +182,11 @@ img.is-rounded
       span
         display: none
     .account-overview
-      display: nonE
+      display: none
+    .profile
+      span,small
+        display: none !important
+
 
   .is-fixed-bottom
     position: absolute

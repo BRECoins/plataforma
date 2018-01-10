@@ -50,22 +50,53 @@
                         </p>
                     </header>
                     <div class="card-content">
-                        <div class="content">
-                            <p>Sincronize sua conta para gerar tokens utilizando um aplicativo TOTP em seu smartphone, como o
-                                <a href="https://www.authy.com" class="link" target="_blank">Authy</a> ou
-                                <a href="https://support.google.com/accounts/answer/1066447" class="link" target="_blank">Google Authenticator</a>.
-                                <hr>
-                                <span data-if="otp_enabled">
-                                    <a href="javascript:void(0);" data-do="disable_otp" class="button is-warning">Desativar OTP</a>
-                                </span>
-                                <span data-ifnot="otp_enabled">
-                                    <a href="javascript:void(0);" data-do="enable_otp" class="button is-primary">Ativar OTP</a>
-                                </span>
-                        </div>
+                        <div class="columns">
+                            <div class="column is-3">
+                                <i style="font-size: 128px" class="fa fa-unlock-alt"></i>
+                            </div>
+                            <div class="column is-9">
+                                <div class="content">
+                                    <p>Sincronize sua conta para gerar tokens utilizando um aplicativo TOTP em seu smartphone, como o
+                                        <a href="https://www.authy.com" class="link" target="_blank">Authy</a> ou
+                                        <a href="https://support.google.com/accounts/answer/1066447" class="link" target="_blank">Google Authenticator</a>.
+                                        <hr>
+                                        <span data-if="otp_enabled">
+                                            <a href="javascript:void(0);" data-do="disable_otp" class="button is-warning">Desativar OTP</a>
+                                        </span>
+                                        <span data-ifnot="otp_enabled">
+                                            <a href="javascript:void(0);" data-do="enable_otp" class="button is-primary">Ativar OTP</a>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
                     </div>
                 </div>
 
             </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                Sessões Ativas
+            </p>
+        </header>
+        <div class="card-content">
+            <table class="table is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Navegador</th>
+                        <th>IP</th>
+                        <th>Localização</th>
+                        <th>Data de login</th>
+                        <th>Última atividade</th>
+                        <th>Sair</th>
+                    </tr>
+                </thead>
+                <tbody data-var="activesessions"></tbody>
+            </table>
+
         </div>
     </div>
 

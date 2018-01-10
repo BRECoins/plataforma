@@ -6526,6 +6526,10 @@ img.is-rounded {
   font-weight: normal !important;
   color: #2b3441; }
 
+@media (max-width: 500px) {
+  #collapse-menu {
+    display: none; } }
+
 .tabs {
   margin-bottom: 0 !important; }
   .tabs li {
@@ -6638,7 +6642,9 @@ img.is-rounded {
       .is-sidebar-menu.is-colapsed li a span {
         display: none; }
     .is-sidebar-menu.is-colapsed .account-overview {
-      display: nonE; }
+      display: none; }
+    .is-sidebar-menu.is-colapsed .profile span, .is-sidebar-menu.is-colapsed .profile small {
+      display: none !important; }
   .is-sidebar-menu .is-fixed-bottom {
     position: absolute;
     bottom: 0;

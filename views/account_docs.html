@@ -1,16 +1,42 @@
-<div class="card">
-    <header class="card-header">
-        <p class="card-header-title">
-            Seu Nível Atual
-        </p>
-    </header>
-    <div class="card-content">
-        <div class="content">
-			<center>
-                <span class="tag is-info">Nível &nbsp; <span data-var="user_level"></span></span>
-                <h1 class="title" data-var="user_level_name"></h1>
-                <h2 class="subtitle" data-var="user_level_stars"></h2>
-            </center>
+<div class="columns">
+    <div class="column is-4">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    Seu Nível Atual
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+        			<center>
+                        <span class="tag is-info">Nível &nbsp; <span data-var="user_level"></span></span>
+                        <h1 class="title" data-var="user_level_name"></h1>
+                        <h2 class="subtitle" data-var="user_level_stars"></h2>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="column is-8">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    Informações Pessoais
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="select is-fullwidth">
+                    <select data-var="user_gender">
+                        <option selected disabled>Gênero</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                    </select>
+                </div>
+                <hr/>
+                <div class="control">
+                    <input type="text" data-var="user_cpf" class="input is-fullwidth" placeholder="CPF" />
+                </div>
+            </div>
         </div>
     </div>
 </div>
