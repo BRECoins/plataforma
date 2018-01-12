@@ -28,7 +28,7 @@ Array.prototype.remove = function() {
 
 $(function () {
     w3.includeHTML(function () {
-        const socket = io(window.BACKEND, { path: '/ws' } );
+        const socket = io(window.BACKEND, { path: '/ws', transports: websocket } );
 
         recaptchaLoadCaptchas();
 
