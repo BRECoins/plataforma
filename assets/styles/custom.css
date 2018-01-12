@@ -348,6 +348,10 @@ progress[value]::-webkit-progress-value {
     background-size: 35px 20px, 100% 100%, 100% 100%;
 }
 
+.modal[data-modal=webcam] {
+    z-index: 9999999999;
+}
+
 h1.title,h2.subtitle {
     margin-top: 20px;
 }

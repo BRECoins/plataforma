@@ -61,10 +61,21 @@
                                         <a href="https://support.google.com/accounts/answer/1066447" class="link" target="_blank">Google Authenticator</a>.
                                         <hr>
                                         <span data-if="otp_enabled">
-                                            <a href="javascript:void(0);" data-do="disable_otp" class="button is-warning">Desativar OTP</a>
+                                            <a href="javascript:void(0);" data-do="disable_otp" class="button is-warning">
+                                              <i class="fa fa-key"></i>
+                                              Desativar OTP</a>
                                         </span>
                                         <span data-ifnot="otp_enabled">
-                                            <a href="javascript:void(0);" data-do="enable_otp" class="button is-primary">Ativar OTP</a>
+                                            <a href="javascript:void(0);" data-do="enable_otp" class="button is-primary"><i class="fa fa-fw fa-key"></i> Ativar OTP</a>
+                                        </span>
+                                        <br><br>
+                                        <span data-if="facial_enabled">
+                                            <a href="javascript:void(0);" data-do="disable_facial" class="button is-warning">
+                                              <i class="fa fa-smile-o"></i>
+                                              Desativar reconhecimento facial</a>
+                                        </span>
+                                        <span data-ifnot="facial_enabled">
+                                            <a href="javascript:void(0);" data-do="enable_facial" class="button is-primary"><i class="fa fa-fw fa-smile-o"></i> Ativar reconhecimento facial</a>
                                         </span>
                                     </p>
                                 </div>

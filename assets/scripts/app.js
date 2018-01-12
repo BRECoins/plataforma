@@ -1,6 +1,6 @@
 window.VERSION = "1.0.0b1";
-window.BACKEND = "http://104.200.67.85:8000";
-//window.BACKEND = "http://localhost:8000";
+//window.BACKEND = "http://104.200.67.85:8000";
+window.BACKEND = "http://localhost:8000";
 window.CDN = "http://cdn.brecoins.com.br/~bre/";
 window.EXCHANGE = 1;
 window.common = {
@@ -243,24 +243,34 @@ $(function () {
             })
         });
         socket.on('memberrequestotptoken', function(args) {
-            var title = args.wrong ? "Token incorreto" : "Token de login";
-            var text = args.otp ? "Insira o código gerado por seu aplicativo OTP:" : "Insira o código numérico enviado ao seu e-mail:"
-            swal({
-              title: title,
-              text: text,
-              input: 'text',
-              showCancelButton: false,
-              confirmButtonText: 'Entrar',
-              allowOutsideClick: false
-            }).then(function (otp_token) {
-                socket.emit('member.login', {
-                    "email": $("[data-var=signin-email]").val(),
-                    "password": $("[data-var=signin-password").val(),
-                    "otp_token": otp_token,
-                    "exchange": EXCHANGE,
-                    "browser_id": "1"
-                });
-            })
+            var requestOtpToken = function(b64) {
+                var title = args.wrong ? "Token incorreto" : "Token de login";
+                var text = args.otp ? "Insira o código gerado por seu aplicativo OTP:" : "Insira o código numérico enviado ao seu e-mail:"
+                swal({
+                  title: title,
+                  text: text,
+                  input: 'text',
+                  showCancelButton: false,
+                  confirmButtonText: 'Entrar',
+                  allowOutsideClick: false
+                }).then(function (otp_token) {
+                    socket.emit('member.login', {
+                        "email": $("[data-var=signin-email]").val(),
+                        "password": $("[data-var=signin-password").val(),
+                        "otp_token": otp_token,
+                        "exchange": EXCHANGE,
+                        "browser_id": "1",
+                        "b64": b64
+                    });
+                })
+            };
+
+            // webcam?
+            if(args.webcam) {
+                takeWebcamPicture(requestOtpToken);
+            } else {
+                requestOtpToken();
+            }
         })
         socket.on('recover.tokenok', function() {
             $("#recover_2").fadeOut(300);
@@ -296,11 +306,13 @@ $(function () {
                     socket.emit('limits.get_user_limits', { sess_key: args.sess_key });
                     socket.emit('ticker.get');
                     socket.emit('sessions.listActiveSessions', { sess_key: args.sess_key });
+                    socket.emit('userdocuments.checkprocess', { sess_key: args.sess_key });
                 };
                 socketio_emit_loop();
                 setInterval(socketio_emit_loop, 10000);
 
                 socket.emit('profile.getdetails', { sess_key: args.sess_key });
+                socket.emit('profiledetails.getProfileDetails', { sess_key: args.sess_key });
                 socket.emit('sitebankaccs.list', {exchange: EXCHANGE});
                 socket.emit('deposit.list_crypto', { sess_key: args.sess_key });
                 socket.emit('deposit.list_fiat', { sess_key: args.sess_key });
@@ -368,6 +380,13 @@ $(function () {
             $("#ticker_vol_fiat").text(money_format.fiat(tickerdata.vol_fiat));
             $("#ticker_vol_crypto").text(money_format.crypto(tickerdata.vol_crypto));
         });
+        socket.on('enablefaceerror', function(error) {
+            swal("Verificação Biométrica", error.Description, "error");
+        });
+        socket.on('upgrade_process_sent', function() {
+            swal("Solicitação de Confirmação de Conta", "Seus documentos foram enviados e serão analisados no menor tempo possível.", "success");
+            loadingOff();
+        })
         socket.on('profilegetdetailssuccess', function(data) {
             window.common.UID = data.id;
             window.common.udata = data;
@@ -396,6 +415,21 @@ $(function () {
 
             updateordertypes();
         });
+        socket.on('profiledetails', function(data) {
+            if(data.face) {
+                $("[data-do=enable_facial]").hide();
+                $("[data-do=disable_facial]").show();
+            } else {
+                $("[data-do=enable_facial]").show();
+                $("[data-do=disable_facial]").hide();
+            }
+            if(data.gender) {
+                $("[data-var=user_gender]").val(data.gender);
+            }
+            if(data.cpf) {
+                $("[data-var=user_cpf]").val(data.cpf);
+            }
+        })
         socket.on('ledgerlist', function(data) {
             $("[data-var=ledger_page]").text(data.page+1);
             $("[data-var=ledger_list] tr").remove();
@@ -791,15 +825,16 @@ $(function () {
                         upgrade_form += '\
                         <div class="file">\
                             <label class="file-label">\
-                                <input class="file-input | docupload" data-doc="'+doc.doccode+'" type="file" />\
+                                <input class="file-input | docupload" data-do="docselected" data-doc="'+doc.doccode+'" type="file" />\
                                 <span class="file-cta">\
                                     <span class="file-icon">\
                                         <i class="fa fa-upload"></i>\
                                     </span>\
                                     <span class="file-label">\
-                                        '+doc.docname+'\
+                                        '+(doc.doccode ? doc.docname : '<select data-var="doc-0-type"><option value="2">RG</option><option value="4">CNH</option><option value="12">Passaporte</option></select>')+'\
                                     </span>\
                                 </span>\
+                                <span class="file-name" data-var="doc-'+doc.doccode+'-filename"></span>\
                             </label>\
                         </div><br>';
                     });
@@ -1412,29 +1447,70 @@ $(function () {
                         })
                         break;
 
+                    case 'docselected':
+                        var doc_type = $this.data('doc');
+                        var filename = $this[0].files.length ? $this[0].files[0].name : '';
+                        $("[data-var=doc-"+doc_type+"-filename]").text(filename);
+                        break;
+
                     case 'create_upgrade_process':
                         loadingOn();
+                        var docs = [];
+
+                        var create_upgrade_process_finish = function(docs) {
+                            // check if all were uploaded
+                            var alluploaded = true;
+                            $(".docupload").each(function() {
+                                if(!$(this).data('uploaded_url')) alluploaded = false;
+                            });
+                            if(alluploaded) {
+                                takeWebcamPicture(function(b64) {
+                                    loadingOn();
+                                    setTimeout(loadingOff, 5000);
+                                    notifyme("Enviando sua foto...", "info");
+                                    socket.emit('userdocuments.sendprocess', {
+                                        sess_key: localStorage.getItem('sess_key'),
+                                        b64: b64,
+                                        cpf: $("[data-var=user_cpf]").val(),
+                                        gender: $("[data-var=user_gender]").val(),
+                                        name: $("[data-var=user_fullname_input]").val(),
+                                        docs: docs
+                                    });
+                                });
+                            }
+                        }
 
                         $(".docupload").each(function() {
                             var $up = $(this);
+                            var type = $up.data('doc');
+                            if(!type) {
+                                type = $("[data-var=doc-0-type]").val()
+                            }
+                            var filename = $("[data-var=doc-"+type+"-filename").text();
                             if(!$up.data('uploaded_url')) {
+                                notifyme("Enviando "+filename, "info");
                                 upload($up[0].files[0], function(err, url) {
                                     if(!err) {
+                                        notifyme(filename+" enviado", "success");
                                         $up.data('uploaded_url', url);
-
-                                        // check if all were uploaded
-                                        var alluploaded = true;
-                                        $(".docupload").each(function() {
-                                            if(!$(this).data('uploaded_url')) alluploaded = false;
+                                        docs.push({
+                                            'type': type,
+                                            'url': CDN+url
                                         });
-                                        if(alluploaded) {
 
-                                        }
+                                        create_upgrade_process_finish(docs);
 
                                     } else {
+                                        create_upgrade_process_finish(docs);
                                         swal("Erro", "Erro durante o upload. Verifique sua conexão e tente novamente.");
                                     }
                                 });
+                            } else {
+                                docs.push({
+                                    'type': type,
+                                    'url': CDN+$up.data('uploaded_url')
+                                });
+                                create_upgrade_process_finish(docs);
                             }
                         });
 
@@ -1485,6 +1561,45 @@ $(function () {
                               });
                             })
                         })
+                        break;
+
+                    case 'enable_facial':
+                        if($("[data-var=user_cpf]").val() && $("[data-var=user_gender]").val()) {
+                            takeWebcamPicture(function(b64) {
+                                loadingOn();
+                                setTimeout(loadingOff, 5000);
+                                socket.emit('profiledetails.enableface', {
+                                    sess_key: localStorage.getItem('sess_key'),
+                                    b64: b64,
+                                    cpf: $("[data-var=user_cpf]").val(),
+                                    gender: $("[data-var=user_gender]").val(),
+                                    name: $("[data-var=user_fullname_input]").val()
+                                });
+                            });
+                        } else {
+                            swal("CPF necessário", "Para usar a autenticação biométrica, informe seu CPF e gênero na aba \"Documentação\".", "info");
+                        }
+                        break;
+
+                    case 'disable_facial':
+                        socket.emit('profiledetails.setProfileDetail', {
+                            sess_key: localStorage.getItem('sess_key'),
+                            key: 'face',
+                            value: ''
+                        });
+                        break;
+
+                    case 'update_profile_details':
+                        socket.emit('profiledetails.setProfileDetail', {
+                            sess_key: localStorage.getItem('sess_key'),
+                            key: 'gender',
+                            value: $("[data-var=user_gender]").val()
+                        });
+                        socket.emit('profiledetails.setProfileDetail', {
+                            sess_key: localStorage.getItem('sess_key'),
+                            key: 'cpf',
+                            value: $("[data-var=user_cpf]").val()
+                        });
                         break;
 
                     case 'level_upgrade_toggle':
@@ -1617,6 +1732,47 @@ window.getQueryVariable = function(variable, queryString){
     }
 };
 
+window.takeWebcamPicture = function(cb) {
+    showModal('webcam');
+    var AcessoCaptureFrame = new CaptureFrame("https://crediariohomolog.acesso.io/", '7E426BC2-652E-4BCE-B6A1-7922FA44EBC9');;
+    AcessoCaptureFrame.create(successCallback, function(){
+        AcessoCaptureFrame.create(sucessCallback, errorCallback, { enableIR: false, crop_on_capture: true, showIR: false, frameType: 'face', mirror: true, width: '320px', height: '240px' });
+    }, { enableIR: false, crop_on_capture: true, showIR: true, frameType: 'face', mirror: true, width: '640px', height: '360px' });
+    
+    function successCallback() {
+        $("#webcamAction").off('click').on('click', function() {
+            AcessoCaptureFrame.takeSnapshot(
+                function (base64, base64_Ir) {
+                    swal({
+                      title: 'Confirmar foto',
+                      html:
+                        '<img src="'+base64+'" style="max-height: 60vh;" />',
+                      showCloseButton: true,
+                      showCancelButton: true,
+                      confirmButtonText:
+                        '<i class="fa fa-thumbs-up"></i> Usar',
+                      cancelButtonText:
+                        '<i class="fa fa-thumbs-down"></i> Tentar novamente'
+                    }).then(function(ret) {
+                        if(ret) {
+                            closeModal('webcam');
+                            cb(base64);
+                        } else {
+                            window.takeWebcamPicture(cb);
+                        }
+                    })
+                }
+            );
+        });
+    }
+    
+    function errorCallback(code, description){
+        swal("Erro "+code, "Erro ao abrir webcam: "+description);
+    }
+
+
+}
+
 // loading animation
 window.loadingOn = function () {
     $("#loading").show();
@@ -1678,6 +1834,9 @@ function loadView(view) {
 // modals
 function showModal(modal) {
     $("[data-modal=" + modal + "]").addClass("is-active");
+}
+function closeModal(modal) {
+    $("[data-modal=" + modal + "]").removeClass("is-active");
 }
 
 // notifications

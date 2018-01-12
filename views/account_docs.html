@@ -26,7 +26,7 @@
             </header>
             <div class="card-content">
                 <div class="select is-fullwidth">
-                    <select data-var="user_gender">
+                    <select data-var="user_gender" data-do="update_profile_details">
                         <option selected disabled>Gênero</option>
                         <option value="M">Masculino</option>
                         <option value="F">Feminino</option>
@@ -34,7 +34,7 @@
                 </div>
                 <hr/>
                 <div class="control">
-                    <input type="text" data-var="user_cpf" class="input is-fullwidth" placeholder="CPF" />
+                    <input type="text" data-var="user_cpf" data-do="update_profile_details" class="input is-fullwidth" placeholder="CPF" />
                 </div>
             </div>
         </div>
