@@ -28,7 +28,7 @@ Array.prototype.remove = function() {
 
 $(function () {
     w3.includeHTML(function () {
-        const socket = io(window.BACKEND, { path: '/ws', transports: websocket } );
+        const socket = io(window.BACKEND, { path: '/ws', transports: ['websocket'] } );
 
         recaptchaLoadCaptchas();
 
@@ -292,10 +292,6 @@ $(function () {
             localStorage.setItem('sess_key', args.sess_key);
             setTimeout(function() {
                 var socketio_emit_loop = function() {
-                    socket.emit('deposit.list_fiat', { sess_key: args.sess_key });
-                    socket.emit('deposit.list_crypto', { sess_key: args.sess_key });
-                    socket.emit('withdrawals.list_fiat', { sess_key: args.sess_key });
-                    socket.emit('withdrawals.list_crypto', { sess_key: args.sess_key });
                     socket.emit('balance.getbalance', { sess_key: args.sess_key });
                     socket.emit('orderbook.getbook', { sess_key: args.sess_key });
                     socket.emit('ledger.list', { sess_key: args.sess_key, page: 0});
@@ -305,10 +301,18 @@ $(function () {
                     socket.emit('limits.get_user_limits', { sess_key: args.sess_key });
                     socket.emit('ticker.get');
                     socket.emit('sessions.listActiveSessions', { sess_key: args.sess_key });
-                    socket.emit('userdocuments.checkprocess', { sess_key: args.sess_key });
                 };
+                var socketio_long_loop = function() {
+                    socket.emit('deposit.list_fiat', { sess_key: args.sess_key });
+                    socket.emit('deposit.list_crypto', { sess_key: args.sess_key });
+                    socket.emit('withdrawals.list_fiat', { sess_key: args.sess_key });
+                    socket.emit('withdrawals.list_crypto', { sess_key: args.sess_key });
+                    socket.emit('userdocuments.checkprocess', { sess_key: args.sess_key });
+                }
                 socketio_emit_loop();
+                socketio_long_loop();
                 setInterval(socketio_emit_loop, 10000);
+                setInterval(socketio_long_loop, 20000);
 
                 socket.emit('profile.getdetails', { sess_key: args.sess_key });
                 socket.emit('profiledetails.getProfileDetails', { sess_key: args.sess_key });
