@@ -6,10 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BRE Coins</title>
-    <link rel="stylesheet" href="assets/styles/main.css" />
+    <link rel="stylesheet" href="assets/styles/main.css?v=20180117" />
     <link rel="stylesheet" href="assets/styles/sweetalert2.min.css" />
     <link rel="stylesheet" href="assets/styles/hint.min.css" />
-    <link rel="stylesheet" href="assets/styles/custom.css" />
+    <link rel="stylesheet" href="assets/styles/custom.css?v=20180117" />
 </head>
 
 <body>
@@ -70,11 +70,7 @@
                         <a class="navbar-link">
                             <i class="fa fa-bell-o"></i>
                         </a>
-                        <div class="navbar-dropdown is-boxed">
-                            <a class="item is-fullwidth">
-                                Sem notificações
-                            </a>
-                        </div>
+                        <div class="navbar-dropdown is-boxed" data-var="notifications"></div>
                     </div>
                 </div>
 
@@ -216,7 +212,7 @@
         <!-- livro contábil -->
         <div class="column is-main-content" data-view="contabil" w3-include-html="views/contabil.html?v=1"></div>
         <!-- algoritmos -->
-        <div class="column is-main-content is-dark" data-view="algoritmos" w3-include-html="views/algoritmos.html?v=1"></div>
+        <div class="column is-main-content is-dark" data-view="algoritmos" w3-include-html="views/algoritmos.html?v=20180118"></div>
         <!-- account -->
         <div class="column is-main-content is-dark" data-view="account" w3-include-html="views/account.html?v=20180111"></div>
         <!-- modais -->
@@ -231,7 +227,7 @@
         <!-- nova ordem -->
         <div class="modal" data-modal="depositModal" w3-include-html="views/modal_depositModal.html?v=1"></div>
         <!-- adicionar algoritmo -->
-        <div class="modal" data-modal="add-algorithm" w3-include-html="views/modal_add-algorithm.html?v=1"></div>
+        <div class="modal" data-modal="add-algorithm" w3-include-html="views/modal_add-algorithm.html?v=20180117"></div>
         <!-- notificacoes -->
         <div class="modal" data-modal="notifications" w3-include-html="views/modal_notifications.html?v=1"></div>
         <!-- tipos de ordens -->
@@ -255,7 +251,7 @@
     <script src="/assets/scripts/moment-with-locales.min.js"></script>
     <script src="/assets/scripts/base32.js"></script>
     <script src="/assets/scripts/qrcode.js"></script>
-    <script src="/assets/scripts/app.js"></script>
+    <script src="/assets/scripts/app.min.js?v=20180117"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-111516222-1"></script>

@@ -355,3 +355,8 @@ progress[value]::-webkit-progress-value {
 h1.title,h2.subtitle {
     margin-top: 20px;
 }
+
+[data-var=notifications] {
+    max-height: 70vh;
+    overflow-y: auto;
+}

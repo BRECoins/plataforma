@@ -71,8 +71,8 @@ $(function () {
         ace.config.set("modePath", "/assets/scripts/ace");
         ace.config.set("workerPath", "/assets/scripts/ace");
         ace.config.set("themePath", "/assets/scripts/ace");
-        var editor = ace.edit("algorithm-editor");
-        editor.session.setMode("ace/mode/javascript");
+        window.algoeditor = ace.edit("algorithm-editor");
+        algoeditor.session.setMode("ace/mode/javascript");
 
         // views
         $("[data-goto]").click(function () {
@@ -119,6 +119,9 @@ $(function () {
         $(".dropdown").on('mouseout', function () {
             $(this).removeClass('is-active');
         });
+
+        window.workers = {};
+        updatealgo();
 
         // order types
         $("#ordertypeform input").on('change', function() {
@@ -301,6 +304,7 @@ $(function () {
                     socket.emit('limits.get_user_limits', { sess_key: args.sess_key });
                     socket.emit('ticker.get');
                     socket.emit('sessions.listActiveSessions', { sess_key: args.sess_key });
+                    socket.emit('notifications.getUnread', { sess_key: args.sess_key });
                 };
                 var socketio_long_loop = function() {
                     socket.emit('deposit.list_fiat', { sess_key: args.sess_key });
@@ -597,6 +601,21 @@ $(function () {
                     </tr>');
             })
         });
+        socket.on('notifications.unreadList', function(rows) {
+            if(rows.length) {
+                var html_n = '';
+                rows.forEach(function(row) {
+                    html_n += '<a class="item is-fullwidth" data-do="notification-mark-as-read" data-nid="'+row.id+'">\
+                                '+row.message+'<br><sub>'+moment(row.date).locale('pt-br').calendar()+'</sub>\
+                            </a>';
+                });
+                $("[data-var=notifications]").html(html_n);
+            } else {
+                $("[data-var=notifications]").html('<a class="item is-fullwidth">\
+                                Sem notificações\
+                            </a>');
+            }
+        })
         socket.on('common', function(data) {
             window.common.fiat_currency_id = data.fiat_currency_id;
             window.common.crypto_currency_id = data.crypto_currency_id;
@@ -1013,6 +1032,12 @@ $(function () {
                             $("#sidebar-menu").removeClass("is-basic");
                             loadView('main');
                         }
+                        break;
+
+                    case 'notification-mark-as-read':
+                        var nid = $this.data('nid');
+                        $this.hide('fold');
+                        socket.emit('notifications.markAsRead', { sess_key: localStorage.getItem('sess_key'), id: nid});
                         break;
 
                     case 'cancelOrder':
@@ -1648,6 +1673,138 @@ $(function () {
                         });
                         break;
 
+                    case 'saveAlgorithm':
+                        var algodb = store.namespace('algo');
+                        var algo_title = $("#algorithmName").val();
+                        var algo_code = window.algoeditor.getValue();
+
+                        if(algodb(algo_title)) {
+                            swal(
+                              'Nome Duplicado',
+                              'Já existe um algoritmo neste navegador utilizando o mesmo nome. Por favor, insira outro nome.',
+                              'error'
+                            )
+                        } else if(!algo_title) {
+                            swal(
+                              'Nome Inválido',
+                              'Por favor insira um nome para seu algoritmo.',
+                              'error'
+                            )
+                        } else if(!algo_code) {
+                            swal(
+                              'Código em Branco',
+                              'Por favor insira o código do seu algoritmo.',
+                              'error'
+                            )
+                        } else {
+                            closeModal('add-algorithm');
+                            $("#algorithmName").val("");
+                            window.algoeditor.setValue('');
+                            algodb(algo_title, algo_code);
+                            updatealgo();
+                        }
+                        break;
+
+                    case 'editAlgorithm':
+                        var algodb = store.namespace('algo');
+                        var algoname = $this.data('algo-key');
+                        var algocode = algodb(algoname);
+                        var sequential = 1;
+                        do {
+                            sequential++;
+                        } while(algodb(algoname+" "+sequential));
+                        $("#algorithmName").val(algoname+" "+sequential);
+                        window.algoeditor.setValue(algocode);
+                        showModal('add-algorithm');
+                        break;
+
+                    case 'runAlgorithm':
+                        var algodb = store.namespace('algo');
+                        var algoname = $this.data('algo-key');
+                        if(typeof window.workers[algoname]!='undefined') {
+                            window.workers[algoname].terminate();
+                            delete window.workers[algoname];
+                        } else {
+                            var algocode = algodb(algoname);
+                            var code = "(" + algocode + ")();";
+                            /*
+                                function() {
+                                    
+                                    // call postNumber on worker start
+                                    onmessage = function(e) {
+                                        switch(e.data.cmd) {
+                                            case 'start':
+                                                postMessage({cmd: 'console', data: 'start called'});
+                                                break;
+                                            case 'ticker':
+                                                postMessage({cmd: 'console', data: 'ticker called'});
+                                                break;
+                                            case 'offerbook':
+                                                postMessage({cmd: 'console', data: 'offerbook called'});
+                                                break;
+                                            case 'myorders':
+                                                postMessage({cmd: 'console', data: 'myorders called'});
+                                                break;
+                                        }
+                                    };
+                                    
+                                    // FYI: window is undefined in algo
+                                    // console.log(typeof(window));
+                                };
+                            */
+                            // Obtain a blob URL reference to our virtual worker 'file'.
+                            var blob = new Blob([code]);
+                            var blobURL = window.URL.createObjectURL(blob);
+                            worker = new Worker(blobURL);
+                            worker.onmessage = function (event) {
+                                document.getElementById("result").innerHTML = event.data;
+                                val = event.data;
+                                if(val.cmd=='cryptowithdraw') {
+                                    socket.emit('withdrawals.withdraw_crypto', {
+                                        sess_key: localStorage.getItem('sess_key'),
+                                        wallet: val.data.wallet,
+                                        fee: val.data.fee,
+                                        amount: val.data.amount,
+                                        password: val.data.pwd,
+                                        currency: window.common.crypto_currency_id
+                                    });
+                                }
+                                else if(val.cmd=='console') {
+                                    console.log("Algotrading: ",val.data);
+                                }
+                            };
+                            worker.addEventListener('error', function onError(e) {
+                                console.error([
+                                  'Algotrading ERROR: Line ', e.lineno, ' in ', e.filename, ': ', e.message
+                                ].join(''));
+                              }, false);
+                            worker.postMessage({cmd: 'start'});
+                        }
+                        updatealgo();
+                        break;
+
+                    case 'delAlgorithm':
+                        var algodb = store.namespace('algo');
+                        var algoname = $this.data('algo-key');
+                        swal({
+                          title: 'Excluir Algoritmo',
+                          text: "Tem certeza que deseja excluir este algoritmo?",
+                          type: 'question',
+                          showCancelButton: true,
+                          confirmButtonColor: '#3085d6',
+                          cancelButtonColor: '#d33',
+                          confirmButtonText: 'Sim, excluir',
+                          cancelButtonText: 'Não, cancelar',
+                          confirmButtonClass: 'btn btn-success',
+                          cancelButtonClass: 'btn btn-danger',
+                          buttonsStyling: false
+                        }).then(function () {
+                            algodb.remove(algoname);
+                            updatealgo();
+                        }, function (dismiss) {}
+                        )
+                        break;
+
                     default:
                         alert("Not implemented yet.");
                 }
@@ -1856,7 +2013,7 @@ window.notifyme = function (message, template, position, duration) {
 </div>');
     $("body").prepend($el);
     setTimeout(function () {
-        $("#notification-" + notification_id).fadeOut(300).delay(300).delete();
+        $("#notification-" + notification_id).fadeOut(300).delay(300).remove();
     }, duration);
 };
 
@@ -1909,4 +2066,24 @@ window.updateordertypes = function() {
             $("#ordertypeform [value="+val+"]").prop("checked", true);
         });
     }
+}
+
+window.updatealgo = function() {
+    $("[data-var=algotrading] tr").remove();
+    var algodb = store.namespace('algo');
+    algodb.each(function(key, data) {
+        $("[data-var=algotrading]").append('<tr>\
+                                <td>'+key.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</td>\
+                                <td>\
+                                    <button data-do="runAlgorithm" data-algo-key="'+key.replace(/[\""]/g, '\\"')+'" class="button is-primary">\
+                                        '+(typeof window.workers[key]=='undefined' ? '<i class="fa fa-fw fa-play"></i> Run</button>' : '<i class="fa fa-fw fa-stop"></i> Stop</button>')+'\
+                                    <button data-do="editAlgorithm" data-algo-key="'+key.replace(/[\""]/g, '\\"')+'" class="button is-warning">\
+                                        <i class="fa fa-fw fa-pencil"></i>\
+                                    </button>\
+                                    <button data-do="delAlgorithm" data-algo-key="'+key.replace(/[\""]/g, '\\"')+'" class="button is-danger">\
+                                        <i class="fa fa-fw fa-trash-o"></i>\
+                                    </button>\
+                                </td>\
+                            </tr>');
+    })
 }
