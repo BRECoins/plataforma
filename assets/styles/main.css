@@ -7017,6 +7017,16 @@ input.has-float-label:valid + label > span {
   left: auto;
   right: 80px; }
 
+@media screen and (max-width: 768px) {
+  .transactions-feed, .transactions {
+    position: relative;
+    width: 100%;
+    height: auto !important; }
+  .operations {
+    width: 100%; }
+  .main-content-navbar {
+    width: 100%; } }
+
 /*!
  *  Font Awesome 4.7.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)

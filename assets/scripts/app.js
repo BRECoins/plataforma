@@ -38,6 +38,11 @@ $(function () {
             opacity: 0
         }, 700);
 
+        $('.navbar-burger').click(function(){
+            var target = $(this).data('target');
+            $('#'+target).toggleClass('is-active');
+        });
+
         // check if already logged in
         if(localStorage.getItem('sess_key')) {
             socket.emit('member.checklogin', { 'sess_key': localStorage.getItem('sess_key') });
