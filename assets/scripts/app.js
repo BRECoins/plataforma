@@ -805,7 +805,7 @@ $(function () {
                 $("#depositos_fiat_tbl").append('\
                     <tr>\
                         <td>'+moment(row.created_at).locale('pt-br').calendar()+'</td>\
-                        <td>R$ '+money_format.fiat(row.amount)+'</td>\
+                        <td>'+money_format.fiat(row.amount)+'</td>\
                         <td>\
                             '+row_html+'\
                         </td>\
@@ -823,7 +823,7 @@ $(function () {
         });
         socket.on('balance_fiat', function(bal) {
             window.common.max_fiat = bal;
-            $("[data-var=user_funds_fiat]").textBlink('R$ '+money_format.fiat(bal));
+            $("[data-var=user_funds_fiat]").textBlink(money_format.fiat(bal));
             socket.emit('balance.simulateMarketBuy', { amount_fiat: bal});
         });
         socket.on('memberupdatedatafail', function() {
