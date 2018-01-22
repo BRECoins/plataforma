@@ -1440,10 +1440,10 @@ $(function () {
                             swal("Termos e Condições", "É necessário aceitar os termos de uso e a política de privacidade para utilizar a plataforma.", "warning");
                         } else {
                             var data = {
-                                 email: $("[data-var=signup_email").val()
-                                ,password: $("[data-var=signup_password").val()
+                                 email: $("[data-var=signup_email]").val()
+                                ,password: $("[data-var=signup_password]").val()
                                 ,exchange: EXCHANGE
-                                ,region: $("[data-var=signup_region").val()
+                                ,region: $("[data-var=signup_region]").val()
                                 ,city: $("[data-var=signup_city]").val()
                                 ,phone: $("[data-var=signup_telephone]").val()
                                 ,fullname: $("[data-var=signup_name]").val()
