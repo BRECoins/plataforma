@@ -251,7 +251,7 @@ $(function () {
         });
         socket.on('memberrequestotptoken', function(args) {
             var requestOtpToken = function(b64) {
-                var title = args.wrong ? "Token incorreto" : "Token de login";
+                var title = args.wrong ? "Token incorreto" : "Token de Login";
                 var text = args.otp ? "Insira o código gerado por seu aplicativo OTP:" : "Insira o código numérico enviado ao seu e-mail:"
                 swal({
                   title: title,
@@ -945,6 +945,11 @@ $(function () {
 
 
         // command center
+        $(document).on("submit", "[data-alias]", function(e) {
+            e.preventDefault();
+            var target = $(this).data('alias');
+            $("[data-do="+target+"]").click();
+        })
         $(document).on("click change", "[data-do]", function() {
             $this = $(this);
             let action_do_list = $(this).data('do').split(" ");
@@ -2005,6 +2010,9 @@ function closeModal(modal) {
 }
 
 // notifications
+window.closesweetalert = function() {
+    $(".sweet-overlay, .sweet-alert").remove();
+}
 window.notifyme = function (message, template, position, duration) {
     if (typeof template == 'undefined') template = "primary";
     if (typeof position == 'undefined') position = "top-right";
