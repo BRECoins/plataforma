@@ -360,3 +360,13 @@ h1.title,h2.subtitle {
     max-height: 70vh;
     overflow-y: auto;
 }
+
+#splash_attrib hr {
+    width: 10vw;
+    margin: 0.5rem 0;
+}
+
+#splash_attrib a {
+    font-size: 12px;
+    color: gray;
+}

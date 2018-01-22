@@ -53,7 +53,7 @@ $(function () {
             .animate({
                 width: 300
             }, 2000);*/
-        $("#splash_account")
+        $("#splash_account,#splash_attrib")
             //.delay(700)
             .slideDown(1500)
             .animate({
@@ -98,6 +98,9 @@ $(function () {
             loadView('main');
             $(".trader-button").text("TRADER");
         }
+
+        $("[data-var=version]").text(VERSION);
+        $("[data-var=year]").text((new Date()).getFullYear());
 
         // modals
         $(".close-modal").click(function () {
