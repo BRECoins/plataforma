@@ -79,6 +79,18 @@ $(function () {
         window.algoeditor = ace.edit("algorithm-editor");
         algoeditor.session.setMode("ace/mode/javascript");
 
+        // phone
+        $("input[type=tel]").intlTelInput({
+            geoIpLookup: function(callback) {
+              $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                callback(countryCode);
+              });
+            },
+            preferredCountries: ["br"],
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/12.1.6/js/utils.js"
+        });
+
         // views
         $("[data-goto]").click(function () {
             $("#main-menu li a.is-active").removeClass("is-active");

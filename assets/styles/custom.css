@@ -370,3 +370,7 @@ h1.title,h2.subtitle {
     font-size: 12px;
     color: gray;
 }
+
+.country.highlight {
+    margin-bottom: 0px !important;
+}
