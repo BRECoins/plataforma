@@ -1,4 +1,4 @@
-window.VERSION = "1.0.0b1";
+window.VERSION = "0.1.3b1";
 window.BACKEND = "https://backend.brecoins.com.br";
 window.CDN = "https://cdn.brecoins.com.br/~bre/";
 window.EXCHANGE = 1;
@@ -104,11 +104,11 @@ $(function () {
         if(store('trading_interface')=='basic') {
             loadView('basic');
             $("#sidebar-menu").addClass("is-basic");
-            $(".trader-button").text("BÁSICO");
+            $(".trader-button").text("TRADER");
         }
         else {
             loadView('main');
-            $(".trader-button").text("TRADER");
+            $(".trader-button").text("BÁSICO");
         }
 
         $("[data-var=version]").text(VERSION);
@@ -1036,14 +1036,14 @@ $(function () {
                     case 'toggleTrader':
                         if(store('trading_interface')=='basic') {
                             store('trading_interface', 'advanced');
-                            $(".trader-button").text("TRADER");
+                            $(".trader-button").text("BÁSICO");
                             loadView('main');
                             $("#sidebar-menu").removeClass("is-basic");
                         } else {
                             store('trading_interface', 'basic');
                             loadView('basic');
                             $("#sidebar-menu").addClass("is-basic");
-                            $(".trader-button").text("BÁSICO");
+                            $(".trader-button").text("TRADER");
                         }
                         break;
 
