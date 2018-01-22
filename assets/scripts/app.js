@@ -591,7 +591,7 @@ $(function () {
                     var table_row = '<tr data-price="'+theprice+'" data-amount="'+theamount+'" data-do="offerclick">\
                             <td>'+row.nick+'</td>\
                             <td>'+money_format.crypto(theamount*1e8)+'</td>\
-                            <td>'+accounting.formatMoney(theprice, 'R$ ', 2, '.', ',')+'</td>\
+                            <td>'+money_format.fiat(theprice*1e2)+'</td>\
                         </tr>';
                     if(row.type=='buy')
                         $("[data-var=offerbook_"+row.type+"]").prepend(table_row);
@@ -776,7 +776,7 @@ $(function () {
                 $("#depositos_fiat_tbl").append('\
                     <tr>\
                         <td>'+moment(row.created_at).locale('pt-br').calendar()+'</td>\
-                        <td>R$ '+accounting.formatMoney(row.amount/100)+'</td>\
+                        <td>R$ '+money_format.fiat(row.amount)+'</td>\
                         <td>\
                             '+row_html+'\
                         </td>\
@@ -794,7 +794,7 @@ $(function () {
         });
         socket.on('balance_fiat', function(bal) {
             window.common.max_fiat = bal;
-            $("[data-var=user_funds_fiat]").text('R$ '+accounting.formatMoney(bal/1e2, '', 2, '.', ','));
+            $("[data-var=user_funds_fiat]").text('R$ '+money_format.fiat(bal));
             socket.emit('balance.simulateMarketBuy', { amount_fiat: bal});
         });
         socket.on('memberupdatedatafail', function() {
