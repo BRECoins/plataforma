@@ -25,6 +25,35 @@ Array.prototype.remove = function() {
     return this;
 };
 
+(function($) {
+    $.fn.textBlink = function(new_text) {
+        var el = this;
+        if(el.text()!=new_text) {
+            el.text(new_text).addClass('blink_me');
+            setTimeout(function() {
+                el.removeClass('blink_me');
+            }, 1000)
+        }
+
+    }
+    $.fn.htmlBlink = function(new_html) {
+        var el = this;
+        if(this.html()!=new_html) {
+            el.html(new_html).addClass('blink_me');
+            setTimeout(function() {
+                el.removeClass('blink_me');
+            }, 1000)
+        }
+    }
+    $.fn.blink = function() {
+        var el = this;
+        this.addClass('blink_me');
+        setTimeout(function() {
+            el.removeClass('blink_me');
+        }, 1000)
+    }
+})($);
+
 
 $(function () {
     w3.includeHTML(function () {
@@ -375,7 +404,7 @@ $(function () {
             notifyme("Ordem enviada!", "success");
         })
         socket.on('btcwallet', function(wallet) {
-            $("[data-var=userwallet]").text(wallet);
+            $("[data-var=userwallet]").textBlink(wallet);
             $("[data-var=userwallet_qrcode]").attr("src", "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl="+encodeURIComponent('bitcoin:'+wallet)+"&choe=UTF-8");
         });
         socket.on('depositlist_cryptosuccess', function(data) {
@@ -397,15 +426,15 @@ $(function () {
             swal("Erro", "Senha inválida.", "error");
         })
         socket.on('user_limits', function(limits) {
-            $("[data-var=fiat_deposit_limit]").text(money_format.fiat(limits.deposit));
-            $("[data-var=fiat_withdraw_limit]").text(money_format.fiat(limits.withdraw));
+            $("[data-var=fiat_deposit_limit]").textBlink(money_format.fiat(limits.deposit));
+            $("[data-var=fiat_withdraw_limit]").textBlink(money_format.fiat(limits.withdraw));
         });
         socket.on('ticker', function(tickerdata) {
-            $("#ticker_last").text(money_format.fiat(tickerdata.last));
-            $("#ticker_high").text(money_format.fiat(tickerdata.high));
-            $("#ticker_low").text(money_format.fiat(tickerdata.low));
-            $("#ticker_vol_fiat").text(money_format.fiat(tickerdata.vol_fiat));
-            $("#ticker_vol_crypto").text(money_format.crypto(tickerdata.vol_crypto));
+            $("#ticker_last").textBlink(money_format.fiat(tickerdata.last));
+            $("#ticker_high").textBlink(money_format.fiat(tickerdata.high));
+            $("#ticker_low").textBlink(money_format.fiat(tickerdata.low));
+            $("#ticker_vol_fiat").textBlink(money_format.fiat(tickerdata.vol_fiat));
+            $("#ticker_vol_crypto").textBlink(money_format.crypto(tickerdata.vol_crypto));
         });
         socket.on('enablefaceerror', function(error) {
             swal("Verificação Biométrica", error.Description, "error");
@@ -601,10 +630,10 @@ $(function () {
             });
         });
         socket.on('simulatemarketbuy', function(amount) {
-            $("[data-var=user_funds_brl-btc]").text(money_format.crypto(amount));
+            $("[data-var=user_funds_brl-btc]").textBlink(money_format.crypto(amount));
         });
         socket.on('simulatemarketsell', function(amount) {
-            $("[data-var=user_funds_btc-brl]").text(money_format.fiat(amount));
+            $("[data-var=user_funds_btc-brl]").textBlink(money_format.fiat(amount));
         });
         socket.on('activesessionslist', function(data) {
             $("[data-var=activesessions] tr").remove();
@@ -658,7 +687,7 @@ $(function () {
         });
         socket.on('depositdeposit_fiatsuccess', function(id) {
             socket.emit('depositdeposit_fiatsuccess', {sess_key: localStorage.getItem('sess_key')});
-            $("[data-var=lastFiatDepositId]").text(id);
+            $("[data-var=lastFiatDepositId]").textBlink(id);
             showModal('depositModal');
         });
         socket.on('withdrawallist_cryptosuccess', function(rows) {
@@ -789,12 +818,12 @@ $(function () {
         });
         socket.on('balance_crypto', function(bal) {
             window.common.max_crypto = bal;
-            $("[data-var=user_funds_crypto]").text('Ƀ ' + (bal/1e8).toFixed(8));
+            $("[data-var=user_funds_crypto]").textBlink('Ƀ ' + (bal/1e8).toFixed(8));
             socket.emit('balance.simulateMarketSell', {amount_crypto: bal});
         });
         socket.on('balance_fiat', function(bal) {
             window.common.max_fiat = bal;
-            $("[data-var=user_funds_fiat]").text('R$ '+money_format.fiat(bal));
+            $("[data-var=user_funds_fiat]").textBlink('R$ '+money_format.fiat(bal));
             socket.emit('balance.simulateMarketBuy', { amount_fiat: bal});
         });
         socket.on('memberupdatedatafail', function() {
@@ -893,10 +922,10 @@ $(function () {
         });
         socket.on('volumechart', function(data) {
             $("[data-var=volumechart] tr").remove();
-            $("[data-var=volumelow]").text(money_format.fiat(data.low));
-            $("[data-var=volumehigh]").text(money_format.fiat(data.high));
-            $("[data-var=volumeavg]").text(money_format.fiat((data.low+data.high)/2));
-            $("[data-var=volincrease").text(money_format.fiat(data.high-data.low)+" "+((100*data.high)/data.low).toFixed(1)+"%");
+            $("[data-var=volumelow]").textBlink(money_format.fiat(data.low));
+            $("[data-var=volumehigh]").textBlink(money_format.fiat(data.high));
+            $("[data-var=volumeavg]").textBlink(money_format.fiat((data.low+data.high)/2));
+            $("[data-var=volincrease").textBlink(money_format.fiat(data.high-data.low)+" "+((100*data.high)/data.low).toFixed(1)+"%");
             var j = Object.keys(data.periods).length;
             for(i = 1; i <= j; i++) {
                 var x = parseInt((data.periods['p'+i].volume*100)/data.total_volume);
@@ -918,42 +947,42 @@ $(function () {
 
         // preview amount
         $("#limitbuy_maxprice_basic,#limitbuy_amount_basic").on('keyup', function() {
-            $("#limitbuy_basic_preview").text((money_format.fiat(money_format.from.fiat(($("#limitbuy_maxprice_basic").val()))*(money_format.from.crypto($("#limitbuy_amount_basic").val())/1e8))));
+            $("#limitbuy_basic_preview").textBlink((money_format.fiat(money_format.from.fiat(($("#limitbuy_maxprice_basic").val()))*(money_format.from.crypto($("#limitbuy_amount_basic").val())/1e8))));
         });
         $("#limitsell_minprice_basic,#limitsell_amount_basic").on('keyup', function() {
-            $("#limitsell_basic_preview").text(money_format.fiat(money_format.from.fiat($("#limitsell_minprice_basic").val())*money_format.from.crypto($("#limitsell_amount_basic").val())/1e8));
+            $("#limitsell_basic_preview").textBlink(money_format.fiat(money_format.from.fiat($("#limitsell_minprice_basic").val())*money_format.from.crypto($("#limitsell_amount_basic").val())/1e8));
         });
         $("#basic_orders_buy_amount,#basic_orders_buy_price").on('keyup', function() {
-            $("#basic_order_buy_preview").text(money_format.fiat(money_format.from.fiat($("#basic_orders_buy_price").val())*money_format.from.crypto($("#basic_orders_buy_amount").val())/1e8));
+            $("#basic_order_buy_preview").textBlink(money_format.fiat(money_format.from.fiat($("#basic_orders_buy_price").val())*money_format.from.crypto($("#basic_orders_buy_amount").val())/1e8));
         });
         $("#basic_orders_sell_amount,#basic_orders_sell_price").on('keyup', function() {
-            $("#basic_order_sell_preview").text(money_format.fiat(money_format.from.fiat($("#basic_orders_sell_price").val())*money_format.from.crypto($("#basic_orders_sell_amount").val())/1e8));
+            $("#basic_order_sell_preview").textBlink(money_format.fiat(money_format.from.fiat($("#basic_orders_sell_price").val())*money_format.from.crypto($("#basic_orders_sell_amount").val())/1e8));
         });
         $("#limitbuy_maxprice,#limitbuy_amount").on('keyup', function() {
             var preview = money_format.from.fiat($("#limitbuy_maxprice").val())*(money_format.from.crypto($("#limitbuy_amount").val())/1e8);
             if(preview)
-                $("#limitbuy_preview").text(money_format.fiat(preview)).parent("p.orderform_preview").slideDown();
+                $("#limitbuy_preview").textBlink(money_format.fiat(preview)).parent("p.orderform_preview").slideDown();
             else
                 $("#limitbuy_preview").parent("p.orderform_preview").slideUp();
         });
         $("#limitsell_minprice,#limitsell_amount").on('keyup', function() {
             var preview = money_format.from.fiat($("#limitsell_minprice").val())*(money_format.from.crypto($("#limitsell_amount").val())/1e8);
             if(preview)
-                $("#limitsell_preview").text(money_format.fiat(preview)).parent("p.orderform_preview").slideDown();
+                $("#limitsell_preview").textBlink(money_format.fiat(preview)).parent("p.orderform_preview").slideDown();
             else
                 $("#limitsell_preview").parent("p.orderform_preview").slideUp();
         });
         $("#marketbuy_maxprice,#marketbuy_amount").on('keyup', function() {
             var preview = money_format.from.fiat($("#marketbuy_maxprice").val())*(money_format.from.crypto($("#marketbuy_amount").val())/1e8);
             if(preview)
-                $("#marketbuy_preview").text(money_format.fiat(preview)).parent("p.orderform_preview").slideDown();
+                $("#marketbuy_preview").textBlink(money_format.fiat(preview)).parent("p.orderform_preview").slideDown();
             else
                 $("#marketbuy_preview").parent("p.orderform_preview").slideUp();
         });
         $("#marketsell_minprice,#marketsell_amount").on('keyup', function() {
             var preview = money_format.from.fiat($("#marketsell_minprice").val())*(money_format.from.crypto($("#marketsell_amount").val())/1e8);
             if(preview)
-                $("#marketsell_preview").text(money_format.fiat(preview)).parent("p.orderform_preview").slideDown();
+                $("#marketsell_preview").textBlink(money_format.fiat(preview)).parent("p.orderform_preview").slideDown();
             else
                 $("#marketsell_preview").parent("p.orderform_preview").slideUp();
         });
@@ -1862,7 +1891,7 @@ $(function () {
         // coinmarketcap price
         (function updateCoinmarketcap() {
             $.getJSON('https://api.coinmarketcap.com/v1/ticker/bitcoin/', function (data) {
-                $("[data-var=coinmarketcap]").text(accounting.formatMoney(data[0].price_usd));
+                $("[data-var=coinmarketcap]").textBlink(accounting.formatMoney(data[0].price_usd));
                 setTimeout(updateCoinmarketcap, 15000);
             });
         })();
