@@ -307,7 +307,7 @@ $(function () {
                 }).then(function (otp_token) {
                     socket.emit('member.login', {
                         "email": $("[data-var=signin-email]").val(),
-                        "password": $("[data-var=signin-password").val(),
+                        "password": $("[data-var=signin-password]").val(),
                         "otp_token": otp_token,
                         "exchange": EXCHANGE,
                         "browser_id": "1",
@@ -925,7 +925,7 @@ $(function () {
             $("[data-var=volumelow]").textBlink(money_format.fiat(data.low));
             $("[data-var=volumehigh]").textBlink(money_format.fiat(data.high));
             $("[data-var=volumeavg]").textBlink(money_format.fiat((data.low+data.high)/2));
-            $("[data-var=volincrease").textBlink(money_format.fiat(data.high-data.low)+" "+((100*data.high)/data.low).toFixed(1)+"%");
+            $("[data-var=volincrease]").textBlink(money_format.fiat(data.high-data.low)+" "+((100*data.high)/data.low).toFixed(1)+"%");
             var j = Object.keys(data.periods).length;
             for(i = 1; i <= j; i++) {
                 var x = parseInt((data.periods['p'+i].volume*100)/data.total_volume);
@@ -1036,7 +1036,7 @@ $(function () {
 
                     case 'recover_changepwd':
                         var newpwd = $("[data-var=recover-newpwd]").val();
-                        if(newpwd==$("[data-var=recover-newpwd-2").val()) {
+                        if(newpwd==$("[data-var=recover-newpwd-2]").val()) {
                             socket.emit('member.recover_checktoken', {
                                 exchange: EXCHANGE,
                                 email: $("[data-var=recover-email]").val(),
@@ -1115,7 +1115,7 @@ $(function () {
                     case 'signin':
                         socket.emit('member.login', {
                             "email": $("[data-var=signin-email]").val(),
-                            "password": $("[data-var=signin-password").val(),
+                            "password": $("[data-var=signin-password]").val(),
                             "exchange": EXCHANGE,
                             "browser_id": "1"
                         });
@@ -1583,7 +1583,7 @@ $(function () {
                             if(!type) {
                                 type = $("[data-var=doc-0-type]").val()
                             }
-                            var filename = $("[data-var=doc-"+type+"-filename").text();
+                            var filename = $("[data-var=doc-"+type+"-filename]").text();
                             if(!$up.data('uploaded_url')) {
                                 notifyme("Enviando "+filename, "info");
                                 upload($up[0].files[0], function(err, url) {
