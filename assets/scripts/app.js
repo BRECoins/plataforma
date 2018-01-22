@@ -1379,6 +1379,8 @@ $(function () {
                     case 'signup':
                         if(!$("[data-var=signup_telephone]").val()) {
                             swal("Telefone inválido", "Por favor, insira seu telefone.", "warning");
+                        } else if(!$("[data-var=accept-tos]").is(":checked")) {
+                            swal("Termos e Condições", "É necessário aceitar os termos de uso e a política de privacidade para utilizar a plataforma.", "warning");
                         } else {
                             var data = {
                                  email: $("[data-var=signup_email").val()

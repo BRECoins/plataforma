@@ -32,10 +32,6 @@
     </div>
     <div id="signup_2" style="display: none">
         <div class="field">
-                <input class="input has-float-label is-fullwidth" required type="tel" data-var="signup_telephone">
-                <label><span>Telefone</span></label>
-        </div>
-        <div class="field">
             <div class="select">
                 <select data-var="signup_country" class="countrylist" data-do="georegions">
                     <option selected disabled>País</option>
@@ -52,6 +48,16 @@
         <div class="field">
                 <input class="input has-float-label is-fullwidth" required type="text" data-var="signup_city">
                 <label><span>Cidade</span></label>
+        </div>
+        <div class="field">
+                <input class="input has-float-label is-fullwidth" required type="tel" data-var="signup_telephone">
+                <label><span>Telefone</span></label>
+        </div>
+        <div class="field">
+            <label class="checkbox">
+              <input type="checkbox" data-var="accept-tos">
+              Eu aceito os <a href="#">Termos de Uso</a> e a <a href="#">Política de Privacidade</a>
+            </label>
         </div>
         <div class="field">
           <div class="g-recaptcha"></div>
