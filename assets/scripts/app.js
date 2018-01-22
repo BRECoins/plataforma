@@ -1170,7 +1170,20 @@ $(function () {
                         socket.emit('deposit.gennewwallet', {
                             sess_key: localStorage.getItem('sess_key')
                         });
-                        swal("Wallet está sendo gerada", "Sua nova carteira está sendo gerada e estará disponível em alguns segundos.", "success");
+                        //swal("Wallet está sendo gerada", "Sua nova carteira está sendo gerada e estará disponível em alguns segundos.", "success");
+                        swal({
+                            title: "Gerando Carteira...",
+                            html: '<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>',
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            allowEnterKey: false
+                        })
+                        setTimeout(function() {
+                            swal.close();
+                        }, 20000)
                         break;
 
                     case 'changeActiveBank':
