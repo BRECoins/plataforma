@@ -2129,6 +2129,7 @@ window.updateordertypes = function() {
         ordertypes.push('sell_market');
         ordertypes.push('buy_stop_limit');
         ordertypes.push('sell_stop_limit');
+        store.set('ordertypes'+window.common.UID, ordertypes);
     }
     $(".ordertype").each(function() {
         $(this).hide();
