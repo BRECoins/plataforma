@@ -1,5 +1,5 @@
 window.VERSION = "0.1.3b1";
-window.BACKEND = "https://backend.brecoins.com.br";
+window.BACKEND = "http://localhost:8000";
 window.CDN = "https://cdn.brecoins.com.br/~bre/";
 window.EXCHANGE = 1;
 window.common = {
@@ -301,8 +301,9 @@ $(function () {
                   title: title,
                   text: text,
                   input: 'text',
-                  showCancelButton: false,
+                  showCancelButton: true,
                   confirmButtonText: 'Entrar',
+                  cancelButtonText: 'Cancelar',
                   allowOutsideClick: false
                 }).then(function (otp_token) {
                     socket.emit('member.login', {
@@ -634,10 +635,10 @@ $(function () {
                             <td>'+money_format.crypto(theamount*1e8)+'</td>\
                             <td>'+money_format.fiat(theprice*1e2)+'</td>\
                         </tr>';
-                    if(row.type=='buy')
+                    //if(row.type=='buy')
                         $("[data-var=offerbook_"+row.type+"]").append(table_row);
-                    else
-                        $("[data-var=offerbook_"+row.type+"]").prepend(table_row);
+                    //else
+                    //    $("[data-var=offerbook_"+row.type+"]").prepend(table_row);
                 }
             });
         });
@@ -1584,7 +1585,7 @@ $(function () {
                                     socket.emit('userdocuments.sendprocess', {
                                         sess_key: localStorage.getItem('sess_key'),
                                         b64: b64,
-                                        cpf: $("[data-var=user_cpf]").val(),
+                                        cpf: $("[data-var=user_cpf]").val().replace(/[^0-9]/g, ""),
                                         gender: $("[data-var=user_gender]").val(),
                                         name: $("[data-var=user_fullname_input]").val(),
                                         docs: docs
@@ -1684,7 +1685,7 @@ $(function () {
                                 socket.emit('profiledetails.enableface', {
                                     sess_key: localStorage.getItem('sess_key'),
                                     b64: b64,
-                                    cpf: $("[data-var=user_cpf]").val(),
+                                    cpf: $("[data-var=user_cpf]").val().replace(/[^0-9]/g, ""),
                                     gender: $("[data-var=user_gender]").val(),
                                     name: $("[data-var=user_fullname_input]").val()
                                 });
@@ -1711,7 +1712,7 @@ $(function () {
                         socket.emit('profiledetails.setProfileDetail', {
                             sess_key: localStorage.getItem('sess_key'),
                             key: 'cpf',
-                            value: $("[data-var=user_cpf]").val()
+                            value: $("[data-var=user_cpf]").val().replace(/[^0-9]/g, "")
                         });
                         break;
 
@@ -1729,7 +1730,7 @@ $(function () {
                                 "Banco": $("#bancoSaque").val(),
                                 "Agencia": $("#usragenciaSaque").val(),
                                 "Conta": $("#usrcontaSaque").val(),
-                                "CPF": $("#usrcpfSaque").val(),
+                                "CPF": $("#usrcpfSaque").val().replace(/[^0-9]/g, ""),
                                 "Tipo": $("#usrtipoSaque").val()
                             },
                             amount: amount,
@@ -2039,6 +2040,7 @@ window.takeWebcamPicture = function(cb) {
         $("#webcamAction").off('click').on('click', function() {
             AcessoCaptureFrame.takeSnapshot(
                 function (base64, base64_Ir) {
+                    AcessoCaptureFrame.stopCamera();
                     swal({
                       title: 'Confirmar foto',
                       html:
@@ -2051,7 +2053,6 @@ window.takeWebcamPicture = function(cb) {
                         '<i class="fa fa-thumbs-down"></i> Tentar novamente'
                     }).then(function(ret) {
                         if(ret) {
-                            AcessoCaptureFrame.stopCamera();
                             closeModal('webcam');
                             cb(base64);
                         } else {
