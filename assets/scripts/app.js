@@ -311,7 +311,8 @@ $(function () {
                         "otp_token": otp_token,
                         "exchange": EXCHANGE,
                         "browser_id": "1",
-                        "b64": b64
+                        "b64": b64,
+                        "tz": moment.tz.guess()
                     });
                 })
             };
@@ -326,6 +327,9 @@ $(function () {
         socket.on('recover.tokenok', function() {
             $("#recover_2").fadeOut(300);
             $("#recover_3").delay(300).fadeIn(300);
+        })
+        socket.on('under_lower_limit', function() {
+            swal("Valor Abaixo do Mínimo", "Ordens precisam compreender a um mínimo de 0.0002 BTC.", "error");
         })
         socket.on('recover.wrongtoken', function() {
             swal("Token inválido", "Um novo token será enviado ao seu e-mail. Copie-o para o campo indicado.", "error");
@@ -411,7 +415,7 @@ $(function () {
             $("#depositos_crypto_tbl tr").remove();
             data.forEach(function(row) {
                 $("#depositos_crypto_tbl").append('<tr>\
-                        <td>'+moment(row.created_at).locale('pt-br').calendar()+'</td>\
+                        <td>'+jsmoment(row.created_at).calendar()+'</td>\
                         <td>'+money_format.crypto(row.amount)+'</td>\
                         <td>\
                             <a class="button is-link" target="_blank" href="https://blockexplorer.com/tx/'+row.txid+'">Ver</a>\
@@ -426,8 +430,15 @@ $(function () {
             swal("Erro", "Senha inválida.", "error");
         })
         socket.on('user_limits', function(limits) {
-            $("[data-var=fiat_deposit_limit]").textBlink(money_format.fiat(limits.deposit));
-            $("[data-var=fiat_withdraw_limit]").textBlink(money_format.fiat(limits.withdraw));
+            if(limits.deposit===null)
+                $("[data-var=fiat_deposit_limit]").textBlink("∞");
+            else
+                $("[data-var=fiat_deposit_limit]").textBlink(money_format.fiat(limits.deposit));
+
+            if(limits.withdraw===null)
+                $("[data-var=fiat_withdraw_limit]").textBlink("∞");
+            else
+                $("[data-var=fiat_withdraw_limit]").textBlink(money_format.fiat(limits.withdraw));
         });
         socket.on('ticker', function(tickerdata) {
             $("#ticker_last").textBlink(money_format.fiat(tickerdata.last));
@@ -452,7 +463,7 @@ $(function () {
             $("[data-var=user_email_input]").val(data.email);
             $("[data-var=user_nick]").text(data.nickname);
             $("[data-var=user_level]").text(data.level);
-            $("[data-var=gravatar]").attr("src", data.gravatar);
+            $("[data-var=gravatar]").attr("src", data.gravatar + "&s=128");
             $("[data-var=user_telephone_input]").val(data.phone);
             $("[data-var=user_city]").val(data.city);
 
@@ -466,8 +477,8 @@ $(function () {
 
             $("[data-var=signup_country]").val(data.country_id).trigger("change");
             setTimeout(function() {
-                $("[data-var=signup_region]").val(data.region);
-            }, 3000);
+                $("[data-var=user_region]").val(data.region);
+            }, 5000);
 
             updateordertypes();
         });
@@ -484,6 +495,7 @@ $(function () {
             }
             if(data.cpf) {
                 $("[data-var=user_cpf]").val(data.cpf);
+                inputmask($("[data-var=user_cpf")[0], mask__cpfCnpj);
             }
         })
         socket.on('ledgerlist', function(data) {
@@ -503,7 +515,7 @@ $(function () {
                 else
                     var color = 'danger';
                 $("[data-var=ledger_list]").append('<tr>\
-                        <td>'+moment(row.created_at).locale('pt-br').format('llll')+'</td>\
+                        <td>'+jsmoment(row.created_at).format('llll')+'</td>\
                         <td>'+row.description+'</td>\
                         <td><span class="tag is-'+color+'">'+amount+'</span></td>\
                         <td><span class="tag is-success">'+balance+'</span></td>\
@@ -516,10 +528,10 @@ $(function () {
                 var ordertype = row.type=='sell' ? "Venda" : "Compra";
                 $("[data-var=orderlist]").append('\
                     <tr class="myorder_'+row.id+'">\
-                        <td>'+moment(row.created_at).locale('pt-br').format('llll')+'</td>\
+                        <td>'+jsmoment(row.created_at).format('llll')+'</td>\
                         <td>'+ordertype+'</td>\
                         <td>\
-                            <b>Quantidade:</b> '+money_format.crypto(Math.max(row.amount_fiat, row.amount_crypto))+'<br>\
+                            <b>Quantidade:</b> '+money_format.crypto(Math.max(1e8*row.amount_fiat/Math.max(row.crypto_price_min, row.crypto_price_max), row.amount_crypto))+'<br>\
                             <b>Valor por BTC:</b> '+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'\
                         </td>\
                         <td>\
@@ -531,7 +543,7 @@ $(function () {
 
                 $("[data-var=user_orders]").append('<tr class="myorder_'+row.id+'">\
                     <td>\
-                        '+money_format.crypto(Math.max(row.amount_fiat, row.amount_crypto))+'\
+                        '+money_format.crypto(Math.max(1e8*row.amount_fiat/Math.max(row.crypto_price_min, row.crypto_price_max), row.amount_crypto))+'\
                          • \
                         <b>'+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'</b>\
                         <div class="is-pulled-right">\
@@ -552,7 +564,7 @@ $(function () {
                 var ordertype = row.type=='sell' ? "Venda" : "Compra";
                 $("[data-var=oldorderlist]").append('\
                     <tr class="myoldorder_'+row.id+'">\
-                        <td>'+moment(row.created_at).locale('pt-br').format('llll')+'</td>\
+                        <td>'+jsmoment(row.created_at).format('llll')+'</td>\
                         <td>'+ordertype+'</td>\
                         <td>\
                             <b>Quantidade:</b> '+money_format.crypto(Math.max(row.amount_fiat, row.initial_amount_crypto))+'<br>\
@@ -623,9 +635,9 @@ $(function () {
                             <td>'+money_format.fiat(theprice*1e2)+'</td>\
                         </tr>';
                     if(row.type=='buy')
-                        $("[data-var=offerbook_"+row.type+"]").prepend(table_row);
-                    else
                         $("[data-var=offerbook_"+row.type+"]").append(table_row);
+                    else
+                        $("[data-var=offerbook_"+row.type+"]").prepend(table_row);
                 }
             });
         });
@@ -642,8 +654,8 @@ $(function () {
                     <td><span aria-label="'+as.ua+'" class="hint--right">'+as.browser+'</span></td>\
                     <td>'+as.ip+'</td>\
                     <td>'+as.location+'</td>\
-                    <td>'+moment(as.created_at).locale('pt-br').format('llll')+'</td>\
-                    <td>'+moment(as.updated_at).locale('pt-br').calendar()+'</td>\
+                    <td>'+jsmoment(as.created_at).format('llll')+'</td>\
+                    <td>'+jsmoment(as.updated_at).calendar()+'</td>\
                     <td>'+(localStorage.sess_key!=as.key ? '<button class="button is-danger is-small" data-do="closeactivesession" data-sess="'+as.key+'">\
                         <i class="fa fa-times fa-fw"></i>\
                     </button>' : '(atual)')+'</td>\
@@ -655,7 +667,7 @@ $(function () {
                 var html_n = '';
                 rows.forEach(function(row) {
                     html_n += '<a class="item is-fullwidth" data-do="notification-mark-as-read" data-nid="'+row.id+'">\
-                                '+row.message+'<br><sub>'+moment(row.date).locale('pt-br').calendar()+'</sub>\
+                                '+row.message+'<br><sub>'+jsmoment(row.date).calendar()+'</sub>\
                             </a>';
                 });
                 $("[data-var=notifications]").html(html_n);
@@ -714,7 +726,7 @@ $(function () {
                 }
                 $("[data-var=saqueslist_crypto_tbl]").append('\
                     <tr>\
-                        <td>'+moment(row.created_at).locale('pt-br').calendar()+'</td>\
+                        <td>'+jsmoment(row.created_at).calendar()+'</td>\
                         <td>'+money_format.crypto(row.amount)+'</td>\
                         <td>\
                             '+row_html+'\
@@ -750,7 +762,7 @@ $(function () {
                 }
                 $("#saqueslist_fiat_tbl").append('\
                     <tr>\
-                        <td>'+moment(row.created_at).locale('pt-br').calendar()+'</td>\
+                        <td>'+jsmoment(row.created_at).calendar()+'</td>\
                         <td>'+money_format.fiat(row.amount)+'</td>\
                         <td>\
                             '+row_html+'\
@@ -804,7 +816,7 @@ $(function () {
                 }
                 $("#depositos_fiat_tbl").append('\
                     <tr>\
-                        <td>'+moment(row.created_at).locale('pt-br').calendar()+'</td>\
+                        <td>'+jsmoment(row.created_at).calendar()+'</td>\
                         <td>'+money_format.fiat(row.amount)+'</td>\
                         <td>\
                             '+row_html+'\
@@ -994,7 +1006,7 @@ $(function () {
             var target = $(this).data('alias');
             $("[data-do="+target+"]").click();
         })
-        $(document).on("click change", "[data-do]", function() {
+        $(document).on("click change", "[data-do]", function(e) {
             $this = $(this);
             let action_do_list = $(this).data('do').split(" ");
             action_do_list.forEach(function(action_do) {
@@ -1117,7 +1129,8 @@ $(function () {
                             "email": $("[data-var=signin-email]").val(),
                             "password": $("[data-var=signin-password]").val(),
                             "exchange": EXCHANGE,
-                            "browser_id": "1"
+                            "browser_id": "1",
+                            "tz": moment.tz.guess()
                         });
                         break;
 
@@ -1390,8 +1403,10 @@ $(function () {
                         break;
 
                     case 'georegions':
-                        var country = $this.val();
-                        socket.emit('geo.regionslist', { country: country });
+                        if(e.type=='change') {
+                            var country = $this.val();
+                            socket.emit('geo.regionslist', { country: country });
+                        }
                         break;
 
                     case 'signup_2':
@@ -1707,6 +1722,7 @@ $(function () {
 
                     case 'createFiatWithdraw':
                         var amount = money_format.from.fiat($("#valorFiatSaque").val());
+                        if(!amount) return;
                         socket.emit('withdrawals.withdraw_fiat', {
                             sess_key: localStorage.getItem('sess_key'),
                             bank: {
@@ -1723,6 +1739,7 @@ $(function () {
 
                     case 'createCryptoWithdraw':
                         var amount = money_format.from.crypto($("#valorCryptoSaque").val());
+                        if(!amount) return;
                         swal({
                             title: "Saque de Criptomoedas",
                             text: "Insira sua senha para confirmar.",
@@ -1962,6 +1979,55 @@ window.getQueryVariable = function(variable, queryString){
     }
 };
 
+function inputmask(o,f){
+    v_obj=o
+    v_fun=f
+    return execmask();
+}
+ 
+function execmask(){
+    v_obj.value=v_fun(v_obj.value)
+}
+ 
+function mask__cpfCnpj(v){
+ 
+    //Remove tudo o que não é dígito
+    v=v.replace(/\D/g,"")
+ 
+    if (v.length <= 14) { //CPF
+ 
+        //Coloca um ponto entre o terceiro e o quarto dígitos
+        v=v.replace(/(\d{3})(\d)/,"$1.$2")
+ 
+        //Coloca um ponto entre o terceiro e o quarto dígitos
+        //de novo (para o segundo bloco de números)
+        v=v.replace(/(\d{3})(\d)/,"$1.$2")
+ 
+        //Coloca um hífen entre o terceiro e o quarto dígitos
+        v=v.replace(/(\d{3})(\d{1,2})$/,"$1-$2")
+ 
+    } else { //CNPJ
+ 
+        //Coloca ponto entre o segundo e o terceiro dígitos
+        v=v.replace(/^(\d{2})(\d)/,"$1.$2")
+ 
+        //Coloca ponto entre o quinto e o sexto dígitos
+        v=v.replace(/^(\d{2})\.(\d{3})(\d)/,"$1.$2.$3")
+ 
+        //Coloca uma barra entre o oitavo e o nono dígitos
+        v=v.replace(/\.(\d{3})(\d)/,".$1/$2")
+ 
+        //Coloca um hífen depois do bloco de quatro dígitos
+        v=v.replace(/(\d{4})(\d)/,"$1-$2")
+ 
+    }
+ 
+    return v
+ 
+}
+
+
+
 window.takeWebcamPicture = function(cb) {
     showModal('webcam');
     var AcessoCaptureFrame = new CaptureFrame("https://crediariohomolog.acesso.io/", '7E426BC2-652E-4BCE-B6A1-7922FA44EBC9');;
@@ -2090,6 +2156,10 @@ window.notifyme = function (message, template, position, duration) {
         $("#notification-" + notification_id).fadeOut(300).delay(300).remove();
     }, duration);
 };
+
+window.jsmoment = function(datetime) {
+    return moment.tz(datetime, moment.tz.guess()).locale('pt-br');
+}
 
 function randomString(length)
 {
