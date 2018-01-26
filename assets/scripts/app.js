@@ -1985,6 +1985,7 @@ window.takeWebcamPicture = function(cb) {
                         '<i class="fa fa-thumbs-down"></i> Tentar novamente'
                     }).then(function(ret) {
                         if(ret) {
+                            AcessoCaptureFrame.stopCamera();
                             closeModal('webcam');
                             cb(base64);
                         } else {

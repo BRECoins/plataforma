@@ -818,6 +818,10 @@ var swfobject = function () {
             }
             return this;
         };
+		
+		JpegCamera.prototype.stop = function (callback) {
+            this.video.srcObject.getTracks().forEach(track => track.stop());
+        };
 
         JpegCamera.prototype._is_ready = false;
 
@@ -1501,9 +1505,9 @@ var swfobject = function () {
                     success = function (stream) {
                         that._remove_message();
                         if (window.URL) {
-                            that.video.src = URL.createObjectURL(stream);
+                            that.video.srcObject = stream;
                         } else {
-                            that.video.src = stream;
+                            that.video.srcObject = stream;
                         }
                         that._block_element_access();
                         return that._wait_for_video_ready();
@@ -2573,6 +2577,11 @@ CaptureFrame.prototype.create = function (sucess, error, options) {
         });
     }
 }
+
+CaptureFrame.prototype.stopCamera = function (){
+	this.JpegCamera.stop();
+}
+
 CaptureFrame.prototype.takeSnapshot = function (callback) {
     var that = this;
     if (this.isDebuging) console.log("AcesoFrame: Capturando frame normal");
