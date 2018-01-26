@@ -1507,6 +1507,7 @@ $(function () {
                         else if(new_pwd!=new_pwd2) {
                             swal("Senhas não conferem", "A senha não coincide com a confirmação da senha.", "warning");
                         } else {
+                            swal("Senha Atualizada", "Sua senha foi modificada com sucesso.", "success");
                             socket.emit('member.update', {
                                 sess_key: localStorage.getItem('sess_key'),
                                 password: current_password,
