@@ -2283,6 +2283,7 @@ function mask__money_fiat(v) {
         v = v.split(",");
         v = v[0].replace(/\d(?=(?:\d{3})+(?:\D|$))/g, "$&.") + "," + v[1];
      }
+     if(v=='0,00') v = '';
      return v;
 }
 
@@ -2309,6 +2310,7 @@ function mask__money_crypto(v) {
      else if (len > 8) {
         v = v.replace(/(\d{8})$/,'.$1');
      }
+     if(v=='0.00000000') v = '';
      return v;
 }
 
