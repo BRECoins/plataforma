@@ -1,4 +1,4 @@
-window.VERSION = "0.1.3b1";
+window.VERSION = "0.3b1";
 window.BACKEND = "https://backend.brecoins.com.br";
 window.CDN = "https://cdn.brecoins.com.br/~bre/";
 window.EXCHANGE = 1;
@@ -153,8 +153,13 @@ $(function () {
 
         // tabs
         $("[data-tab][data-group]").click(function () {
-            $("[data-tab][data-group=" + $(this).data('group') + "]").parent("li").removeClass("is-active");
-            $(this).parent("li").addClass("is-active");
+            if($(this).parent("li").length) {
+                $("[data-tab][data-group=" + $(this).data('group') + "]").parent("li").removeClass("is-active");
+                $(this).parent("li").addClass("is-active");
+            } else {
+                $("[data-tab][data-group=" + $(this).data('group') + "]").removeClass("is-active");
+                $(this).addClass("is-active");
+            }
             $("[data-tabgroup=" + $(this).data('group') + "]").addClass('is-invisible').hide();
             $("[data-tabname=" + $(this).data('tab') + "]").removeClass('is-invisible').show();
         });
@@ -191,6 +196,14 @@ $(function () {
             updateordertypes();
         });
 
+        // input masks
+        $("[data-mask]").each(function() {
+            var mask = "mask__"+$(this).data('mask');
+            $(this).keyup(function() {
+                inputmask($(this)[0], mask);
+            });
+        })
+
         // io callback
         socket.on('geocountrylist', function(countries) {
             $(".countrylist option:not([disabled])").remove();
@@ -210,6 +223,7 @@ $(function () {
               'Verifique sua senha.',
               'error'
             )
+            gtag('event', 'login_invalid_password');
         });
         socket.on('memberloginaccountfail', function() {
             swal(
@@ -217,6 +231,7 @@ $(function () {
               'Desculpe, sua conta foi desativada.',
               'error'
             )
+            gtag('event', 'login_disabled_account');
         });
         socket.on('memberloginemailfail', function() {
             swal(
@@ -224,6 +239,7 @@ $(function () {
               'Nenhum usuário encontrado com este endereço de e-mail.',
               'error'
             )
+            gtag('event', 'login_invalid_email');
         });
         socket.on('memberloginmustverify', function() {
             swal({
@@ -237,10 +253,13 @@ $(function () {
               socket.emit('member.confirm', {
                 token: code
               })
+              gtag('event', 'login_try_confirm_account');
             })
+            gtag('event', 'login_unconfirmed_account');
         });
         socket.on('memberconfirmdatasuccess', function() {
             swal("OK", "E-mail confirmado!", "success");
+            gtag('event', 'login_confirm_account_success');
             if(!window.common.UID) $("[data-do=signin]").click();
         });
         socket.on('memberconfirmdatafail', function() {
@@ -256,6 +275,7 @@ $(function () {
                 token: code
               })
             })
+            gtag('event', 'signup_invalid_token');
         });
         socket.on('memberconfirmtokenfail', function() {
             swal({
@@ -270,6 +290,7 @@ $(function () {
                 token: code
               })
             })
+            gtag('event', 'signup_invalid_token');
         });
         socket.on('membersignup_emailfail', function() {
             swal(
@@ -278,6 +299,7 @@ $(function () {
                 "warning");
             $("#signup_2").hide("drop", {position: "right"}, 300);
             $("#signup_1").delay(301).show("drop", 300);
+            gtag('event', 'signup_email_already_exists');
         });
         socket.on('membersignupsuccess', function() {
             swal({
@@ -291,7 +313,9 @@ $(function () {
               socket.emit('member.confirm', {
                 token: code
               })
+              gtag('event', 'signup_try_confirm_account');
             })
+            gtag('event', 'signup_success');
         });
         socket.on('memberrequestotptoken', function(args) {
             var requestOtpToken = function(b64) {
@@ -330,15 +354,19 @@ $(function () {
             $("#recover_3").delay(300).fadeIn(300);
         })
         socket.on('under_lower_limit', function() {
+            gtag('event', 'try_low_order');
             swal("Valor Abaixo do Mínimo", "Ordens precisam compreender a um mínimo de 0.0002 BTC.", "error");
         })
         socket.on('recover.wrongtoken', function() {
+            gtag('event', 'recover_invalid_token');
             swal("Token inválido", "Um novo token será enviado ao seu e-mail. Copie-o para o campo indicado.", "error");
         });
         socket.on('recover.invaliduser', function() {
+            gtag('event', 'recover_invalid_user');
             swal("Usuário inválido", "Não foi encontrado usuário registrado com o endereço de e-mail informado.", "error");
         });
         socket.on('recover.pwdok', function() {
+            gtag('event', 'recover_success');
             swal("Senha alterada", "Sua senha foi alterada com sucesso.\nAgora você já consegue entrar com suas novas credenciais.", "success");
             $("#recoverSplash").fadeOut(300);
             $("#loginSplash").delay(300).fadeIn(300);
@@ -346,6 +374,7 @@ $(function () {
             $("#recover_1").delay(300).css('display', 'block');
         });
         socket.on('memberloginsuccess', function(args) {
+            gtag('event', 'login_success');
             localStorage.setItem('sess_key', args.sess_key);
             setTimeout(function() {
                 var socketio_emit_loop = function() {
@@ -428,6 +457,7 @@ $(function () {
             });
         });
         socket.on('withdrawcrypto_wrongpwd', function() {
+            gtag('event', 'withdraw_invalid_password');
             swal("Erro", "Senha inválida.", "error");
         })
         socket.on('user_limits', function(limits) {
@@ -449,6 +479,7 @@ $(function () {
             $("#ticker_vol_crypto").textBlink(money_format.crypto(tickerdata.vol_crypto));
         });
         socket.on('enablefaceerror', function(error) {
+            gtag('event', 'enable_facial_recognition_error');
             swal("Verificação Biométrica", error.Description, "error");
         });
         socket.on('upgrade_process_sent', function() {
@@ -465,7 +496,7 @@ $(function () {
             $("[data-var=user_nick]").text(data.nickname);
             $("[data-var=user_level]").text(data.level);
             $("[data-var=gravatar]").attr("src", data.gravatar + "&s=128");
-            $("[data-var=user_telephone_input]").val(data.phone);
+            $("[data-var=user_telephone_input]").intlTelInput("setNumber", data.phone);
             $("[data-var=user_city]").val(data.city);
 
             if(data.otp_secret) {
@@ -479,6 +510,18 @@ $(function () {
             $("[data-var=signup_country]").val(data.country_id).trigger("change");
             setTimeout(function() {
                 $("[data-var=user_region]").val(data.region);
+
+                // intro
+                if(!store.get('intro_'+window.common.UID)) {
+                    introJs().setOption("nextLabel", " > ")
+                        .setOption("prevLabel", " < ")
+                        .setOption("skipLabel", "Pular")
+                        .setOption("doneLabel", "Fechar")
+                        .oncomplete(function() {
+                          store.set('intro_'+window.common.UID, 1);
+                        })
+                        .start();
+                }
             }, 5000);
 
             updateordertypes();
@@ -495,9 +538,11 @@ $(function () {
                 $("[data-var=user_gender]").val(data.gender);
             }
             if(data.cpf) {
-                $("[data-var=user_cpf]").val(data.cpf);
-                inputmask($("[data-var=user_cpf")[0], mask__cpfCnpj);
+                if(!$("[data-var=user_cpf]").is(":focus")) $("[data-var=user_cpf]").val(data.cpf);
+                $("#usrcpfSaque").val(data.cpf).prop("disabled", true);
             }
+            inputmask($("[data-var=user_cpf]")[0], mask__cpfCnpj);
+            inputmask($("#usrcpfSaque")[0], mask__cpfCnpj);
         })
         socket.on('ledgerlist', function(data) {
             $("[data-var=ledger_page]").text(data.page+1);
@@ -672,7 +717,9 @@ $(function () {
                             </a>';
                 });
                 $("[data-var=notifications]").html(html_n);
+                $("#notification_icon").addClass('bell fa-bell').removeClass('fa-bell-o');
             } else {
+                $("#notification_icon").addClass("fa-bell-o").removeClass("bell fa-bell");
                 $("[data-var=notifications]").html('<a class="item is-fullwidth">\
                                 Sem notificações\
                             </a>');
@@ -743,22 +790,25 @@ $(function () {
             $("#saqueslist_fiat_tbl tr").remove();
             rows.reverse();
             rows.forEach(function(row) {
-                let status,color,row_html;
+                let status,color,row_html,show_date;
                 switch(row.status) {
                     case 'pending':
                         status = 'Pendente';
                         row_html = "-";
                         color = 'info';
+                        show_date = false;
                         break;
                     case 'done':
                         status = 'Realizado';
                         color = 'success';
                         row_html = '';
+                        show_date = true;
                         break;
                     case 'disapproved':
                         status = 'Falhou';
                         color = 'danger';
-                        row_html = "-";
+                        row_html = row.reason;
+                        show_date = true;
                         break;
                 }
                 $("#saqueslist_fiat_tbl").append('\
@@ -770,20 +820,23 @@ $(function () {
                         </td>\
                         <td>\
                             <span class="tag is-'+color+'">'+status+'</span>\
+                            '+(show_date ? '<br><sub>'+jsmoment(row.updated_at).calendar()+'</sub>' : '')+' \
                         </td>\
                     </tr>\
                     ');
             });
         });
         socket.on('depositlist_fiatsuccess', function(rows) {
-            $("#depositos_fiat_tbl tr").remove();
+            //$("#depositos_fiat_tbl tr").remove();
+            var final_html = "";
             rows.reverse();
             rows.forEach(function(row) {
-                let status,color,row_html;
+                let status,color,row_html,show_date;
                 switch(row.status) {
                     case 'pending':
                         status = 'Aguardando comprovante';
                         color = 'warning';
+                        show_date = false;
                         row_html = '<code>#'+row.id+'</code>\
                             <div class="file is-small">\
                                 <label class="file-label">\
@@ -801,21 +854,25 @@ $(function () {
                         break;
                     case 'waitingapproval':
                         status = 'Em análise';
+                        show_date = true;
                         row_html = "";
                         color = 'info';
                         break;
                     case 'done':
                         status = 'Aprovado';
+                        show_date = true;
                         color = 'success';
                         row_html = "";
                         break;
                     case 'disapproved':
                         status = 'Reprovado';
+                        show_date = true;
                         color = 'danger';
-                        row_html = "";
+                        row_html = row.reason;
                         break;
                 }
-                $("#depositos_fiat_tbl").append('\
+                //$("#depositos_fiat_tbl").append('\
+                final_html += ('\
                     <tr>\
                         <td>'+jsmoment(row.created_at).calendar()+'</td>\
                         <td>'+money_format.fiat(row.amount)+'</td>\
@@ -824,10 +881,12 @@ $(function () {
                         </td>\
                         <td>\
                             <span class="tag is-'+color+'">'+status+'</span>\
+                            '+(show_date ? '<br><sub>'+jsmoment(row.updated_at).calendar()+'</sub>' : '')+'\
                         </td>\
                     </tr>\
                     ');
             });
+            if($("#depositos_fiat_tbl").html()!=final_html) $("#depositos_fiat_tbl").html(final_html);
         });
         socket.on('balance_crypto', function(bal) {
             window.common.max_crypto = bal;
@@ -840,19 +899,24 @@ $(function () {
             socket.emit('balance.simulateMarketBuy', { amount_fiat: bal});
         });
         socket.on('memberupdatedatafail', function() {
+            gtag('event', 'change_password_invalid_old_password');
             swal("Erro", "Senha antiga inválida.", "warning");
         });
         socket.on('memberupdatepasswordsuccess', function() {
+            gtag('event', 'change_password_success');
             swal("Alterado com sucesso", "Seus dados foram alterados com sucesso.", "success");
         });
         socket.on('memberupdateemailfail', function() {
+            gtag('event', 'change_email_error_email_already_registered');
             swal("E-mail já existe", "Já existe uma conta registrada neste endereço de e-mail.", "error");
         });
         socket.on('enableotp_error', function(data) {
             if(data.err=='test') {
+                gtag('event', 'enableotp_error_invalid_token');
                 swal("Erro", "Token inválido. Tente novamente.", "error");
             }
             else if(data.err=='pwd') {
+                gtag('event', 'enableotp_error_invalid_password');
                 swal("Erro", "Senha incorreta. Tente novamente.", "error");
             }
         });
@@ -865,12 +929,15 @@ $(function () {
             $("[data-do=disable_otp]").hide();
         });
         socket.on('disableotp_error', function() {
+            gtag('event', 'disableotp_error_invalid_password');
             swal("Erro", "Senha incorreta. Tente novamente.", "error");
         });
         socket.on('insuficientfunds', function() {
-            swal("Erro", "Fundos insuficientes", "Você não possui fundos suficientes para essa operação.", "error");
+            gtag('event', 'insuficient_funds');
+            swal("Erro", "Fundos Insuficientes", "Você não possui fundos suficientes para essa operação. Tente novamente, inserindo um valor menor.", "error");
         });
         socket.on('toosmallamount', function() {
+            gtag('event', 'too_small_amount');
             swal("Erro", "Valor muito baixo", "Você não inseriu fundos suficientes para essa operação.", "error");
         });
         socket.on('withdraw_fiat_sent', function() {
@@ -878,11 +945,25 @@ $(function () {
             socket.emit('deposit.list_fiat', { sess_key: args.sess_key });
         });
         socket.on('withdrawals.overlimit', function(limitdata) {
+            gtag('event', 'withdraw_try_over_limit');
             swal("Limite diário atingido", "Seu limite diário de saque foi atingido e esta ordem não pôde ser enviada. Seu limite restante é: "+money_format.fiat(limitdata.limit-limitdata.used));
         });
         socket.on('deposit.overlimit', function(limitdata) {
+            gtag('event', 'deposit_try_over_limit');
             swal("Limite diário atingido", "Seu limite diário de depósito foi atingido e esta ordem não pôde ser enviada. Seu limite restante é: "+money_format.fiat(limitdata.limit-limitdata.used));
         });
+        socket.on('cpfcnpjerr', function(reason) {
+            var $cpfinput = $("[data-var=user_cpf]");
+            if(reason=='invalid') {
+                gtag('event', 'invalid_cpf_cnpj');
+                swal("CPF/CNPJ inválido", "O CPF ou CNPJ informado não é válido.", "error");
+            } else {
+                gtag('event', 'already_registered_cpf_cnpj');
+                swal("CPF/CNPJ já registrado", "Já existe uma conta utilizando o CPF/CNPJ informado. Por favor, confira seus dados. Se acredita que isto seja um erro, entre em contato com o suporte.", "error");
+            }
+            $("[data-var=user_cpf]").val("");
+            $("[data-var=user_cpf]")[0].focus();
+        })
         socket.on('level.getLevelsData', function(data) {
             // stars
             var stars_html = '';
@@ -1022,11 +1103,13 @@ $(function () {
                         $("#signupSplash").delay(300).fadeIn(300);
                         var user_country = navigator.language.substr(3,2).toLowerCase();
                         $("[data-var=signup_country]").val($("[data-iso="+user_country+"]").val()).trigger('change');
+                        gtag('event', 'click_signup');
                         break;
 
                     case 'linkrecover':
                         $(".splashwnd").fadeOut(300);
                         $("#recoverSplash").delay(300).fadeIn(300);
+                        gtag('event', 'click_recover');
                         break;
 
                     case 'recover_requesttoken':
@@ -1056,6 +1139,7 @@ $(function () {
                                 token: $("[data-var=recover-token]").val(),
                                 new_password: newpwd
                             });
+                            gtag('event', 'password_recovered');
                         } else {
                             swal("Erro", "As duas senhas não conferem.", "warning");
                         }
@@ -1064,9 +1148,11 @@ $(function () {
                     case 'go_home':
                         if(store('trading_interface')=='basic') {
                             loadView('basic');
+                            gtag('event', 'view_basic_trader');
                             $("#sidebar-menu").addClass("is-basic");
                         } else {
                             loadView('main');
+                            gtag('event', 'view_advanced_trader');
                             $("#sidebar-menu").removeClass("is-basic");
                         }
                         break;
@@ -1080,10 +1166,12 @@ $(function () {
                             store('trading_interface', 'advanced');
                             $(".trader-button").text("BÁSICO");
                             loadView('main');
+                            gtag('event', 'choose_advanced_trader');
                             $("#sidebar-menu").removeClass("is-basic");
                         } else {
                             store('trading_interface', 'basic');
                             loadView('basic');
+                            gtag('event', 'choose_basic_trader');
                             $("#sidebar-menu").addClass("is-basic");
                             $(".trader-button").text("TRADER");
                         }
@@ -1095,9 +1183,11 @@ $(function () {
                         if(store('trading_interface')=='basic') {
                             $("#sidebar-menu").addClass("is-basic");
                             loadView('basic');
+                            gtag('event', 'view_basic_trader');
                         } else {
                             $("#sidebar-menu").removeClass("is-basic");
                             loadView('main');
+                            gtag('event', 'view_advanced_trader');
                         }
                         break;
 
@@ -1105,6 +1195,7 @@ $(function () {
                         var nid = $this.data('nid');
                         $this.hide('fold');
                         socket.emit('notifications.markAsRead', { sess_key: localStorage.getItem('sess_key'), id: nid});
+                        gtag('event', 'read_notification');
                         break;
 
                     case 'cancelOrder':
@@ -1114,6 +1205,7 @@ $(function () {
                             sess_id: localStorage.getItem('sess_key'),
                             order_id: order_id
                         });
+                        gtag('event', 'cancel_offerbook_order');
                         break;
 
                     case 'cancelSpecialOrder':
@@ -1123,6 +1215,7 @@ $(function () {
                             sess_id: localStorage.getItem('sess_key'),
                             order_id: order_id
                         });
+                        gtag('event', 'cancel_special_order');
                         break;
 
                     case 'signin':
@@ -1133,6 +1226,7 @@ $(function () {
                             "browser_id": "1",
                             "tz": moment.tz.guess()
                         });
+                        gtag('event', 'login');
                         break;
 
                     case 'logout':
@@ -1140,6 +1234,7 @@ $(function () {
                         localStorage.removeItem('sess_key');
                         $("#splash").fadeIn(1000);
                         grecaptcha.reset();
+                        gtag('event', 'logout');
                         break;
 
                     case 'offerclick':
@@ -1154,12 +1249,14 @@ $(function () {
                             $(".offerbuy_price").val(price);
                             $(".offerbuy_amount").val(amount);
                         }
+                        gtag('event', 'click_offerbook_offer');
                         break;
 
                     case 'toggleAcumulado':
                         $(".acumulado").toggleClass("is-dark is-outlined");
                         $("[data-var=offerbook_buy],[data-var=offerbook_sell]").parent("table").toggleClass('is-acumulado');
                         socket.emit('orderbook.getbook');
+                        gtag('event', 'accumulated');
                         break;
 
                     case "copyuserwallet":
@@ -1178,12 +1275,14 @@ $(function () {
                             document.body.removeChild(node);
                         })($("[data-var=userwallet]").text());
                         notifyme("Copiado!");
+                        gtag('event', 'copy_wallet');
                         break;
 
                     case 'gennewwallet':
                         socket.emit('deposit.gennewwallet', {
                             sess_key: localStorage.getItem('sess_key')
                         });
+                        gtag('event', 'generate_new_wallet');
                         //swal("Wallet está sendo gerada", "Sua nova carteira está sendo gerada e estará disponível em alguns segundos.", "success");
                         swal({
                             title: "Gerando Carteira...",
@@ -1221,6 +1320,7 @@ $(function () {
                                     amount: amount,
                                     currency: window.common.crypto_currency_id
                                 });
+                                gtag('event', 'create_fiat_deposit');
                             }
                             else {
                                 swal("Valor inválido", "Insira um valor válido", "warning");
@@ -1233,6 +1333,8 @@ $(function () {
 
                         var price = money_format.from.fiat($("#basic_orders_buy_price").val());
 
+                        if(price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida ("+money_format.fiat(best.selling())+"). Continuar?")) return;
+
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
                             'crypto_price': price,
@@ -1240,6 +1342,7 @@ $(function () {
                             'fiat_id': window.common.fiat_currency_id,
                             'sess_key': localStorage.getItem('sess_key')
                         });
+                        gtag('event', 'basic_trader_create_buy_order');
                         notifyme("Enviando ordem...", "info");
                         break;
 
@@ -1248,6 +1351,8 @@ $(function () {
 
                         var price = money_format.from.fiat($("#basic_orders_sell_price").val());
 
+                        if(price > best.buying() && !confirm("Seu preço está acima da melhor oferta ("+money_format.fiat(best.buying())+"). Continuar?")) return;
+
                         socket.emit('orders.sell', {
                             'crypto_amount': amount,
                             'crypto_price': price,
@@ -1255,6 +1360,7 @@ $(function () {
                             'fiat_id': window.common.fiat_currency_id,
                             'sess_key': localStorage.getItem('sess_key')
                         });
+                        gtag('event', 'basic_trader_create_sell_order');
                         notifyme("Enviando ordem...", "info");
                         break;
 
@@ -1263,6 +1369,8 @@ $(function () {
 
                         var price = money_format.from.fiat($("#limitbuy_maxprice").val());
 
+                        if(price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida ("+money_format.fiat(best.selling())+"). Continuar?")) return;
+
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
                             'crypto_price': price,
@@ -1270,6 +1378,7 @@ $(function () {
                             'fiat_id': window.common.fiat_currency_id,
                             'sess_key': localStorage.getItem('sess_key')
                         });
+                        gtag('event', 'create_limit_buy_order');
                         notifyme("Enviando ordem...", "info");
                         break;
 
@@ -1278,6 +1387,8 @@ $(function () {
 
                         var price = money_format.from.fiat($("#limitsell_minprice").val());
 
+                        if(price > best.buying() && !confirm("Seu preço está acima da melhor oferta ("+money_format.fiat(best.buying())+"). Continuar?")) return;
+
                         socket.emit('orders.sell', {
                             'crypto_amount': amount,
                             'crypto_price': price,
@@ -1285,6 +1396,7 @@ $(function () {
                             'fiat_id': window.common.fiat_currency_id,
                             'sess_key': localStorage.getItem('sess_key')
                         });
+                        gtag('event', 'create_limit_sell_order');
                         notifyme("Enviando ordem...", "info");
                         break;
 
@@ -1293,6 +1405,9 @@ $(function () {
 
                         var price = money_format.from.fiat($("#limitbuy_maxprice_basic").val());
 
+                        if(price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida ("+money_format.fiat(best.selling())+"). Continuar?")) return;
+
+
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
                             'crypto_price': price,
@@ -1300,6 +1415,7 @@ $(function () {
                             'fiat_id': window.common.fiat_currency_id,
                             'sess_key': localStorage.getItem('sess_key')
                         });
+                        gtag('event', 'basic_trader_create_limit_buy_order');
                         notifyme("Enviando ordem...", "info");
                         break;
 
@@ -1308,6 +1424,9 @@ $(function () {
 
                         var price = money_format.from.fiat($("#limitsell_minprice_basic").val());
 
+                        if(price > best.buying() && !confirm("Seu preço está acima da melhor oferta ("+money_format.fiat(best.buying())+"). Continuar?")) return;
+
+
                         socket.emit('orders.sell', {
                             'crypto_amount': amount,
                             'crypto_price': price,
@@ -1315,6 +1434,7 @@ $(function () {
                             'fiat_id': window.common.fiat_currency_id,
                             'sess_key': localStorage.getItem('sess_key')
                         });
+                        gtag('event', 'basic_trader_create_limit_sell_order');
                         notifyme("Enviando ordem...", "info");
                         break;
 
@@ -1322,6 +1442,9 @@ $(function () {
                         var amount = money_format.from.crypto($("#marketbuy_amount").val());
 
                         var price = money_format.from.fiat($("#marketbuy_maxprice").val());
+
+                        if(price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida ("+money_format.fiat(best.selling())+") e uma ordem de limite será lançada. Continuar?")) return;
+
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
                             'crypto_price': price,
@@ -1329,6 +1452,7 @@ $(function () {
                             'fiat_id': window.common.fiat_currency_id,
                             'sess_key': localStorage.getItem('sess_key')
                         });
+                        gtag('event', 'create_market_buy_order');
                         notifyme("Enviando ordem...", "info");
                         break;
 
@@ -1336,6 +1460,9 @@ $(function () {
                         var amount = money_format.from.crypto($("#marketsell_amount").val());
 
                         var price = money_format.from.fiat($("#marketsell_minprice").val());
+
+                        if(price > best.buying() && !confirm("Seu preço está acima da melhor oferta ("+money_format.fiat(best.buying())+") e uma ordem de limite será lançada. Continuar?")) return;
+
                         socket.emit('orders.sell', {
                             'crypto_amount': amount,
                             'crypto_price': price,
@@ -1343,6 +1470,7 @@ $(function () {
                             'fiat_id': window.common.fiat_currency_id,
                             'sess_key': localStorage.getItem('sess_key')
                         });
+                        gtag('event', 'create_market_sell_order');
                         notifyme("Enviando ordem...", "info");
                         break;
 
@@ -1368,8 +1496,9 @@ $(function () {
                                 'fiat_id': window.common.fiat_currency_id,
                                 'sess_key': localStorage.getItem('sess_key')
                             });
+                            gtag('event', 'create_stop_limit_buy_order');
+                            notifyme("Enviando ordem...", "info");
                         })
-                        notifyme("Enviando ordem...", "info");
                         break;
 
                     case 'stoplimit_sell':
@@ -1399,8 +1528,9 @@ $(function () {
                                 'fiat_id': window.common.fiat_currency_id,
                                 'sess_key': localStorage.getItem('sess_key')
                             });
+                            gtag('event', 'create_stop_limit_sell_order');
+                            notifyme("Enviando ordem...", "info");
                         })
-                        notifyme("Enviando ordem...", "info");
                         break;
 
                     case 'georegions':
@@ -1442,6 +1572,7 @@ $(function () {
                         } else {
                             $("#signup_1").hide('drop', 300);
                             $("#signup_2").delay(350).show('drop', {direction: 'right'}, 300);
+                            gtag('event', 'signup_step_1_complete');
                         }
                         break;
 
@@ -1450,8 +1581,8 @@ $(function () {
                         break;
 
                     case 'signup':
-                        if(!$("[data-var=signup_telephone]").val()) {
-                            swal("Telefone inválido", "Por favor, insira seu telefone.", "warning");
+                        if(!$("[data-var=signup_telephone]").intlTelInput("isValidNumber")) {
+                            swal("Telefone inválido", "Por favor, insira seu telefone corretamente.", "warning");
                         } else if(!$("[data-var=accept-tos]").is(":checked")) {
                             swal("Termos e Condições", "É necessário aceitar os termos de uso e a política de privacidade para utilizar a plataforma.", "warning");
                         } else {
@@ -1461,12 +1592,14 @@ $(function () {
                                 ,exchange: EXCHANGE
                                 ,region: $("[data-var=signup_region]").val()
                                 ,city: $("[data-var=signup_city]").val()
-                                ,phone: $("[data-var=signup_telephone]").val()
+                                ,phone: $("[data-var=signup_telephone]").intlTelInput("getNumber")
                                 ,fullname: $("[data-var=signup_name]").val()
                             };
                             $("[data-var=signin-email]").val(data.email);
                             $("[data-var=signin-password]").val(data.password);
                             socket.emit('member.signup', data);
+
+                            gtag('event', 'signup_complete');
                         }
                         break;
                     case 'changeEmail':
@@ -1480,36 +1613,40 @@ $(function () {
                                 exchange: EXCHANGE,
                                 email: new_email
                             })
+                            gtag('event', 'change_email');
                         }
                         break;
                     case 'change_profile':
-                        changeprofile_timeout = 0;
-                        var data = {
-                             fullname: $("[data-var=user_fullname_input]").val()
-                            ,phone: $("[data-var=user_telephone_input]").val()
-                            ,region: $("[data-var=user_region]").val()
-                            ,city: $("[data-var=user_city]").val()
-                        }
-                        if(!data.fullname) {
-                            swal("Nome inválido", "Por favor, insira seu nome.", "warning");
-                        /*}
-                        else if(!data.phone) {
-                            swal("Telefone inválido", "Por favor, insira seu número de telefone.", "warning");
-                        }
-                        else if(!data.region) {
-                            swal("Região inválida", "Por favor, insira seu estado ou região.", "warning");
-                        }
-                        else if(!data.city) {
-                            swal("Cidade inválida", "Por favor, digite o nome de sua cidade.", "warning");*/
-                        } else {
-                            socket.emit('profile.editdetails', {
-                                sess_key: localStorage.getItem('sess_key'),
-                                new_data: data
-                            });
-                            clearTimeout(changeprofile_timeout);
-                            changeprofile_timeout = setTimeout(function() {
-                                socket.emit('profile.getdetails', {sess_key: localStorage.getItem('sess_key')});
-                            }, 1500);
+                        if(e.type=='change') {
+                            changeprofile_timeout = 0;
+                            var data = {
+                                 fullname: $("[data-var=user_fullname_input]").val()
+                                ,phone: $("[data-var=user_telephone_input]").intlTelInput("getNumber")
+                                ,region: $("[data-var=user_region]").val()
+                                ,city: $("[data-var=user_city]").val()
+                            }
+                            if(!data.fullname) {
+                                swal("Nome inválido", "Por favor, insira seu nome.", "warning");
+                            }
+                            else if(!$("[data-var=user_telephone_input]").intlTelInput("isValidNumber")) {
+                                swal("Telefone inválido", "Por favor, insira seu número de telefone corretamente.", "warning");
+                            /*}
+                            else if(!data.region) {
+                                swal("Região inválida", "Por favor, insira seu estado ou região.", "warning");
+                            }
+                            else if(!data.city) {
+                                swal("Cidade inválida", "Por favor, digite o nome de sua cidade.", "warning");*/
+                            } else {
+                                socket.emit('profile.editdetails', {
+                                    sess_key: localStorage.getItem('sess_key'),
+                                    new_data: data
+                                });
+                                gtag('event', 'update_profile_details');
+                                clearTimeout(changeprofile_timeout);
+                                changeprofile_timeout = setTimeout(function() {
+                                    socket.emit('profile.getdetails', {sess_key: localStorage.getItem('sess_key')});
+                                }, 1500);
+                            }
                         }
                         break;
                     
@@ -1529,6 +1666,7 @@ $(function () {
                                 password: current_password,
                                 new_password: new_pwd
                             })
+                            gtag('event', 'change_password');
                         }
                         break;
 
@@ -1547,9 +1685,7 @@ $(function () {
                         break;
 
                     case 'upload_receipt':
-                        // this won't do anything
-                        // it's just due to a weird jQuery bug
-                        // it doesn't work when this is removed
+                        gtag('event', 'upload_fiat_deposit_receipt');
                         break;
 
                     case 'closeactivesession':
@@ -1559,12 +1695,14 @@ $(function () {
                             sess2close: sess2close,
                             sess_key: localStorage.sess_key
                         })
+                        gtag('event', 'close_active_session');
                         break;
 
                     case 'docselected':
                         var doc_type = $this.data('doc');
                         var filename = $this[0].files.length ? $this[0].files[0].name : '';
                         $("[data-var=doc-"+doc_type+"-filename]").text(filename);
+                        gtag('event', 'document_select');
                         break;
 
                     case 'create_upgrade_process':
@@ -1590,6 +1728,7 @@ $(function () {
                                         name: $("[data-var=user_fullname_input]").val(),
                                         docs: docs
                                     });
+                                    gtag('event', 'documents_upload');
                                 });
                             }
                         }
@@ -1642,6 +1781,7 @@ $(function () {
                             sess_key: localStorage.sess_key,
                             password: pwd
                           });
+                          gtag('event', 'disable_otp');
                         });
                         break;
 
@@ -1673,6 +1813,7 @@ $(function () {
                                 password: password,
                                 sess_key: localStorage.getItem('sess_key')
                               });
+                              gtag('event', 'enable_otp');
                             })
                         })
                         break;
@@ -1689,6 +1830,7 @@ $(function () {
                                     gender: $("[data-var=user_gender]").val(),
                                     name: $("[data-var=user_fullname_input]").val()
                                 });
+                                gtag('event', 'enable_facial_recognition');
                             });
                         } else {
                             swal("CPF necessário", "Para usar a autenticação biométrica, informe seu CPF e gênero na aba \"Documentação\".", "info");
@@ -1701,24 +1843,29 @@ $(function () {
                             key: 'face',
                             value: ''
                         });
+                        gtag('event', 'disable_facial_recognition');
                         break;
 
                     case 'update_profile_details':
-                        socket.emit('profiledetails.setProfileDetail', {
-                            sess_key: localStorage.getItem('sess_key'),
-                            key: 'gender',
-                            value: $("[data-var=user_gender]").val()
-                        });
-                        socket.emit('profiledetails.setProfileDetail', {
-                            sess_key: localStorage.getItem('sess_key'),
-                            key: 'cpf',
-                            value: $("[data-var=user_cpf]").val().replace(/[^0-9]/g, "")
-                        });
+                        if(e.type=='change') {
+                            socket.emit('profiledetails.setProfileDetail', {
+                                sess_key: localStorage.getItem('sess_key'),
+                                key: 'gender',
+                                value: $("[data-var=user_gender]").val()
+                            });
+                            socket.emit('profiledetails.setProfileDetail', {
+                                sess_key: localStorage.getItem('sess_key'),
+                                key: 'cpf',
+                                value: $("[data-var=user_cpf]").val().replace(/[^0-9]/g, "")
+                            });
+                            gtag('event', 'update_profile_details');
+                        }
                         break;
 
                     case 'level_upgrade_toggle':
                         $("[data-do=level_upgrade_toggle]").slideToggle();
                         $("#level_upgrade_form").slideToggle();
+                        gtag('event', 'view_next_level_required_documents');
                         break;
 
                     case 'createFiatWithdraw':
@@ -1736,6 +1883,7 @@ $(function () {
                             amount: amount,
                             currency: window.common.fiat_currency_id
                         });
+                        gtag('event', 'create_fiat_withdraw');
                         break;
 
                     case 'createCryptoWithdraw':
@@ -1759,6 +1907,7 @@ $(function () {
                                 currency: window.common.crypto_currency_id
                             });
                         });
+                        gtag('event', 'create_crypto_withdraw');
                         break;
 
                     case 'saveAlgorithm':
@@ -1791,6 +1940,7 @@ $(function () {
                             algodb(algo_title, algo_code);
                             updatealgo();
                         }
+                        gtag('event', 'save_algorithm');
                         break;
 
                     case 'editAlgorithm':
@@ -1804,9 +1954,11 @@ $(function () {
                         $("#algorithmName").val(algoname+" "+sequential);
                         window.algoeditor.setValue(algocode);
                         showModal('add-algorithm');
+                        gtag('event', 'edit_algorithm');
                         break;
 
                     case 'runAlgorithm':
+                        gtag('event', 'run_algorithm');
                         var algodb = store.namespace('algo');
                         var algoname = $this.data('algo-key');
                         if(typeof window.workers[algoname]!='undefined') {
@@ -1889,8 +2041,14 @@ $(function () {
                         }).then(function () {
                             algodb.remove(algoname);
                             updatealgo();
+                            gtag('event', 'delete_algorithm');
                         }, function (dismiss) {}
                         )
+                        break;
+
+                    case 'calculator':
+                        $("#calculator").toggle('drop', 'slow');
+                        gtag('event', 'calculator');
                         break;
 
                     default:
@@ -1928,20 +2086,104 @@ $(function () {
             });
         })();
 
-        $("#volume-slider").slider().on('slideStop', function() {
+        $("#volume-slider").bootstrapSlider().on('slideStop', function() {
+            gtag('event', 'advanced_trader_volume_chart');
             var range = $("#volume-slider").val().split(",");
             socket.emit('volume.calc', range);
         });
 
-        $("#volume-slider-basic").slider().on('slideStop', function() {
+        $("#volume-slider-basic").bootstrapSlider().on('slideStop', function() {
+            gtag('event', 'basic_trader_volume_chart');
             var range = $("#volume-slider-basic").val().split(",");
             socket.emit('volume.calc', range);
         });
 
-        $("#volume-slider-modal").slider().on('slideStop', function() {
+        $("#volume-slider-modal").bootstrapSlider().on('slideStop', function() {
+            gtag('event', 'full_volume_chart');
             var range = $("#volume-slider-modal").val().split(",");
             socket.emit('volume.calc', range);
         });
+
+        // calculator
+          var currentNum = '';
+          var total = 0;
+          var operation = '';
+
+          function updateDisplay(disp) {
+            $('#calculator p').text(disp);
+          }
+
+          function opPush(op) {
+            if (op === 'percent') {
+              var currentNumInt = Number(currentNum);
+              currentNumInt= currentNumInt / 100;
+              currentNum = currentNumInt;
+              updateDisplay(currentNumInt);
+            } else {
+              if (op !== 'ce') {
+                var currentNumInt = Number(currentNum);
+                if (currentNumInt) {
+                  switch (operation) {
+                    case '':
+                      total = currentNumInt;
+                      break;
+                    case 'divide':
+                      total = total / currentNumInt;
+                      break;
+                    case 'times':
+                      total = total * currentNumInt;
+                      break;
+                    case 'minus':
+                      total = total - currentNumInt;
+                      break;
+                    case 'plus':
+                      total = total + currentNumInt;
+                      break;
+                    case 'equals':
+                      break;
+                  }
+                }
+                if (op === 'ca') {
+                  total = 0;
+                  op = '';
+                }
+                operation = op;
+              }
+              updateDisplay(total);
+              currentNum = '';
+            }
+          }
+
+          function numPush(num) {
+            currentNum += num;
+            if (currentNum === '.') {
+              currentNum = '0.';
+            }
+            updateDisplay(currentNum);
+          }
+
+          function buttonPush(btn) {
+            if (btn === 'decimal') {
+              numPush('.');
+            } else if (isNaN(btn)) {
+              opPush(btn);
+            } else {
+              numPush(btn);
+            }
+          }
+
+          // superfluous?
+          function updateTotal(op,num) {
+          }
+
+
+          $('#calculator button').click(function() {
+            var btn = $(this).attr("id");
+            buttonPush(btn);
+          });
+
+          $("#calculator").draggable();
+          // end calculator
     });
 });
 
@@ -1981,12 +2223,13 @@ window.getQueryVariable = function(variable, queryString){
 };
 
 function inputmask(o,f){
-    v_obj=o
-    v_fun=f
-    return execmask();
+    if(typeof f == 'string') f = window[f];
+    v_obj=o;
+    v_fun=f;
+    return execmask(v_obj, v_fun);
 }
  
-function execmask(){
+function execmask(v_obj, v_fun){
     v_obj.value=v_fun(v_obj.value)
 }
  
@@ -2025,6 +2268,48 @@ function mask__cpfCnpj(v){
  
     return v
  
+}
+
+function mask__money_fiat(v) {
+     v = v.replace(/\D/g,"");
+     v = new String(Number(v));
+     var len = v.length;
+     if (1== len)
+        v = v.replace(/(\d)/,"0,0$1");
+     else if (2 == len)
+        v = v.replace(/(\d)/,"0,$1");
+     else if (len > 2) {
+        v = v.replace(/(\d{2})$/,',$1');
+        v = v.split(",");
+        v = v[0].replace(/\d(?=(?:\d{3})+(?:\D|$))/g, "$&.") + "," + v[1];
+     }
+     return v;
+}
+
+function mask__money_crypto(v) {
+     v = v.replace(/\D/g,"");
+     v = new String(Number(v));
+     var len = v.length;
+     if (1== len)
+        v = v.replace(/(\d)/,"0.0000000$1");
+     else if (2 == len)
+        v = v.replace(/(\d)/,"0.000000$1");
+     else if (3 == len)
+        v = v.replace(/(\d)/,"0.00000$1");
+     else if (4 == len)
+        v = v.replace(/(\d)/,"0.0000$1");
+     else if (5 == len)
+        v = v.replace(/(\d)/,"0.000$1");
+     else if (6 == len)
+        v = v.replace(/(\d)/,"0.00$1");
+     else if (7 == len)
+        v = v.replace(/(\d)/,"0.0$1");
+     else if (8 == len)
+        v = v.replace(/(\d)/,"0.$1");
+     else if (len > 8) {
+        v = v.replace(/(\d{8})$/,'.$1');
+     }
+     return v;
 }
 
 
@@ -2159,7 +2444,22 @@ window.notifyme = function (message, template, position, duration) {
 };
 
 window.jsmoment = function(datetime) {
-    return moment.tz(datetime, moment.tz.guess()).locale('pt-br');
+    return moment.utc(datetime).tz(moment.tz.guess()).locale('pt-br');
+}
+
+window.best = {
+    "ask": function() {
+        return money_format.from.fiat($("[data-var=offerbook_sell] tr:first td:last").text().substr(3));
+    },
+    "bid": function() {
+        return money_format.from.fiat($("[data-var=offerbook_buy] tr:first td:last").text().substr(3));
+    },
+    "buying": function() {
+        return window.best.bid();
+    },
+    "selling": function() {
+        return window.best.ask();
+    }
 }
 
 function randomString(length)

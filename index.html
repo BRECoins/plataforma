@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="assets/styles/sweetalert2.min.css" />
     <link rel="stylesheet" href="assets/styles/intlTelInput.css" />
     <link rel="stylesheet" href="assets/styles/hint.min.css" />
+    <link rel="stylesheet" href="assets/styles/introjs.min.css" />
+    <link rel="stylesheet" href="assets/styles/theme/introjs-dark.css" />
     <link rel="stylesheet" href="assets/styles/custom.css?v=20180117" />
 </head>
 
@@ -58,7 +60,7 @@
     </div>
     <!-- START: menu -->
     <nav class="main-navbar navbar is-black">
-        <a class="trader-button" data-do="toggleTrader chartload">
+        <a class="trader-button" data-do="toggleTrader chartload" data-step="5" data-intro="Confuso? Uma interface mais simples está disponível. É só clicar aqui!">
             TRADER
         </a>
         <div class="container is-fluid">
@@ -81,7 +83,7 @@
                 <div class="navbar-start">
                     <div class="navbar-item notifications has-dropdown is-hoverable">
                         <a class="navbar-link">
-                            <i class="fa fa-bell-o"></i>
+                            <i class="fa fa-bell-o" id="notification_icon"></i>
                         </a>
                         <div class="navbar-dropdown is-boxed" data-var="notifications"></div>
                     </div>
@@ -93,27 +95,27 @@
 
                 <div class="navbar-end">
                     <span class="navbar-item">
-                        <div>
+                        <div class="hint--left" aria-label="Preço por Bitcoin da última negociação na plataforma">
                             <b class="has-text-grey-light">Último </b> <span id="ticker_last"></span>
                         </div>
                     </span>
                     <span class="navbar-item">
-                        <div>
+                        <div class="hint--left" aria-label="Cotação máxima das últimas 24 horas">
                             <b class="has-text-grey-light">Alta </b> <span id="ticker_high"></span>
                         </div>
                     </span>
                     <span class="navbar-item">
-                        <div>
+                        <div class="hint--left" aria-label="Cotação mínima das últimas 24 horas">
                             <b class="has-text-grey-light">Baixa </b> <span id="ticker_low"></span>
                         </div>
                     </span>
                     <span class="navbar-item">
-                        <div>
+                        <div class="hint--left" aria-label="Volume total em Reais negociado nas últimas 24 horas">
                             <b class="has-text-grey-light">Volume </b> <span id="ticker_vol_fiat"></span>
                         </div>
                     </span>
                     <span class="navbar-item">
-                        <div>
+                        <div class="hint--left" aria-label="Volume total em Bitcoins negociado nas últimas 24 horas">
                             <b class="has-text-grey-light">Volume </b> <span id="ticker_vol_crypto"></span>
                         </div>
                     </span>
@@ -169,7 +171,7 @@
                     <br>
                     <span class="title is-7  tooltip is-tooltip-right hint--right" data-var="user_funds_brl-btc" aria-label="Este valor é estimado, com base nas ofertas de mercado atual.">Carregando...</span>
                 </div>
-                <ul class="menu-list" id="main-menu">
+                <ul class="menu-list" id="main-menu" data-step="4" data-intro="Deposite fundos, consulte seu histórico de ordens e utilize robôs de trading">
                     <li>
                         <a class="is-active" data-do="go_main">
                             <i class="icon-home-broker-19x20"></i>
@@ -225,10 +227,14 @@
                     </div>
                     <div class="dropdown-menu" role="menu">
                         <div class="dropdown-content">
+                            <a href="javascript:void(0);" class="dropdown-item" style="color: black" data-do="calculator">
+                                Calculadora
+                            </a>
+                            <hr class="dropdown-divider">
                             <a data-goto="account" href="javascript:void(0);" class="dropdown-item" style="color: black">
                                 Minha Conta
                             </a>
-                            <a href="https://docs.brecoins.com.br/taxas_e_limites" class="dropdown-item" style="color: black">
+                            <a href="https://brecoins.com.br/taxas" class="dropdown-item" target="_blank" style="color: black">
                                 Taxas e Limites
                             </a>
                             <a href="https://status.brecoins.com.br" class="dropdown-item" style="color: black">
@@ -244,21 +250,21 @@
             </aside>
         </div>
         <!-- main content -->
-        <div class="column is-main-content" data-view="main" w3-include-html="views/main.html?v=1"></div>
+        <div class="column is-main-content" data-view="main" w3-include-html="views/main.html?v=20180126"></div>
         <!-- basic -->
-        <div class="column is-main-content" data-view="basic" w3-include-html="views/basic.html?v=1"></div>
+        <div class="column is-main-content" data-view="basic" w3-include-html="views/basic.html?v=20180126"></div>
         <!-- depósitos -->
-        <div class="column is-main-content" data-view="depositos" w3-include-html="views/depositos.html?v=20180110"></div>
+        <div class="column is-main-content" data-view="depositos" w3-include-html="views/depositos.html?v=20180126"></div>
         <!-- saques -->
-        <div class="column is-main-content" data-view="saques" w3-include-html="views/saques.html?v=20180126"></div>
+        <div class="column is-main-content" data-view="saques" w3-include-html="views/saques.html?v=20180127"></div>
         <!-- histórico de ordens -->
-        <div class="column is-main-content" data-view="ordens" w3-include-html="views/ordens.html?v=1"></div>
+        <div class="column is-main-content" data-view="ordens" w3-include-html="views/ordens.html?v=20180127"></div>
         <!-- livro contábil -->
-        <div class="column is-main-content" data-view="contabil" w3-include-html="views/contabil.html?v=1"></div>
+        <div class="column is-main-content" data-view="contabil" w3-include-html="views/contabil.html?v=20180126"></div>
         <!-- algoritmos -->
         <div class="column is-main-content is-dark" data-view="algoritmos" w3-include-html="views/algoritmos.html?v=20180118"></div>
         <!-- account -->
-        <div class="column is-main-content is-dark" data-view="account" w3-include-html="views/account.html?v=20180126"></div>
+        <div class="column is-main-content is-dark" data-view="account" w3-include-html="views/account.html?v=20180127"></div>
         <!-- modais -->
         <!-- mercado -->
         <div class="modal" data-modal="mercado" w3-include-html="views/modal_mercado.html?v=1"></div>
@@ -278,15 +284,17 @@
         <div class="modal" data-modal="tiposdeordens" w3-include-html="views/modal_tiposdeordens.html?v=1"></div>
         <!-- webcam -->
         <div class="modal" data-modal="webcam" w3-include-html="views/modal_webcam.html"></div>
+        <div id="calculator" w3-include-html="views/calculator.html"></div>
         <!-- /modais -->
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="/assets/scripts/jquery-ui.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
     <script src="https://www.w3schools.com/lib/w3.js"></script>
     <script src='https://www.google.com/recaptcha/api.js'></script>
     <script src="/assets/scripts/libs/accounting.min.js"></script>
     <script src="/assets/scripts/libs/AcessoBioFrame_1.0.1/AcessoFrame.js?v=25012018"></script>
     <script src="/assets/scripts/ace/ace.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="./node_modules/bootstrap-slider/dist/bootstrap-slider.min.js"></script>
     <script src="/assets/scripts/sweetalert2.min.js"></script>
     <script src="/assets/scripts/socket.io.js"></script>
@@ -297,6 +305,7 @@
     <script src="/assets/scripts/base32.js"></script>
     <script src="/assets/scripts/qrcode.js"></script>
     <script src="/assets/scripts/libs/libphonenumber/intlTelInput.min.js"></script>
+    <script src="/assets/scripts/libs/intro.min.js"></script>
     <script src="/assets/scripts/app.min.js?v=20180127"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
