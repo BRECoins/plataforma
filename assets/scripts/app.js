@@ -515,7 +515,7 @@ $(function () {
                 if(!store.get('intro_'+window.common.UID)) {
                     introJs().setOption("nextLabel", " > ")
                         .setOption("prevLabel", " < ")
-                        .setOption("skipLabel", "Pular")
+                        .setOption("skipLabel", "Sair")
                         .setOption("doneLabel", "Fechar")
                         .oncomplete(function() {
                           store.set('intro_'+window.common.UID, 1);
@@ -699,7 +699,7 @@ $(function () {
                 $("[data-var=activesessions]").append('<tr>\
                     <td><span aria-label="'+as.ua+'" class="hint--right">'+as.browser+'</span></td>\
                     <td>'+as.ip+'</td>\
-                    <td>'+as.location+'</td>\
+                    <td><span aria-label="Localização aproximada, com base no endereço IP" class="hint--top">'+as.location+'</span></td>\
                     <td>'+jsmoment(as.created_at).format('llll')+'</td>\
                     <td>'+jsmoment(as.updated_at).calendar()+'</td>\
                     <td>'+(localStorage.sess_key!=as.key ? '<button class="button is-danger is-small" data-do="closeactivesession" data-sess="'+as.key+'">\
@@ -930,15 +930,15 @@ $(function () {
         });
         socket.on('disableotp_error', function() {
             gtag('event', 'disableotp_error_invalid_password');
-            swal("Erro", "Senha incorreta. Tente novamente.", "error");
+            swal("Senha incorreta. Tente novamente.", "error");
         });
         socket.on('insuficientfunds', function() {
             gtag('event', 'insuficient_funds');
-            swal("Erro", "Fundos Insuficientes", "Você não possui fundos suficientes para essa operação. Tente novamente, inserindo um valor menor.", "error");
+            swal("Fundos Insuficientes", "Você não possui fundos suficientes para essa operação. Tente novamente, inserindo um valor menor.", "error");
         });
         socket.on('toosmallamount', function() {
             gtag('event', 'too_small_amount');
-            swal("Erro", "Valor muito baixo", "Você não inseriu fundos suficientes para essa operação.", "error");
+            swal("Valor muito baixo", "Você não inseriu fundos suficientes para essa operação.", "error");
         });
         socket.on('withdraw_fiat_sent', function() {
             swal("Ordem enviada", "Sua ordem de saque foi enviada.", "success");
@@ -1671,6 +1671,7 @@ $(function () {
                         break;
 
                     case 'statementPrev':
+                        gtag('event', 'statement_page_'+parseInt($("[data-var=ledger_page]").text())+1);
                         socket.emit('ledger.list', {
                             sess_key: localStorage.sess_key,
                             page: parseInt($("[data-var=ledger_page]").text())
@@ -1678,6 +1679,7 @@ $(function () {
                         break;
 
                     case 'statementNext':
+                        gtag('event', 'statement_page_'+parseInt($("[data-var=ledger_page]").text())-1);
                         socket.emit('ledger.list', {
                             sess_key: localStorage.sess_key,
                             page: parseInt($("[data-var=ledger_page]").text())-2
@@ -1755,7 +1757,7 @@ $(function () {
 
                                     } else {
                                         create_upgrade_process_finish(docs);
-                                        swal("Erro", "Erro durante o upload. Verifique sua conexão e tente novamente.");
+                                        swal("Erro", "Erro durante o upload. Verifique sua conexão e tente novamente.", "error");
                                     }
                                 });
                             } else {
@@ -1771,7 +1773,8 @@ $(function () {
 
                     case 'disable_otp':
                         swal({
-                          title: 'Digite sua senha para desabilitar o OTP',
+                          title: 'Desabilitar Autenticação em Dois Fatores',
+                          text: 'Digite a senha de sua conta para desabilitar a autenticação em dois fatores.',
                           input: 'password',
                           showCancelButton: true,
                           confirmButtonText: 'Desabilitar OTP',
@@ -1789,8 +1792,8 @@ $(function () {
                         var secret = randomString(20);
                         var uri = "otpauth://totp/" + encodeURIComponent('BRECoins' + ":" + window.common.udata.email) + "?secret=" + base32.encode(secret) + "&issuer=BRE+Coins";
                         swal({
-                          title: 'Ativar OTP',
-                          text: 'Digite sua senha para confirmar a alteração.',
+                          title: 'Ativar Autenticação em Dois Fatores',
+                          text: 'Digite a senha de sua conta para habilitar a autenticação em dois fatores.',
                           input: 'password',
                           showCancelButton: true,
                           confirmButtonText: 'Prosseguir',
@@ -2352,7 +2355,7 @@ window.takeWebcamPicture = function(cb) {
     }
     
     function errorCallback(code, description){
-        swal("Erro "+code, "Erro ao abrir webcam: "+description);
+        swal("Erro "+code, "Erro ao abrir webcam: "+description, "error");
     }
 
 
