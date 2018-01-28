@@ -1,5 +1,5 @@
 window.VERSION = "0.3b1";
-window.BACKEND = "https://backend.brecoins.com.br";
+window.BACKEND = "http://localhost:8000";
 window.CDN = "https://cdn.brecoins.com.br/~bre/";
 window.EXCHANGE = 1;
 window.common = {
@@ -60,6 +60,30 @@ $(function () {
         const socket = io(window.BACKEND, { path: '/ws', transports: ['websocket'] } );
 
         recaptchaLoadCaptchas();
+
+        var soundFile = document.createElement("audio");
+        soundFile.preload = "auto";
+
+        //Load the sound file (using a source element for expandability)
+        var src = document.createElement("source");
+        src.src = "/assets/snd/notify.mp3";
+        soundFile.appendChild(src);
+
+        //Load the audio tag
+        //It auto plays as a fallback
+        soundFile.load();
+        soundFile.volume = 0.000000;
+        soundFile.play();
+
+        //Plays the sound
+        function playNotify() {
+           //Set the current time for the audio file to the beginning
+           soundFile.currentTime = 0.01;
+           soundFile.volume = 0.5;
+
+           //Due to a bug in Firefox, the audio needs to be played after a delay
+           setTimeout(function(){soundFile.play();},1);
+        }
 
         loadingOff();
 
@@ -429,11 +453,11 @@ $(function () {
             }, 5000);
         });
         socket.on('order_emitted', function() {
-            socket.emit('balance.getbalance', { sess_key: args.sess_key });
-            socket.emit('orderbook.getbook', { sess_key: args.sess_key });
-            socket.emit('orders.myorders', { sess_key: args.sess_key });
-            socket.emit('orders.myoldorders', { sess_key: args.sess_key });
-            socket.emit('orders.myspecialorders', { sess_key: args.sess_key });
+            socket.emit('balance.getbalance', { sess_key: localStorage.getItem('sess_key') });
+            socket.emit('orderbook.getbook', { sess_key: localStorage.getItem('sess_key') });
+            socket.emit('orders.myorders', { sess_key: localStorage.getItem('sess_key') });
+            socket.emit('orders.myoldorders', { sess_key: localStorage.getItem('sess_key') });
+            socket.emit('orders.myspecialorders', { sess_key: localStorage.getItem('sess_key') });
             socket.emit('ticker.get');
             notifyme("Ordem enviada!", "success");
         })
@@ -472,6 +496,16 @@ $(function () {
                 $("[data-var=fiat_withdraw_limit]").textBlink(money_format.fiat(limits.withdraw));
         });
         socket.on('ticker', function(tickerdata) {
+            // up/down favicon
+            var old_price = money_format.from.fiat($("#ticker_last").text().substr(3));
+            if(old_price && tickerdata.last > old_price) {
+                document.querySelectorAll("link[rel*='icon'")[0].href = '/assets/ico/icon_up.ico';
+            } else if (old_price && tickerdata.last < old_price) {
+                document.querySelectorAll("link[rel*='icon'")[0].href = '/assets/ico/icon_down.ico';
+            }
+
+            document.title = money_format.fiat(tickerdata.last) + ' - BRE Coins';
+
             $("#ticker_last").textBlink(money_format.fiat(tickerdata.last));
             $("#ticker_high").textBlink(money_format.fiat(tickerdata.high));
             $("#ticker_low").textBlink(money_format.fiat(tickerdata.low));
@@ -613,7 +647,7 @@ $(function () {
                         <td>'+jsmoment(row.created_at).format('llll')+'</td>\
                         <td>'+ordertype+'</td>\
                         <td>\
-                            <b>Quantidade:</b> '+money_format.crypto(Math.max(row.amount_fiat, row.initial_amount_crypto))+'<br>\
+                            <b>Quantidade:</b> '+money_format.crypto(Math.max(row.amount_fiat, row.initialamount_crypto))+'<br>\
                             <b>Valor por BTC:</b> '+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'\
                         </td>\
                     </tr>');
@@ -709,20 +743,24 @@ $(function () {
             })
         });
         socket.on('notifications.unreadList', function(rows) {
+            var old_length = $("[data-var=notifications] a").length;
             if(rows.length) {
                 var html_n = '';
                 rows.forEach(function(row) {
                     html_n += '<a class="item is-fullwidth" data-do="notification-mark-as-read" data-nid="'+row.id+'">\
-                                '+row.message+'<br><sub>'+jsmoment(row.date).calendar()+'</sub>\
+                                '+row.message+'<br><sub>'+jsmoment(row.date).format('llll')+'</sub>\
                             </a>';
                 });
                 $("[data-var=notifications]").html(html_n);
                 $("#notification_icon").addClass('bell fa-bell').removeClass('fa-bell-o');
+
+                var new_length = $("[data-var=notifications] a").length;
+                if(new_length > old_length) playNotify();
             } else {
                 $("#notification_icon").addClass("fa-bell-o").removeClass("bell fa-bell");
-                $("[data-var=notifications]").html('<a class="item is-fullwidth">\
+                $("[data-var=notifications]").html('<div class="item is-fullwidth">\
                                 Sem notificações\
-                            </a>');
+                            </div>');
             }
         })
         socket.on('common', function(data) {
@@ -1025,7 +1063,7 @@ $(function () {
                 var x = parseInt((data.periods['p'+i].volume*100)/data.total_volume);
                 var y = 100-x;
                 $("[data-var=volumechart]").append('\
-                    <tr class="hint--'+(i>=(j/2) ? 'top' : 'bottom')+' hint--medium" aria-label=\"'+money_format.crypto(data.periods['p'+i].volume)+' '+money_format.fiat(data.periods['p'+i].price_min)+' '+money_format.fiat(data.periods['p'+i].price_max)+' '+(x.toFixed(1))+'%\" style="background: linear-gradient(to right, #fff 0%, #fff '+Math.max(1, Math.abs((y/2)-1))+'%, #09a589 '+(y/2)+'%, #09a589 '+Math.min(98, (x+(y/2)))+'%, #fff '+Math.min(99, (x+(y/2)))+'%, #fff 100%);">\
+                    <tr class="hint--'+(i>=(j/2) ? 'top' : 'bottom')+' hint--medium" aria-label=\"Vol.: '+money_format.crypto(data.periods['p'+i].volume)+'&#10;&#10;Faixa de '+money_format.fiat(data.periods['p'+i].price_min)+'&#10;Preço: '+money_format.fiat(data.periods['p'+i].price_max)+'&#10;&#10;Vol. do dia: '+(x.toFixed(1))+'%\" style="background: linear-gradient(to right, #fff 0%, #fff '+Math.max(1, Math.abs((y/2)-1))+'%, #09a589 '+(y/2)+'%, #09a589 '+Math.min(98, (x+(y/2)))+'%, #fff '+Math.min(99, (x+(y/2)))+'%, #fff 100%);">\
                         <td>&nbsp;</td>\
                     </tr>\
                     ');
@@ -2497,7 +2535,7 @@ function randomString(length)
 // order types
 window.updateordertypes = function() {
     var ordertypes = store.get('ordertypes'+window.common.UID);
-    if(typeof ordertypes != 'object' || !ordertypes.length) {
+    if(typeof ordertypes != 'object' || !ordertypes || !ordertypes.length) {
         ordertypes = new Array();
         ordertypes.push('buy_limit');
         ordertypes.push('sell_limit');

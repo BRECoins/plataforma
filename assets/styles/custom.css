@@ -582,3 +582,7 @@ h1.title,h2.subtitle {
   43% { transform: rotate(0); }
   100% { transform: rotate(0); }
 }
+
+[class*=hint--][aria-label]:after {
+  white-space: pre;
+}
