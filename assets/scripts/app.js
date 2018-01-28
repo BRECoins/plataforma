@@ -550,7 +550,7 @@ $(function () {
             data.rows.forEach(function(row) {
                 if(row.curr_type=='crypto') {
                     var amount = money_format.crypto(row.amount);
-                    var balance = money_format.crypto(row.amount);
+                    var balance = money_format.crypto(row.balance);
                 }
                 else {
                     var amount = money_format.fiat(row.amount);
