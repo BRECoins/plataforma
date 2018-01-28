@@ -1,0 +1,13 @@
+{
+  "name": "BRE Coins",
+  "short_name": "BRECoins",
+  "start_url": ".",
+  "display": "fullscreen",
+  "background_color": "#333",
+  "description": "Plataforma de negociação de criptomoedas",
+  "icons": [{
+    "src": "/assets/ico/4k4.png",
+    "sizes": "128x128",
+    "type": "image/png"
+  }]
+}
