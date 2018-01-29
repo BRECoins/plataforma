@@ -93,7 +93,7 @@ $(function () {
 
         $('.navbar-burger').click(function(){
             var target = $(this).data('target');
-            $('#'+target).toggleClass('is-active');
+            $('#'+target).slideToggle('fast');
         });
 
         // check if already logged in
@@ -146,7 +146,8 @@ $(function () {
 
         // views
         $("[data-goto]").click(function () {
-            $("#main-menu li a.is-active").removeClass("is-active");
+            $("#main-menu li a.is-active,#navMenu2 .is-active").removeClass("is-active");
+            $("#navMenu2").slideUp();
             if (!$(this).hasClass('dropdown-item')) {
                 $(this).addClass("is-active");
             }
@@ -1216,8 +1217,9 @@ $(function () {
                         break;
 
                     case 'go_main':
-                        $("#main-menu li a.is-active").removeClass("is-active");
-                        $("#main-menu [data-do=go_main]").addClass("is-active");
+                        $("#main-menu li a.is-active,#navMenu2 .is-active").removeClass("is-active");
+                        $("#navMenu2").slideUp('fast');
+                        $("#main-menu [data-do=go_main],#navMenu2 [data-do=go_main]").addClass("is-active");
                         if(store('trading_interface')=='basic') {
                             $("#sidebar-menu").addClass("is-basic");
                             loadView('basic');
