@@ -1,4 +1,4 @@
-window.VERSION = "0.3.1b1";
+window.VERSION = "0.3.3b1";
 window.BACKEND = "https://backend.brecoins.com.br";
 window.CDN = "https://cdn.brecoins.com.br/~bre/";
 window.EXCHANGE = 1;
@@ -28,6 +28,7 @@ Array.prototype.remove = function() {
 (function($) {
     $.fn.textBlink = function(new_text) {
         var el = this;
+        if (el.length > 1) el = $(el[0]);
         if(el.text()!=new_text) {
             el.text(new_text).addClass('blink_me');
             setTimeout(function() {
@@ -38,6 +39,7 @@ Array.prototype.remove = function() {
     }
     $.fn.htmlBlink = function(new_html) {
         var el = this;
+        if (el.length > 1) el = $(el[0]);
         if(this.html()!=new_html) {
             el.html(new_html).addClass('blink_me');
             setTimeout(function() {
@@ -47,6 +49,7 @@ Array.prototype.remove = function() {
     }
     $.fn.blink = function() {
         var el = this;
+        if (el.length > 1) el = $(el[0]);
         this.addClass('blink_me');
         setTimeout(function() {
             el.removeClass('blink_me');
@@ -450,7 +453,7 @@ $(function () {
             
             $("#splash").fadeOut(1000);
             setTimeout(function() {
-                $("iframe").attr('src', '/chart.html?'+Math.random());
+                $("[data-var=chart]").attr('src', '/chart.html?'+Math.random());
             }, 5000);
         });
         socket.on('order_emitted', function() {
@@ -573,7 +576,7 @@ $(function () {
                 $("[data-var=user_gender]").val(data.gender);
             }
             if(data.cpf) {
-                if(!$("[data-var=user_cpf]").is(":focus")) $("[data-var=user_cpf]").val(data.cpf);
+                if(!$("[data-var=user_cpf]").is(":focus")) $("[data-var=user_cpf]").val(data.cpf).prop("disabled", true);
                 $("#usrcpfSaque").val(data.cpf).prop("disabled", true);
             }
             inputmask($("[data-var=user_cpf]")[0], mask__cpfCnpj);
@@ -648,7 +651,7 @@ $(function () {
                         <td>'+jsmoment(row.created_at).format('llll')+'</td>\
                         <td>'+ordertype+'</td>\
                         <td>\
-                            <b>Quantidade:</b> '+money_format.crypto(Math.max(row.amount_fiat, row.initialamount_crypto))+'<br>\
+                            <b>Quantidade:</b> '+money_format.crypto(Math.max(row.initial_amount_fiat, row.initial_amount_crypto))+'<br>\
                             <b>Valor por BTC:</b> '+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'\
                         </td>\
                     </tr>');
@@ -1146,8 +1149,8 @@ $(function () {
                         break;
 
                     case 'linkrecover':
-                        $(".splashwnd").fadeOut(300);
-                        $("#recoverSplash").delay(300).fadeIn(300);
+                        $(".splashwnd,#recover_2,#recover_3").fadeOut(300);
+                        $("#recoverSplash,#recover_1").delay(300).fadeIn(300);
                         gtag('event', 'click_recover');
                         break;
 
@@ -1545,11 +1548,6 @@ $(function () {
                         var amount = money_format.from.crypto($("#stoplimitsell_amount").val());
 
                         var trigger = money_format.from.fiat($("#stoplimitsell_trigger").val());
-                        if(trigger.indexOf(",") == -1 && trigger.indexOf(".") == -1) {
-                            trigger = trigger.toString()+"00";
-                        } else {
-                            trigger = trigger.replace(",", "").replace(".", "");
-                        }
                         swal({
                           title: 'Preço mínimo de venda',
                           input: 'text',
@@ -1617,7 +1615,7 @@ $(function () {
                         break;
 
                     case 'chartload':
-                        $("iframe").attr('src', '/chart.html?'+Math.random());
+                        $("[data-var=chart]").attr('src', '/chart.html?'+Math.random());
                         break;
 
                     case 'signup':
