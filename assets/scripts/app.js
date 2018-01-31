@@ -2381,6 +2381,12 @@ window.takeWebcamPicture = function(cb) {
     AcessoCaptureFrame.create(successCallback, function(){
         AcessoCaptureFrame.create(sucessCallback, errorCallback, { enableIR: false, crop_on_capture: true, showIR: false, frameType: 'face', mirror: true, width: '320px', height: '240px' });
     }, { enableIR: false, crop_on_capture: true, showIR: true, frameType: 'face', mirror: true, width: '640px', height: '360px' });
+
+
+    $("#webcamClose").off('click').on('click', function() {
+        AcessoCaptureFrame.stopCamera();
+        closeModal('webcam');
+    })
     
     function successCallback() {
         $("#webcamAction").off('click').on('click', function() {
