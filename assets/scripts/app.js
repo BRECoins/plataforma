@@ -5,11 +5,13 @@ window.EXCHANGE = 1;
 window.common = {
     crypto_currency: {
         name: "Bitcoin",
-        iso: "XBT"
+        iso: "XBT",
+        symbol: "₿"
     },
     fiat_currency: {
         name: "Real",
-        iso: "BRL"
+        iso: "BRL",
+        symbol: "R$"
     }
 };
 window.cb = {};
@@ -35,6 +37,7 @@ Array.prototype.remove = function() {
                 el.removeClass('blink_me');
             }, 1000)
         }
+        return el;
 
     }
     $.fn.htmlBlink = function(new_html) {
@@ -46,6 +49,7 @@ Array.prototype.remove = function() {
                 el.removeClass('blink_me');
             }, 1000)
         }
+        return el;
     }
     $.fn.blink = function() {
         var el = this;
@@ -54,6 +58,7 @@ Array.prototype.remove = function() {
         setTimeout(function() {
             el.removeClass('blink_me');
         }, 1000)
+        return el;
     }
 })($);
 
