@@ -27,6 +27,12 @@ Array.prototype.remove = function() {
     return this;
 };
 
+swal.setDefaults({
+    buttonsStyling: false,
+    confirmButtonClass: 'button is-primary',
+    cancelButtonClass: 'button is-secondary'
+});
+
 (function($) {
     $.fn.textBlink = function(new_text) {
         var el = this;
@@ -408,6 +414,7 @@ $(function () {
         });
         socket.on('memberloginsuccess', function(args) {
             gtag('event', 'login_success');
+            //zE.hide();
             localStorage.setItem('sess_key', args.sess_key);
             setTimeout(function() {
                 var socketio_emit_loop = function() {
@@ -532,6 +539,11 @@ $(function () {
         socket.on('profilegetdetailssuccess', function(data) {
             window.common.UID = data.id;
             window.common.udata = data;
+            /*zE.identify({
+              name: data.fullname,
+              email: data.email,
+              organization: data.level
+            });*/
             $("[data-var=user_fullname]").text(data.fullname);
             $("[data-var=user_fullname_input]").val(data.fullname);
             $("[data-var=user_name]").text(data.fullname.split(" ")[0]);
@@ -1282,6 +1294,7 @@ $(function () {
                         localStorage.removeItem('sess_key');
                         $("#splash").fadeIn(1000);
                         grecaptcha.reset();
+                        //zE.show();
                         gtag('event', 'logout');
                         break;
 
