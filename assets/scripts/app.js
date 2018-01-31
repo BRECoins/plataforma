@@ -665,7 +665,7 @@ $(function () {
                     <tr id="myspecialorder_'+row.id+'">\
                         <td>'+money_format.fiat(row.trigger)+'</td>\
                         <td>'+ordertype+'</td>\
-                        <td>'+money_format.crypto(Math.max(row.amount_fiat, row.amount_crypto))+'</td>\
+                        <td>'+money_format.crypto(Math.max(row.fiat_amount, row.crypto_amount))+'</td>\
                         <td>'+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'</td>\
                         <td>\
                             <div class="tags has-addons">\
