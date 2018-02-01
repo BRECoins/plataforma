@@ -693,3 +693,12 @@ h1.title,h2.subtitle {
   background-color: ghostwhite;
   box-shadow: 0px 0px 3px gray
 }
+
+.addallbtc {
+  color: navy;
+  text-decoration: underline;
+}
+
+.basic-offerbook-orders .card-header {
+  height: 39px;
+}

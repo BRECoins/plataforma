@@ -22,7 +22,10 @@
                     Seu Banco:
                 </label>
                 <div class="select is-fullwidth">
-                    <select id="bancoSaque" class="select" data-var="sitebanknames">
+                    <select id="bancoSaque" class="select">
+                        <optgroup label="Bancos conveniados" data-var="sitebanknames"></optgroup>
+                        <optgroup label="Não conveniados - Principais" data-var="mainbanks"></optgroup>
+                        <optgroup label="Não conveniados - Todos" data-var="allbanks"></optgroup>
                     </select>
                 </div>
             </div>
@@ -54,19 +57,18 @@
                 <label class="label">
                     Tipo da Conta:
                 </label>
-                <div class="select">
+                <div class="select is-fullwidth">
                     <select id="usrtipoSaque" class="select">
-                        <option>Conta corrente pessoal</option>
-                        <option>Poupança pessoal</option>
-                        <option>Conta corrente empresarial</option>
-                        <option>Poupança empresarial</option>
+                        <option value="001">Conta corrente pessoal</option>
+                        <option value="003">Poupança pessoal</option>
+                        <option value="013">Conta corrente empresarial</option>
                         <option>Outros</option>
                     </select>
                 </div>
             </div>
 
             <div class="notification  is-warning">
-                <b>Atenção</b> Seu limite de saque é: <b data-var="fiat_withdraw_limit"></b>
+                <b>Atenção</b> Seu limite diário de saque é: <b data-var="fiat_withdraw_limit"></b>
             </div>
 
             <hr>

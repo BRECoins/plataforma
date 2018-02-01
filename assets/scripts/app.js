@@ -572,13 +572,11 @@ $(function () {
 
                 // intro
                 if(!store.get('intro_'+window.common.UID)) {
+                	store.set('intro_'+window.common.UID, 1);
                     introJs().setOption("nextLabel", " > ")
                         .setOption("prevLabel", " < ")
                         .setOption("skipLabel", "Sair")
                         .setOption("doneLabel", "Fechar")
-                        .oncomplete(function() {
-                          store.set('intro_'+window.common.UID, 1);
-                        })
                         .start();
                 }
             }, 5000);
@@ -749,10 +747,12 @@ $(function () {
             });
         });
         socket.on('simulatemarketbuy', function(amount) {
-            $("[data-var=user_funds_brl-btc]").textBlink(money_format.crypto(amount));
+            //$("[data-var=user_funds_brl-btc]").textBlink(money_format.crypto(amount));
+            $("[data-var=user_funds_brl-btc]").textBlink( money_format.crypto( money_format.from.fiat($("[data-var=user_funds_fiat]").text().substr(2))*1e8 / money_format.from.fiat($("#ticker_last").text().substr(3)) ) );
         });
         socket.on('simulatemarketsell', function(amount) {
-            $("[data-var=user_funds_btc-brl]").textBlink(money_format.fiat(amount));
+            //$("[data-var=user_funds_btc-brl]").textBlink(money_format.fiat(amount));
+            $("[data-var=user_funds_btc-brl]").textBlink( money_format.fiat ( money_format.from.fiat($("#ticker_last").text().substr(3)) * money_format.from.crypto( $("[data-var=user_funds_crypto]").text().substr(2) )/1e8 ) );
         });
         socket.on('activesessionslist', function(data) {
             $("[data-var=activesessions] tr").remove();
@@ -808,7 +808,20 @@ $(function () {
                     </div>');
                 $("[data-var=sitebanknames]").append('<option value="'+row.bank_name+'">'+row.bank_name+'</option>');
             });
-            $("[data-var=sitebanknames]").append('<option value="Outro">Outro</option>');
+        });
+        socket.on('allbanks', function(rows) {
+            $("[data-var=allbanks] option,[data-var=mainbanks] option").remove();
+            rows.forEach(function(row) {
+            	if(!row) return;
+            	var optgroup;
+
+            	if(row.is_favorite)
+            		optgroup = 'mainbanks';
+            	else
+            		optgroup = 'allbanks';
+
+                $("[data-var="+optgroup+"]").append('<option value="'+row.bank_name+'">'+row.bank_name+'</option>');
+            });
         });
         socket.on('depositdeposit_fiatsuccess', function(id) {
             socket.emit('depositdeposit_fiatsuccess', {sess_key: localStorage.getItem('sess_key')});
@@ -1101,7 +1114,7 @@ $(function () {
         });
 
         $(".addallbtc").click(function() {
-            $("#"+$(this).data('target')).val($("[data-var=user_funds_crypto]").text().substr(2));
+            $("#"+$(this).data('target')).val($($("[data-var=user_funds_crypto]")[0]).text().substr(2));
         });
         /*$(".addallbrl").click(function() {
             $("#"+$(this).data('target')).val($("[data-var=user_funds_fiat]").text());
