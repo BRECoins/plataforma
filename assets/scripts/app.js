@@ -1,5 +1,5 @@
 window.VERSION = "0.3.3b1";
-window.BACKEND = "http://localhost:8000";
+window.BACKEND = "https://backend.brecoins.com.br";
 window.CDN = "https://cdn.brecoins.com.br/~bre/";
 window.EXCHANGE = 1;
 window.common = {
