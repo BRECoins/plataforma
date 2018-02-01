@@ -599,6 +599,8 @@ $(function () {
             if(data.cpf) {
                 if(!$("[data-var=user_cpf]").is(":focus")) $("[data-var=user_cpf]").val(data.cpf).prop("disabled", true);
                 $("#usrcpfSaque").val(data.cpf).prop("disabled", true);
+            } else {
+            	$("[data-var=user_cpf]").val("").prop("disabled", false);
             }
             inputmask($("[data-var=user_cpf]")[0], mask__cpfCnpj);
             inputmask($("#usrcpfSaque")[0], mask__cpfCnpj);
@@ -1017,12 +1019,15 @@ $(function () {
         });
         socket.on('cpfcnpjerr', function(reason) {
             var $cpfinput = $("[data-var=user_cpf]");
-            if(reason=='invalid') {
+            if(reason=='invalid' && $cpfinput.val()) {
+            	$cpfinput.prop("disabled", false);
                 gtag('event', 'invalid_cpf_cnpj');
                 swal("CPF/CNPJ inválido", "O CPF ou CNPJ informado não é válido.", "error");
             } else {
-                gtag('event', 'already_registered_cpf_cnpj');
-                swal("CPF/CNPJ já registrado", "Já existe uma conta utilizando o CPF/CNPJ informado. Por favor, confira seus dados. Se acredita que isto seja um erro, entre em contato com o suporte.", "error");
+            	if($cpfinput.val()) {
+	                gtag('event', 'already_registered_cpf_cnpj');
+	                swal("CPF/CNPJ já registrado", "Já existe uma conta utilizando o CPF/CNPJ informado. Por favor, confira seus dados. Se acredita que isto seja um erro, entre em contato com o suporte.", "error");
+	            }
             }
             $("[data-var=user_cpf]").val("");
             $("[data-var=user_cpf]")[0].focus();
@@ -1768,6 +1773,9 @@ $(function () {
                         break;
 
                     case 'create_upgrade_process':
+                    	if(!$("[data-var=user_cpf]").val() || !$("[data-var=user_gender]").val()) {
+                            return swal("CPF Necessário", "Para realizar upgrade de nível, informe seu CPF e gênero.", "error");
+                        }
                         loadingOn();
                         var docs = [];
 
@@ -2382,17 +2390,8 @@ function mask__money_crypto(v) {
 window.takeWebcamPicture = function(cb) {
     showModal('webcam');
     AcessoCaptureFrame = new CaptureFrame("https://crediariohomolog.acesso.io/", '7E426BC2-652E-4BCE-B6A1-7922FA44EBC9');;
-    AcessoCaptureFrame.create(successCallback, function(){
-        AcessoCaptureFrame.create(sucessCallback, errorCallback, { enableIR: false, crop_on_capture: true, showIR: false, frameType: 'face', mirror: true, width: '320px', height: '240px' });
-    }, { enableIR: false, crop_on_capture: true, showIR: true, frameType: 'face', mirror: true, width: '640px', height: '360px' });
 
-
-    $("#webcamClose").off('click').on('click', function() {
-        AcessoCaptureFrame.stopCamera();
-        closeModal('webcam');
-    })
-    
-    function successCallback() {
+    var successCallback = function() {
         $("#webcamAction").off('click').on('click', function() {
             AcessoCaptureFrame.takeSnapshot(
                 function (base64, base64_Ir) {
@@ -2423,11 +2422,20 @@ window.takeWebcamPicture = function(cb) {
         });
     }
     
-    function errorCallback(code, description){
+    var errorCallback = function(code, description){
         swal("Erro "+code, "Erro ao abrir webcam: "+description, "error");
     }
 
+    AcessoCaptureFrame.create(successCallback, function(){
+        AcessoCaptureFrame.create(successCallback, errorCallback, { enableIR: false, crop_on_capture: true, showIR: false, frameType: 'face', mirror: true, width: '320px', height: '240px' });
+    }, { enableIR: false, crop_on_capture: true, showIR: true, frameType: 'face', mirror: true, width: '640px', height: '360px' });
 
+
+    $("#webcamClose").off('click').on('click', function() {
+        AcessoCaptureFrame.stopCamera();
+        closeModal('webcam');
+    })
+    
 }
 
 // loading animation
