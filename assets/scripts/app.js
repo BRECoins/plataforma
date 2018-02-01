@@ -1552,7 +1552,7 @@ $(function () {
                           title: 'Preço máximo de compra',
                           input: 'text',
                           showCancelButton: true,
-                          confirmButtonText: 'Submit',
+                          confirmButtonText: 'Criar Ordem',
                           showLoaderOnConfirm: true,
                           allowOutsideClick: true
                         }).then(function (price) {
@@ -1579,7 +1579,7 @@ $(function () {
                           title: 'Preço mínimo de venda',
                           input: 'text',
                           showCancelButton: true,
-                          confirmButtonText: 'Submit',
+                          confirmButtonText: 'Criar Ordem',
                           showLoaderOnConfirm: true,
                           allowOutsideClick: true
                         }).then(function (price) {
