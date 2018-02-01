@@ -1,5 +1,5 @@
 window.VERSION = "0.3.3b1";
-window.BACKEND = "https://backend.brecoins.com.br";
+window.BACKEND = "http://localhost:8000";
 window.CDN = "https://cdn.brecoins.com.br/~bre/";
 window.EXCHANGE = 1;
 window.common = {
@@ -32,6 +32,10 @@ swal.setDefaults({
     confirmButtonClass: 'button is-primary',
     cancelButtonClass: 'button is-secondary'
 });
+
+if (top.location.hostname != self.location.hostname) {
+    top.location.href = self.location.href;
+}
 
 (function($) {
     $.fn.textBlink = function(new_text) {
@@ -2377,7 +2381,7 @@ function mask__money_crypto(v) {
 
 window.takeWebcamPicture = function(cb) {
     showModal('webcam');
-    var AcessoCaptureFrame = new CaptureFrame("https://crediariohomolog.acesso.io/", '7E426BC2-652E-4BCE-B6A1-7922FA44EBC9');;
+    AcessoCaptureFrame = new CaptureFrame("https://crediariohomolog.acesso.io/", '7E426BC2-652E-4BCE-B6A1-7922FA44EBC9');;
     AcessoCaptureFrame.create(successCallback, function(){
         AcessoCaptureFrame.create(sucessCallback, errorCallback, { enableIR: false, crop_on_capture: true, showIR: false, frameType: 'face', mirror: true, width: '320px', height: '240px' });
     }, { enableIR: false, crop_on_capture: true, showIR: true, frameType: 'face', mirror: true, width: '640px', height: '360px' });
@@ -2394,7 +2398,7 @@ window.takeWebcamPicture = function(cb) {
                 function (base64, base64_Ir) {
                     AcessoCaptureFrame.stopCamera();
                     swal({
-                      title: 'Confirmar foto',
+                      title: 'Confirmar Foto',
                       html:
                         '<img src="'+base64+'" style="max-height: 60vh;" />',
                       showCloseButton: true,
@@ -2404,12 +2408,15 @@ window.takeWebcamPicture = function(cb) {
                       cancelButtonText:
                         '<i class="fa fa-thumbs-down"></i> Tentar novamente'
                     }).then(function(ret) {
+                        closeModal('webcam');
                         if(ret) {
-                            closeModal('webcam');
                             cb(base64);
                         } else {
                             window.takeWebcamPicture(cb);
                         }
+                    }).catch(function() {
+                        closeModal('webcam');
+                    	window.takeWebcamPicture(cb);
                     })
                 }
             );
