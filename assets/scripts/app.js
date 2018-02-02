@@ -1,4 +1,4 @@
-window.VERSION = "0.3.3b1";
+window.VERSION = "0.6";
 window.BACKEND = "https://backend.brecoins.com.br";
 window.CDN = "https://cdn.brecoins.com.br/~bre/";
 window.EXCHANGE = 1;
@@ -439,6 +439,8 @@ $(function () {
                     socket.emit('withdrawals.list_fiat', { sess_key: args.sess_key });
                     socket.emit('withdrawals.list_crypto', { sess_key: args.sess_key });
                     socket.emit('userdocuments.checkprocess', { sess_key: args.sess_key });
+                	socket.emit('level.getLevelsData', { sess_key: args.sess_key });
+                	socket.emit('profiledetails.getProfileDetails', { sess_key: args.sess_key });
                 }
                 socketio_emit_loop();
                 socketio_long_loop();
@@ -1937,11 +1939,24 @@ $(function () {
                                 key: 'gender',
                                 value: $("[data-var=user_gender]").val()
                             });
-                            socket.emit('profiledetails.setProfileDetail', {
-                                sess_key: localStorage.getItem('sess_key'),
-                                key: 'cpf',
-                                value: $("[data-var=user_cpf]").val().replace(/[^0-9]/g, "")
-                            });
+                            if($("[data-var=user_cpf]").val() && !$("[data-var=user_cpf]").is(":disabled")) {
+                            	swal({
+								  title: 'Confirme seu CPF/CNPJ',
+								  text: "Você digitou o CPF/CNPN: "+$("[data-var=user_cpf]").val()+"\nNote que não será possível alterar o seu CPF/CNPJ posteriormente. Além disso, você só poderá realizar saques para contas bancárias em contas cadastradas sob o mesmo CPF/CNPJ. Também não será possível o cadastro de outra conta na BRE Coins utilizando este mesmo documento.",
+								  type: 'warning',
+								  showCancelButton: true,
+								  confirmButtonText: 'Confirmar Dados',
+								  cancelButtonText: 'Corrigir',
+								}).then(function () {
+		                            socket.emit('profiledetails.setProfileDetail', {
+		                                sess_key: localStorage.getItem('sess_key'),
+		                                key: 'cpf',
+		                                value: $("[data-var=user_cpf]").val().replace(/[^0-9]/g, "")
+		                            });
+								}, function() {
+									$("[data-var=user_cpf]").val("");
+								})
+	                        }
                             gtag('event', 'update_profile_details');
                         }
                         break;
