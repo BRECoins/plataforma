@@ -286,7 +286,7 @@ $(function () {
         });
         socket.on('memberloginmustverify', function() {
             swal({
-              title: 'Confirmar e-mail',
+              title: 'Confirmar E-mail',
               text: 'Insira o código enviado ao seu endereço de e-mail:',
               input: 'text',
               showCancelButton: false,
@@ -303,6 +303,8 @@ $(function () {
         socket.on('memberconfirmdatasuccess', function() {
             swal("OK", "E-mail confirmado!", "success");
             gtag('event', 'login_confirm_account_success');
+            $("#signupSplash").hide(349);
+            $("#loginSplash").delay(350).fadeOn();
             if(!window.common.UID) $("[data-do=signin]").click();
         });
         socket.on('memberconfirmdatafail', function() {
@@ -470,6 +472,7 @@ $(function () {
             }, 500);
             
             $("#splash").fadeOut(1000);
+            loadView('main');
             setTimeout(function() {
                 $("[data-var=chart]").attr('src', '/chart.html?'+Math.random());
             }, 5000);
@@ -1057,11 +1060,12 @@ $(function () {
                 stars_html += '<i class="fa fa-star-o"></i>';
             }
             $("[data-var=user_level_stars]").html(stars_html);
-
+            $("[data-var=user_level]").text(data.user_level);
             $("[data-var=user_level_name]").text(data.user_level_name);
 
             if(data.user_level<data.next_level) {
                 $("#level_upgrade_card").show();
+                var old_next_level_name = $("[data-var=next_level_name]").text();
                 $("[data-var=next_level_name]").text("Nível "+data.next_level);
                 $("[data-var=next_level_description]").html("").append(data.next_level_description).html($("[data-var=next_level_description]").text());
 
@@ -1082,14 +1086,15 @@ $(function () {
                                         '+(doc.doccode ? doc.docname : '<select data-var="doc-0-type"><option value="2">RG</option><option value="4">CNH</option><option value="12">Passaporte</option></select>')+'\
                                     </span>\
                                 </span>\
-                                <span class="file-name" data-var="doc-'+doc.doccode+'-filename"></span>\
+                                <span class="file-name" data-var="doc-'+doc.doccode+'-filename"><i class="fa fa-paperclip"></i></span>\
                             </label>\
                         </div><br>';
                     });
 
                     upgrade_form += '<br><button class="button is-primary" data-do="create_upgrade_process">Enviar documentos</button>';
 
-                    $("#level_upgrade_form").html(upgrade_form);
+                    if(!$(".file-name").text().trim() && ((old_next_level_name.trim() && old_next_level_name != $("[data-var=next_level_name]").text()) || !old_next_level_name.trim()))
+                        $("#level_upgrade_form").html(upgrade_form);
                 } else {
                     $("#level_upgrade_btn").hide();
                 }
@@ -1389,6 +1394,7 @@ $(function () {
                         $("#bank_id").val(bankid);
                         $("#bankdetail div").hide();
                         $("#bankdetail-" + bankid).show();
+                        $("#bankdetail-"+bankid+" div").show();
                         break;
 
                     case 'createFiatDeposit':
@@ -1813,6 +1819,7 @@ $(function () {
                                         name: $("[data-var=user_fullname_input]").val(),
                                         docs: docs
                                     });
+                                    $(".file-name").html('<i class="fa fa-paperclip"></i>');
                                     gtag('event', 'documents_upload');
                                 });
                             }
@@ -1839,7 +1846,7 @@ $(function () {
                                         create_upgrade_process_finish(docs);
 
                                     } else {
-                                        create_upgrade_process_finish(docs);
+                                        loadingOff();
                                         swal("Erro", "Erro durante o upload. Verifique sua conexão e tente novamente.", "error");
                                     }
                                 });
@@ -1943,7 +1950,7 @@ $(function () {
                                 var the_cpf = $("[data-var=user_cpf]").val();
                             	swal({
 								  title: 'Confirme seu CPF/CNPJ',
-								  text: "Você digitou o CPF/CNPN: "+$("[data-var=user_cpf]").val()+"\nNote que não será possível alterar o seu CPF/CNPJ posteriormente. Além disso, você só poderá realizar saques para contas bancárias em contas cadastradas sob o mesmo CPF/CNPJ. Também não será possível o cadastro de outra conta na BRE Coins utilizando este mesmo documento.",
+								  text: "Você digitou o CPF/CNPJ: "+$("[data-var=user_cpf]").val()+"\nNote que não será possível alterar o seu CPF/CNPJ posteriormente. Além disso, você só poderá realizar saques para contas bancárias em contas cadastradas sob o mesmo CPF/CNPJ. Também não será possível o cadastro de outra conta na BRE Coins utilizando este mesmo documento.",
 								  type: 'warning',
 								  showCancelButton: true,
 								  confirmButtonText: 'Confirmar Dados',
