@@ -304,7 +304,7 @@ $(function () {
             swal("OK", "E-mail confirmado!", "success");
             gtag('event', 'login_confirm_account_success');
             $("#signupSplash").hide(349);
-            $("#loginSplash").delay(350).fadeOn();
+            $("#loginSplash").delay(350).show();
             if(!window.common.UID) $("[data-do=signin]").click();
         });
         socket.on('memberconfirmdatafail', function() {
