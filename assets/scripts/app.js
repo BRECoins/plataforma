@@ -1940,6 +1940,7 @@ $(function () {
                                 value: $("[data-var=user_gender]").val()
                             });
                             if($("[data-var=user_cpf]").val() && !$("[data-var=user_cpf]").is(":disabled")) {
+                                var the_cpf = $("[data-var=user_cpf]").val();
                             	swal({
 								  title: 'Confirme seu CPF/CNPJ',
 								  text: "Você digitou o CPF/CNPN: "+$("[data-var=user_cpf]").val()+"\nNote que não será possível alterar o seu CPF/CNPJ posteriormente. Além disso, você só poderá realizar saques para contas bancárias em contas cadastradas sob o mesmo CPF/CNPJ. Também não será possível o cadastro de outra conta na BRE Coins utilizando este mesmo documento.",
@@ -1951,8 +1952,9 @@ $(function () {
 		                            socket.emit('profiledetails.setProfileDetail', {
 		                                sess_key: localStorage.getItem('sess_key'),
 		                                key: 'cpf',
-		                                value: $("[data-var=user_cpf]").val().replace(/[^0-9]/g, "")
+		                                value: the_cpf.replace(/[^0-9]/g, "")
 		                            });
+                                    $("[data-var=user_cpf]").val(the_cpf).prop("disabled", true);
 								}, function() {
 									$("[data-var=user_cpf]").val("");
 								})
