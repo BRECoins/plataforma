@@ -88,7 +88,7 @@ body {
  */
 
 figure.image img {
-    border: 2px solid #51D2B7;
+    border: 2px solid #000;
 }
 
 /**
@@ -136,6 +136,8 @@ figure.image img {
 
 .trader-button {
 	transform: rotate(180deg);
+  padding-right: 8px !important;
+  width: 40px !important;
 }
 
 .is-danger {
@@ -705,6 +707,7 @@ h1.title,h2.subtitle {
 
 .trader-button {
   background: #cb0033;
+  font-weight: bold !important;
 }
 
 .is-sidebar-menu li a:hover {
@@ -713,4 +716,8 @@ h1.title,h2.subtitle {
 
 .is-sidebar-menu .is-fixed-bottom:hover {
   background: #8d969e !important;
+}
+
+.no-hover-color:hover {
+  color: black !important;
 }

@@ -175,7 +175,7 @@ $(function () {
 
         if(store('trading_interface')=='basic') {
             loadView('basic');
-            $("#sidebar-menu").addClass("is-basic");
+            //$("#sidebar-menu").addClass("is-basic");
             $(".trader-button").text("TRADER");
         }
         else {
@@ -497,7 +497,7 @@ $(function () {
                         <td>'+jsmoment(row.created_at).calendar()+'</td>\
                         <td>'+money_format.crypto(row.amount)+'</td>\
                         <td>\
-                            <a class="button is-link" target="_blank" href="https://blockexplorer.com/tx/'+row.txid+'">Ver</a>\
+                            <a class="button is-light is-small" style="border: 1px solid #dbdbdb; height: 24px !important;" target="_blank" href="https://blockexplorer.com/tx/'+row.txid+'">Ver</a>\
                         </td>\
                         <td>\
                             <span class="tag is-'+(row.status=='confirmed' ? 'success' : 'warning')+'">'+(row.status=='confirmed' ? 'Confirmado' : 'Pendente')+'</span>\
@@ -641,8 +641,8 @@ $(function () {
                         <td>'+jsmoment(row.created_at).format('llll')+'</td>\
                         <td>'+ordertype+'</td>\
                         <td>\
-                            <b>Quantidade:</b> '+money_format.crypto(Math.max(1e8*row.amount_fiat/Math.max(row.crypto_price_min, row.crypto_price_max), row.amount_crypto))+'<br>\
-                            <b>Valor por BTC:</b> '+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'\
+                            '+money_format.crypto(Math.max(1e8*row.amount_fiat/Math.max(row.crypto_price_min, row.crypto_price_max), row.amount_crypto))+'<br>\
+                            '+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'\
                         </td>\
                         <td>\
                             <div class="tags has-addons">\
@@ -677,8 +677,8 @@ $(function () {
                         <td>'+jsmoment(row.created_at).format('llll')+'</td>\
                         <td>'+ordertype+'</td>\
                         <td>\
-                            <b>Quantidade:</b> '+money_format.crypto(Math.max(row.initial_amount_fiat, row.initial_amount_crypto))+'<br>\
-                            <b>Valor por BTC:</b> '+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'\
+                            '+money_format.crypto(Math.max(row.initial_amount_fiat, row.initial_amount_crypto))+'<br>\
+                            '+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'\
                         </td>\
                     </tr>');
             });
@@ -847,7 +847,7 @@ $(function () {
                     case 'done':
                         status = 'Realizado';
                         color = 'success';
-                        row_html = '<a class="button is-small is-info" target="_blank" href="https://blockcypher.com/btc/tx/'+row.txid+'">Ver</a>';
+                        row_html = '<a class="button is-small is-light" style="border: 1px solid #dbdbdb; height: 24px !important" target="_blank" href="https://blockcypher.com/btc/tx/'+row.txid+'">Ver</a>';
                         break;
                     case 'disapproved':
                         status = 'Falhou';
@@ -873,18 +873,19 @@ $(function () {
             $("#saqueslist_fiat_tbl tr").remove();
             rows.reverse();
             rows.forEach(function(row) {
-                let status,color,row_html,show_date;
+                let status,color,row_html,show_date,border = '';
                 switch(row.status) {
                     case 'pending':
                         status = 'Pendente';
                         row_html = "-";
-                        color = 'info';
+                        color = 'light';
+                        border = '1px solid #dbdbdb';
                         show_date = false;
                         break;
                     case 'done':
                         status = 'Realizado';
                         color = 'success';
-                        row_html = '';
+                        row_html = '-';
                         show_date = true;
                         break;
                     case 'disapproved':
@@ -902,7 +903,7 @@ $(function () {
                             '+row_html+'\
                         </td>\
                         <td>\
-                            <span class="tag is-'+color+'">'+status+'</span>\
+                            <span style="height: 24px !important" class="tag is-'+color+'" style="height: 24px !important; '+(border ? 'border: '+border : '')+'">'+status+'</span>\
                             '+(show_date ? '<br><sub>'+jsmoment(row.updated_at).calendar()+'</sub>' : '')+' \
                         </td>\
                     </tr>\
@@ -914,12 +915,13 @@ $(function () {
             var final_html = "";
             rows.reverse();
             rows.forEach(function(row) {
-                let status,color,row_html,show_date;
+                let status,color,row_html,show_date,border = '';
                 switch(row.status) {
                     case 'pending':
-                        status = 'Aguardando comprovante';
-                        color = 'warning';
+                        status = 'Pendente';
+                        color = 'gray';
                         show_date = false;
+                        border = '1px solid #dbdbdb';
                         row_html = '<code>#'+row.id+'</code>\
                             <div class="file is-small">\
                                 <label class="file-label">\
@@ -929,17 +931,18 @@ $(function () {
                                             <i class="fa fa-upload"></i>\
                                         </span>\
                                         <span class="file-label">\
-                                            Enviar comprovante\
+                                            Enviar Comprovante\
                                         </span>\
                                     </span>\
                                 </label>\
                             </div>';
                         break;
                     case 'waitingapproval':
-                        status = 'Em análise';
+                        status = 'Em Análise';
                         show_date = true;
                         row_html = "";
-                        color = 'info';
+                        color = 'white';
+                        border = '1px solid #dbdbdb';
                         break;
                     case 'done':
                         status = 'Aprovado';
@@ -963,7 +966,7 @@ $(function () {
                             '+row_html+'\
                         </td>\
                         <td>\
-                            <span class="tag is-'+color+'">'+status+'</span>\
+                            <span class="tag is-'+color+'" style="height: 24px !important; '+(border ? 'border: '+border : '')+'">'+status+'</span>\
                             '+(show_date ? '<br><sub>'+jsmoment(row.updated_at).calendar()+'</sub>' : '')+'\
                         </td>\
                     </tr>\
@@ -1091,7 +1094,7 @@ $(function () {
                         </div><br>';
                     });
 
-                    upgrade_form += '<br><button class="button is-primary" data-do="create_upgrade_process">Enviar documentos</button>';
+                    upgrade_form += '<br><button class="button is-primary" data-do="create_upgrade_process"><b>Enviar Documentos</b></button>';
 
                     if(!$(".file-name").text().trim() && ((old_next_level_name.trim() && old_next_level_name != $("[data-var=next_level_name]").text()) || !old_next_level_name.trim()))
                         $("#level_upgrade_form").html(upgrade_form);
@@ -1237,11 +1240,11 @@ $(function () {
                         if(store('trading_interface')=='basic') {
                             loadView('basic');
                             gtag('event', 'view_basic_trader');
-                            $("#sidebar-menu").addClass("is-basic");
+                            //$("#sidebar-menu").addClass("is-basic");
                         } else {
                             loadView('main');
                             gtag('event', 'view_advanced_trader');
-                            $("#sidebar-menu").removeClass("is-basic");
+                            //$("#sidebar-menu").removeClass("is-basic");
                         }
                         break;
 
@@ -1255,12 +1258,12 @@ $(function () {
                             $(".trader-button").text("BÁSICO");
                             loadView('main');
                             gtag('event', 'choose_advanced_trader');
-                            $("#sidebar-menu").removeClass("is-basic");
+                            //$("#sidebar-menu").removeClass("is-basic");
                         } else {
                             store('trading_interface', 'basic');
                             loadView('basic');
                             gtag('event', 'choose_basic_trader');
-                            $("#sidebar-menu").addClass("is-basic");
+                            //$("#sidebar-menu").addClass("is-basic");
                             $(".trader-button").text("TRADER");
                         }
                         break;
@@ -1270,11 +1273,11 @@ $(function () {
                         $("#navMenu2").slideUp('fast');
                         $("#main-menu [data-do=go_main],#navMenu2 [data-do=go_main]").addClass("is-active");
                         if(store('trading_interface')=='basic') {
-                            $("#sidebar-menu").addClass("is-basic");
+                            //$("#sidebar-menu").addClass("is-basic");
                             loadView('basic');
                             gtag('event', 'view_basic_trader');
                         } else {
-                            $("#sidebar-menu").removeClass("is-basic");
+                            //$("#sidebar-menu").removeClass("is-basic");
                             loadView('main');
                             gtag('event', 'view_advanced_trader');
                         }
@@ -1428,6 +1431,7 @@ $(function () {
 
                         $("#basic_orders_buy_amount").val("");
                         $("#basic_orders_buy_price").val("");
+                        $("#orderform_preview").slideUp();
 
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
@@ -1449,6 +1453,7 @@ $(function () {
 
                         $("#basic_orders_sell_amount").val("");
                         $("#basic_orders_sell_price").val("");
+                        $("#orderform_preview").slideUp();
 
                         socket.emit('orders.sell', {
                             'crypto_amount': amount,
@@ -1470,6 +1475,7 @@ $(function () {
 
                         $("#limitbuy_amount").val("");
                         $("#limitbuy_maxprice").val("");
+                        $("#orderform_preview").slideUp();
 
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
@@ -1491,6 +1497,7 @@ $(function () {
 
                         $("#limitsell_amount").val("");
                         $("#limitsell_minprice").val("");
+                        $("#orderform_preview").slideUp();
 
                         socket.emit('orders.sell', {
                             'crypto_amount': amount,
@@ -1512,6 +1519,7 @@ $(function () {
 
                         $("#limitbuy_amount_basic").val("");
                         $("#limitbuy_maxprice_basic").val("");
+                        $("#orderform_preview").slideUp();
 
 
                         socket.emit('orders.buy', {
@@ -1535,6 +1543,7 @@ $(function () {
 
                         $("#limitsell_amount_basic").val("");
                         $("#limitsell_minprice_basic").val("");
+                        $("#orderform_preview").slideUp();
 
 
                         socket.emit('orders.sell', {
@@ -1557,6 +1566,7 @@ $(function () {
 
                         $("#marketbuy_amount").val("");
                         $("#marketbuy_maxprice").val("");
+                        $("#orderform_preview").slideUp();
 
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
@@ -1580,6 +1590,7 @@ $(function () {
 
                         $("#marketsell_amount").val("");
                         $("#marketsell_minprice").val("");
+                        $("#orderform_preview").slideUp();
 
                         socket.emit('orders.sell', {
                             'crypto_amount': amount,
@@ -1609,6 +1620,7 @@ $(function () {
                             price = money_format.from.fiat(price);
                             $("#stoplimitbuy_amount").val("");
                             $("#stoplimitbuy_trigger").val("");
+                            $("#orderform_preview").slideUp();
                             socket.emit('orders.stoplimit', {
                                 'type': 'buy',
                                 'crypto_amount': amount,
@@ -1639,6 +1651,7 @@ $(function () {
                         }).then(function (price) {
                             $("#stoplimitsell_amount").val("");
                             $("#stoplimitsell_trigger").val("");
+                            $("#orderform_preview").slideUp();
                             price = money_format.from.fiat(price);
                             socket.emit('orders.stoplimit', {
                                 'type': 'sell',
@@ -2675,13 +2688,13 @@ window.updatealgo = function() {
         $("[data-var=algotrading]").append('<tr>\
                                 <td>'+key.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</td>\
                                 <td>\
-                                    <button data-do="runAlgorithm" data-algo-key="'+key.replace(/[\""]/g, '\\"')+'" class="button is-primary">\
-                                        '+(typeof window.workers[key]=='undefined' ? '<i class="fa fa-fw fa-play"></i> Run</button>' : '<i class="fa fa-fw fa-stop"></i> Stop</button>')+'\
-                                    <button data-do="editAlgorithm" data-algo-key="'+key.replace(/[\""]/g, '\\"')+'" class="button is-warning">\
-                                        <i class="fa fa-fw fa-pencil"></i>\
+                                    <button data-do="runAlgorithm" data-algo-key="'+key.replace(/[\""]/g, '\\"')+'" class="button is-dark is-small">\
+                                        '+(typeof window.workers[key]=='undefined' ? '<i class="fa fa-fw fa-play"></i> Executar</button>' : '<i class="fa fa-fw fa-stop"></i> Stop</button>')+'\
+                                    <button data-do="editAlgorithm" data-algo-key="'+key.replace(/[\""]/g, '\\"')+'" class="button is-dark is-small">\
+                                        <i class="fa fa-fw fa-pencil"></i> Editar\
                                     </button>\
-                                    <button data-do="delAlgorithm" data-algo-key="'+key.replace(/[\""]/g, '\\"')+'" class="button is-danger">\
-                                        <i class="fa fa-fw fa-trash-o"></i>\
+                                    <button data-do="delAlgorithm" data-algo-key="'+key.replace(/[\""]/g, '\\"')+'" class="button is-dark is-small">\
+                                        <i class="fa fa-fw fa-trash-o"></i> Excluir\
                                     </button>\
                                 </td>\
                             </tr>');
