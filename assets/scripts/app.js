@@ -1024,7 +1024,7 @@ $(function () {
         });
         socket.on('toosmallamount', function() {
             gtag('event', 'too_small_amount');
-            swal("Valor muito baixo", "Você não inseriu fundos suficientes para essa operação.", "error");
+            swal("Valor Inválido", "Você não inseriu fundos suficientes para essa operação.", "error");
         });
         socket.on('withdraw_fiat_sent', function() {
             swal("Ordem enviada", "Sua ordem de saque foi enviada.", "success");
@@ -1032,11 +1032,11 @@ $(function () {
         });
         socket.on('withdrawals.overlimit', function(limitdata) {
             gtag('event', 'withdraw_try_over_limit');
-            swal("Limite diário atingido", "Seu limite diário de saque foi atingido e esta ordem não pôde ser enviada. Seu limite restante é: "+money_format.fiat(limitdata.limit-limitdata.used));
+            swal("Limite Diário Excedido", "Seu limite diário de saque foi atingido e esta ordem não pôde ser enviada. Seu limite restante é: "+money_format.fiat(limitdata.limit-limitdata.used));
         });
         socket.on('deposit.overlimit', function(limitdata) {
             gtag('event', 'deposit_try_over_limit');
-            swal("Limite diário atingido", "Seu limite diário de depósito foi atingido e esta ordem não pôde ser enviada. Seu limite restante é: "+money_format.fiat(limitdata.limit-limitdata.used));
+            swal("Limite Diário Excedido", "Seu limite diário de depósito foi atingido e esta ordem não pôde ser enviada. Seu limite restante é: "+money_format.fiat(limitdata.limit-limitdata.used));
         });
         socket.on('cpfcnpjerr', function(reason) {
             var $cpfinput = $("[data-var=user_cpf]");
