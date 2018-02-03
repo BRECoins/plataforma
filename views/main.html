@@ -2,12 +2,12 @@
     <div class="column">
         <span class="title is-3" data-var="user_funds_crypto">Carregando...</span>
         <br>
-        <span class="title is-7  tooltip is-tooltip-right hint--right" data-var="user_funds_btc-brl" aria-label="Este valor é estimado, com base nas ofertas de mercado atual.">Carregando...</span>
+        <span class="title is-7  tooltip is-tooltip-right hint--right" data-var="user_funds_btc-brl" aria-label="Valor estimado com base na última cotação">Carregando...</span>
     </div>
     <div class="column">
         <span class="title is-3" data-var="user_funds_fiat">Carregando...</span>
         <br>
-        <span class="title is-7  tooltip is-tooltip-right hint--right" data-var="user_funds_brl-btc" aria-label="Este valor é estimado, com base nas ofertas de mercado atual.">Carregando...</span>
+        <span class="title is-7  tooltip is-tooltip-right hint--right" data-var="user_funds_brl-btc" aria-label="Valor estimado com base na última cotação">Carregando...</span>
     </div>
 </div>
 
@@ -26,12 +26,12 @@
                 <a href="#" class="navbar-item" data-openmodal="mercado" data-do="chartload">Mercado</a>
                 <a href="#" class="navbar-item" data-openmodal="volume">Volume</a>
                 <a href="#" class="navbar-item" data-openmodal="offerbook">Livro de Ofertas</a>
-                <a href="#" class="navbar-item" data-openmodal="ordens">Historico de Ordens</a>
+                <a href="#" class="navbar-item" data-openmodal="ordens">Histórico de Ordens</a>
             </div>
             <div class="navbar-end">
                 <div class="navbar-item">
                     <b style="margin-right: 5px">Preço Ref:  </b>
-                    <span data-var="coinmarketcap" class="hint--bottom" aria-label="Preço médio do Bitcoin nas exchanges mundiais ponderado por seus respectivos volumes"></span>
+                    <span data-var="coinmarketcap" class="hint--bottom" aria-label="Preço médio do Bitcoin nas exchanges mundiais ponderado por seus respectivos volumes"></span> &nbsp; (fonte: <a href="https://coinmarketcap.com">CoinMarketCap</a>)
                 </div>
             </div>
         </div>
@@ -73,18 +73,19 @@
                     <div class="card-content volume-widget">
                         <div class="has-text-centered">
                             <span class="currency">Bitcoin / Brasil (BTCBRL)</span>
-                            <h3 class="price title" data-var="volumeavg"></h3>
-                            <small class="variation" data-var="volincrease"></small>
+                            <h3 class="price title hint--bottom" aria-label="Preço médio&#10;do período" data-var="volumeavg"></h3>
+                            <br/>
+                            <small class="variation hint--bottom" aria-label="Variação&#10;do período" data-var="volincrease"></small>
                         </div>
 
                         <div class="low-high columns">
                             <div class="item low column">
-                                <div>
+                                <div class="hint--bottom" aria-label="Mínima&#10;do período">
                                     <span data-var="volumelow"></span>
                                 </div>
                             </div>
                             <div class="item high column">
-                                <div>
+                                <div class="hint--bottom" aria-label="Máxima&#10;do período">
                                     <span data-var="volumehigh"></span>
                                 </div>
                             </div>
@@ -126,7 +127,7 @@
     </div>
 </div>
 <div class="transactions" data-step="2" data-intro="Configure suas ordens favoritas">
-    <div class="columns" w3-include-html="views/main_orderforms.html?v=20180131"></div>
+    <div class="columns" w3-include-html="views/main_orderforms.html?v=20180202"></div>
 </div>
 <aside class="transactions-feed" data-step="3" data-intro="Acompanhe suas ordens e o livro de ofertas">
     <nav class="navbar is-light">
@@ -158,7 +159,7 @@
                     <th>Quantidade</th>
                     <th>
                         Preço
-                        <a data-do="toggleAcumulado" class="button is-small is-outlined acumulado">Acumulado</a>
+                        <a data-do="toggleAcumulado" class="button is-small is-outlined acumulado hint--left" aria-label="Agrupamento das ordens&#10;de mesmo valor">Acumulado</a>
                     </th>
                 </tr>
             </thead>
@@ -181,7 +182,7 @@
                     <th>Quantidade</th>
                     <th>
                         Preço
-                        <a data-do="toggleAcumulado" class="button is-small is-outlined acumulado">Acumulado</a>
+                        <a data-do="toggleAcumulado" class="button is-small is-outlined acumulado hint--left" aria-label="Agrupamento das ordens&#10;de mesmo valor">Acumulado</a>
                     </th>
                 </tr>
             </thead>

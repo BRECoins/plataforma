@@ -103,17 +103,17 @@
                 <div class="navbar-end">
                     <span class="navbar-item">
                         <div class="hint--left" aria-label="Preço por Bitcoin da última negociação na plataforma">
-                            <b class="has-text-grey-light">Último </b> <span id="ticker_last"></span>
-                        </div>
-                    </span>
-                    <span class="navbar-item">
-                        <div class="hint--left" aria-label="Cotação máxima das últimas 24 horas">
-                            <b class="has-text-grey-light">Alta </b> <span id="ticker_high"></span>
+                            <b class="has-text-grey-light">Último Preço </b> <span id="ticker_last"></span>
                         </div>
                     </span>
                     <span class="navbar-item">
                         <div class="hint--left" aria-label="Cotação mínima das últimas 24 horas">
-                            <b class="has-text-grey-light">Baixa </b> <span id="ticker_low"></span>
+                            <b class="has-text-grey-light">Preço Mínimo </b> <span id="ticker_low"></span>
+                        </div>
+                    </span>
+                    <span class="navbar-item">
+                        <div class="hint--left" aria-label="Cotação máxima das últimas 24 horas">
+                            <b class="has-text-grey-light">Preço Máximo </b> <span id="ticker_high"></span>
                         </div>
                     </span>
                     <span class="navbar-item">
@@ -194,7 +194,7 @@
                     <li>
                         <a class="is-active" data-do="go_main">
                             <i class="icon-home-broker-19x20"></i>
-                            <span>Home Broker</span>
+                            <span>Painel de Negociações</span>
                         </a>
                     </li>
                     <li>
@@ -272,7 +272,7 @@
             </aside>
         </div>
         <!-- main content -->
-        <div class="column is-main-content" data-view="main" w3-include-html="views/main.html?v=20180131"></div>
+        <div class="column is-main-content" data-view="main" w3-include-html="views/main.html?v=20180202"></div>
         <!-- basic -->
         <div class="column is-main-content" data-view="basic" w3-include-html="views/basic.html?v=20180201"></div>
         <!-- depósitos -->
@@ -280,13 +280,13 @@
         <!-- saques -->
         <div class="column is-main-content" data-view="saques" w3-include-html="views/saques.html?v=20180202"></div>
         <!-- histórico de ordens -->
-        <div class="column is-main-content" data-view="ordens" w3-include-html="views/ordens.html?v=20180127"></div>
+        <div class="column is-main-content" data-view="ordens" w3-include-html="views/ordens.html?v=20180202"></div>
         <!-- livro contábil -->
-        <div class="column is-main-content" data-view="contabil" w3-include-html="views/contabil.html?v=20180128"></div>
+        <div class="column is-main-content" data-view="contabil" w3-include-html="views/contabil.html?v=20180202"></div>
         <!-- algoritmos -->
-        <div class="column is-main-content is-dark" data-view="algoritmos" w3-include-html="views/algoritmos.html?v=20180118"></div>
+        <div class="column is-main-content is-dark" data-view="algoritmos" w3-include-html="views/algoritmos.html?v=20180202"></div>
         <!-- account -->
-        <div class="column is-main-content is-dark" data-view="account" w3-include-html="views/account.html?v=20180128"></div>
+        <div class="column is-main-content is-dark" data-view="account" w3-include-html="views/account.html?v=20180202"></div>
         <!-- modais -->
         <!-- mercado -->
         <div class="modal" data-modal="mercado" w3-include-html="views/modal_mercado.html?v=20180129"></div>
@@ -297,7 +297,7 @@
         <!-- ordens -->
         <div class="modal" data-modal="ordens" w3-include-html="views/modal_ordens.html?v=1"></div>
         <!-- nova ordem -->
-        <div class="modal" data-modal="depositModal" w3-include-html="views/modal_depositModal.html?v=20180201"></div>
+        <div class="modal" data-modal="depositModal" w3-include-html="views/modal_depositModal.html?v=20180202"></div>
         <!-- adicionar algoritmo -->
         <div class="modal" data-modal="add-algorithm" w3-include-html="views/modal_add-algorithm.html?v=20180117"></div>
         <!-- notificacoes -->

@@ -702,3 +702,15 @@ h1.title,h2.subtitle {
 .basic-offerbook-orders .card-header {
   height: 39px;
 }
+
+.trader-button {
+  background: #ab4040;
+}
+
+.is-basic .is-sidebar-menu li a:hover {
+  background: #bbc2c7 !important;
+}
+
+.is-sidebar-menu .is-fixed-bottom:hover {
+  background: #8d969e !important;
+}

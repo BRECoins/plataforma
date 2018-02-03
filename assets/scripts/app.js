@@ -365,7 +365,7 @@ $(function () {
         socket.on('memberrequestotptoken', function(args) {
             var requestOtpToken = function(b64) {
                 var title = args.wrong ? "Token incorreto" : "Token de Login";
-                var text = args.otp ? "Insira o código gerado por seu aplicativo OTP:" : "Insira o código numérico enviado ao seu e-mail:"
+                var text = args.otp ? "Insira o código gerado por seu aplicativo:" : "Insira o código numérico enviado ao seu e-mail:"
                 swal({
                   title: title,
                   text: text,
@@ -973,7 +973,7 @@ $(function () {
         });
         socket.on('balance_crypto', function(bal) {
             window.common.max_crypto = bal;
-            $("[data-var=user_funds_crypto]").textBlink('Ƀ ' + (bal/1e8).toFixed(8));
+            $("[data-var=user_funds_crypto]").textBlink('฿ ' + (bal/1e8).toFixed(8));
             socket.emit('balance.simulateMarketSell', {amount_crypto: bal});
         });
         socket.on('balance_fiat', function(bal) {
@@ -1057,7 +1057,7 @@ $(function () {
                 stars_html += '<i class="fa fa-star"></i>';
             }
             for(i = data.user_level; i < data.max_level; i++) {
-                stars_html += '<i class="fa fa-star-o"></i>';
+                //stars_html += '<i class="fa fa-star-o"></i>';
             }
             $("[data-var=user_level_stars]").html(stars_html);
             $("[data-var=user_level]").text(data.user_level);
@@ -1071,7 +1071,7 @@ $(function () {
 
                 // form
                 if(data.user_level>0) {
-                    var upgrade_form = '<button class="button is-white" data-do="level_upgrade_toggle" style="display: none"><i class="fa fa-fw fa-arrow-left"></i> Voltar</button><hr/>';
+                    var upgrade_form = '<button class="button is-white is-invisible" data-do="level_upgrade_toggle" style="display: none"><i class="fa fa-fw fa-arrow-left"></i> Voltar</button><hr/>';
 
                     data.required_documents.forEach(function(doc) {
                         upgrade_form += '\
@@ -1107,7 +1107,7 @@ $(function () {
             $("[data-var=volumelow]").textBlink(money_format.fiat(data.low));
             $("[data-var=volumehigh]").textBlink(money_format.fiat(data.high));
             $("[data-var=volumeavg]").textBlink(money_format.fiat((data.low+data.high)/2));
-            $("[data-var=volincrease]").textBlink(money_format.fiat(data.high-data.low)+" "+((100*data.high)/data.low).toFixed(1)+"%");
+            $("[data-var=volincrease]").textBlink('Δ '+money_format.fiat(data.high-data.low)+" "+((100*data.high)/data.low).toFixed(1)+"%");
             var j = Object.keys(data.periods).length;
             for(i = 1; i <= j; i++) {
                 var x = parseInt((data.periods['p'+i].volume*100)/data.total_volume);
@@ -1364,7 +1364,7 @@ $(function () {
                             selection.removeAllRanges();
                             document.body.removeChild(node);
                         })($("[data-var=userwallet]").text());
-                        notifyme("Copiado!");
+                        notifyme("Endereço copiado!");
                         gtag('event', 'copy_wallet');
                         break;
 
@@ -1426,6 +1426,9 @@ $(function () {
 
                         if(price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida ("+money_format.fiat(best.selling())+"). Continuar?")) return;
 
+                        $("#basic_orders_buy_amount").val("");
+                        $("#basic_orders_buy_price").val("");
+
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
                             'crypto_price': price,
@@ -1443,6 +1446,9 @@ $(function () {
                         var price = money_format.from.fiat($("#basic_orders_sell_price").val());
 
                         if(price > best.buying() && !confirm("Seu preço está acima da melhor oferta ("+money_format.fiat(best.buying())+"). Continuar?")) return;
+
+                        $("#basic_orders_sell_amount").val("");
+                        $("#basic_orders_sell_price").val("");
 
                         socket.emit('orders.sell', {
                             'crypto_amount': amount,
@@ -1462,6 +1468,9 @@ $(function () {
 
                         if(price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida ("+money_format.fiat(best.selling())+"). Continuar?")) return;
 
+                        $("#limitbuy_amount").val("");
+                        $("#limitbuy_maxprice").val("");
+
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
                             'crypto_price': price,
@@ -1479,6 +1488,9 @@ $(function () {
                         var price = money_format.from.fiat($("#limitsell_minprice").val());
 
                         if(price > best.buying() && !confirm("Seu preço está acima da melhor oferta ("+money_format.fiat(best.buying())+"). Continuar?")) return;
+
+                        $("#limitsell_amount").val("");
+                        $("#limitsell_minprice").val("");
 
                         socket.emit('orders.sell', {
                             'crypto_amount': amount,
@@ -1498,6 +1510,9 @@ $(function () {
 
                         if(price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida ("+money_format.fiat(best.selling())+"). Continuar?")) return;
 
+                        $("#limitbuy_amount_basic").val("");
+                        $("#limitbuy_maxprice_basic").val("");
+
 
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
@@ -1515,7 +1530,11 @@ $(function () {
 
                         var price = money_format.from.fiat($("#limitsell_minprice_basic").val());
 
+
                         if(price > best.buying() && !confirm("Seu preço está acima da melhor oferta ("+money_format.fiat(best.buying())+"). Continuar?")) return;
+
+                        $("#limitsell_amount_basic").val("");
+                        $("#limitsell_minprice_basic").val("");
 
 
                         socket.emit('orders.sell', {
@@ -1536,6 +1555,9 @@ $(function () {
 
                         if(price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida ("+money_format.fiat(best.selling())+") e uma ordem de limite será lançada. Continuar?")) return;
 
+                        $("#marketbuy_amount").val("");
+                        $("#marketbuy_maxprice").val("");
+
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
                             'crypto_price': price,
@@ -1552,7 +1574,12 @@ $(function () {
 
                         var price = money_format.from.fiat($("#marketsell_minprice").val());
 
+
                         if(price > best.buying() && !confirm("Seu preço está acima da melhor oferta ("+money_format.fiat(best.buying())+") e uma ordem de limite será lançada. Continuar?")) return;
+
+
+                        $("#marketsell_amount").val("");
+                        $("#marketsell_minprice").val("");
 
                         socket.emit('orders.sell', {
                             'crypto_amount': amount,
@@ -1569,6 +1596,8 @@ $(function () {
                         var amount = money_format.from.crypto($("#stoplimitbuy_amount").val());
 
                         var trigger = money_format.from.fiat($("#stoplimitbuy_trigger").val());
+
+
                         swal({
                           title: 'Preço máximo de compra',
                           input: 'text',
@@ -1578,6 +1607,8 @@ $(function () {
                           allowOutsideClick: true
                         }).then(function (price) {
                             price = money_format.from.fiat(price);
+                            $("#stoplimitbuy_amount").val("");
+                            $("#stoplimitbuy_trigger").val("");
                             socket.emit('orders.stoplimit', {
                                 'type': 'buy',
                                 'crypto_amount': amount,
@@ -1596,6 +1627,8 @@ $(function () {
                         var amount = money_format.from.crypto($("#stoplimitsell_amount").val());
 
                         var trigger = money_format.from.fiat($("#stoplimitsell_trigger").val());
+
+
                         swal({
                           title: 'Preço mínimo de venda',
                           input: 'text',
@@ -1604,6 +1637,8 @@ $(function () {
                           showLoaderOnConfirm: true,
                           allowOutsideClick: true
                         }).then(function (price) {
+                            $("#stoplimitsell_amount").val("");
+                            $("#stoplimitsell_trigger").val("");
                             price = money_format.from.fiat(price);
                             socket.emit('orders.stoplimit', {
                                 'type': 'sell',
@@ -1882,7 +1917,7 @@ $(function () {
                         var secret = randomString(20);
                         var uri = "otpauth://totp/" + encodeURIComponent('BRECoins' + ":" + window.common.udata.email) + "?secret=" + base32.encode(secret) + "&issuer=BRE+Coins";
                         swal({
-                          title: 'Ativar Autenticação em Dois Fatores',
+                          title: 'Ativar 2FA',
                           text: 'Digite a senha de sua conta para habilitar a autenticação em dois fatores.',
                           input: 'password',
                           showCancelButton: true,
@@ -1891,8 +1926,8 @@ $(function () {
                           allowOutsideClick: true
                         }).then(function (password) {
                             swal({
-                              title: 'Ativar OTP',
-                              html: 'Leia o QR Code com um aplicativo como o Authy ou Google Authenticator e insira o código gerado no campo abaixo.\
+                              title: 'Ativar 2FA',
+                              html: 'Escaneie o QR Code com o Authy ou o Google Authenticator e insira o código gerado no campo abaixo.\
                                     <br><img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='+encodeURIComponent(uri)+'" />',
                               input: 'text',
                               showCancelButton: true,
@@ -2189,7 +2224,7 @@ $(function () {
         // coinmarketcap price
         (function updateCoinmarketcap() {
             $.getJSON('https://api.coinmarketcap.com/v1/ticker/bitcoin/', function (data) {
-                $("[data-var=coinmarketcap]").textBlink(accounting.formatMoney(data[0].price_usd));
+                $("[data-var=coinmarketcap]").textBlink('US'+accounting.formatMoney(data[0].price_usd, '$ '));
                 setTimeout(updateCoinmarketcap, 15000);
             });
         })();
@@ -2496,7 +2531,7 @@ window.recaptchaLoadCaptchas = function() {
 // accounting
 window.money_format = {
     "crypto": function(val) {
-        return accounting.formatMoney(val/1e8, 'Ƀ ', 8, '.', ',');
+        return accounting.formatMoney(val/1e8, '฿ ', 8, '.', ',');
     },
     "fiat": function(val) {
         return accounting.formatMoney(val/1e2, 'R$ ', 2, '.', ',');

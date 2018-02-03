@@ -14,19 +14,19 @@
                         <div class="content">
                             <div class="field">
                                 <div class="control">
-                                    <input class="input" data-var="current_pwd" type="password" placeholder="Senha atual">
+                                    <input class="input" data-var="current_pwd" type="password" placeholder="Digite sua senha atual">
                                 </div>
                             </div>
 
                             <div class="field">
                                 <div class="control">
-                                    <input class="input" data-var="new_pwd" type="password" placeholder="Nova senha">
+                                    <input class="input" data-var="new_pwd" type="password" placeholder="Digite sua nova senha">
                                 </div>
                             </div>
 
                             <div class="field">
                                 <div class="control">
-                                    <input class="input" data-var="new_pwd2" type="password" placeholder="Nova senha (confirmação)">
+                                    <input class="input" data-var="new_pwd2" type="password" placeholder="Confirme sua nova senha">
                                 </div>
                             </div>
 
@@ -56,17 +56,17 @@
                             </div>
                             <div class="column is-9">
                                 <div class="content">
-                                    <p>Sincronize sua conta para gerar tokens utilizando um aplicativo TOTP em seu smartphone, como o
+                                    <p>Baixe o 
                                         <a href="https://www.authy.com" class="link" target="_blank">Authy</a> ou
-                                        <a href="https://support.google.com/accounts/answer/1066447" class="link" target="_blank">Google Authenticator</a>.
+                                        <a href="https://support.google.com/accounts/answer/1066447" class="link" target="_blank">Google Authenticator</a> para ativar a autenticação de dois fatores.
                                         <hr>
                                         <span data-if="otp_enabled">
                                             <a href="javascript:void(0);" data-do="disable_otp" class="button is-warning">
                                               <i class="fa fa-key"></i>
-                                              Desativar Autenticação em 2 Fatores</a>
+                                              Desativar Autenticação de 2 Fatores</a>
                                         </span>
                                         <span data-ifnot="otp_enabled">
-                                            <a href="javascript:void(0);" data-do="enable_otp" class="button is-primary"><i class="fa fa-fw fa-key"></i> Ativar Autenticação em 2 Fatores</a>
+                                            <a href="javascript:void(0);" data-do="enable_otp" class="button is-primary"><i class="fa fa-fw fa-key"></i> Ativar Autenticação de 2 Fatores</a>
                                         </span>
                                         <br><br>
                                         <span data-if="facial_enabled">
@@ -90,7 +90,7 @@
     <div class="card">
         <header class="card-header">
             <p class="card-header-title">
-                Sessões Ativas
+                Locais conectados
             </p>
         </header>
         <div class="card-content">
