@@ -1,6 +1,6 @@
 window.VERSION = "0.6";
 window.BACKEND = "https://backend.brecoins.com.br";
-window.CDN = "https://cdn.brecoins.com.br/~bre/";
+window.CDN = "https://brecoins.s3.amazonaws.com/";
 window.EXCHANGE = 1;
 window.common = {
     crypto_currency: {
@@ -29,7 +29,7 @@ Array.prototype.remove = function() {
 
 swal.setDefaults({
     buttonsStyling: false,
-    confirmButtonClass: 'button is-primary',
+    confirmButtonClass: 'button is-dark',
     cancelButtonClass: 'button is-secondary'
 });
 
@@ -173,14 +173,14 @@ $(function () {
         });
 
 
-        if(store('trading_interface')=='basic') {
-            loadView('basic');
+        if(store('trading_interface')=='advanced') {
+            loadView('main');
             //$("#sidebar-menu").addClass("is-basic");
-            $(".trader-button").text("TRADER");
+            $(".trader-button").text("BÁSICO");
         }
         else {
-            loadView('main');
-            $(".trader-button").text("BÁSICO");
+            loadView('basic');
+            $(".trader-button").text("TRADER");
         }
 
         $("[data-var=version]").text(VERSION);
@@ -472,7 +472,7 @@ $(function () {
             }, 500);
             
             $("#splash").fadeOut(1000);
-            loadView('main');
+            loadView('basic');
             setTimeout(function() {
                 $("[data-var=chart]").attr('src', '/chart.html?'+Math.random());
             }, 5000);
@@ -578,11 +578,11 @@ $(function () {
                 // intro
                 if(!store.get('intro_'+window.common.UID)) {
                 	store.set('intro_'+window.common.UID, 1);
-                    introJs().setOption("nextLabel", " > ")
+                    /*introJs().setOption("nextLabel", " > ")
                         .setOption("prevLabel", " < ")
                         .setOption("skipLabel", "Sair")
                         .setOption("doneLabel", "Fechar")
-                        .start();
+                        .start();*/
                 }
             }, 5000);
 
@@ -1895,7 +1895,7 @@ $(function () {
 
                                     } else {
                                         loadingOff();
-                                        swal("Erro", "Erro durante o upload. Verifique sua conexão e tente novamente.", "error");
+                                        //swal("Erro", "Erro durante o upload. Verifique sua conexão e tente novamente.", "error");
                                     }
                                 });
                             } else {
@@ -2345,7 +2345,29 @@ $(function () {
 
 window.upload = function(file, cb) {
     var form = new FormData();
+
+    if(!file || typeof file == 'undefined') {
+        swal("Nenhum Arquivo Selecionado", "Por favor, selecione um arquivo.", "warning");
+        cb(true);
+        return;
+    }
+
     form.append('file', file);
+
+    var ext = file.name.split(".");
+        ext = String(ext[ext.length-1]).toLowerCase();
+    
+    if(!ext.match(/^(pdf|jpg|jpeg|gif|bmp|png)$/)) {
+        swal("Formato Inválido", "Os formatos aceitos para o upload são: PDF, JPEG, GIF, BMP e PNG.", "error");
+        cb(true);
+        return;
+    }
+
+    if(file.size > 25000000) {
+        swal("Tamanho Inválido", "Os arquivos enviados não devem ultrapassar o limite de 25MB.", "error");
+        cb(true);
+        return;
+    }
 
     $.ajax({
         url: window.BACKEND+'/upload?sess_key='+localStorage.getItem('sess_key'),
