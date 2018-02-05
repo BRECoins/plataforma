@@ -150,7 +150,7 @@ $(function () {
         window.algoeditor = ace.edit("algorithm-editor");
         algoeditor.session.setMode("ace/mode/javascript");
 
-        $("button,a.button").click(function() {
+        $(".loadingonclick").click(function() {
             var $el = $(this);
             var default_html = $el.html();
             $el.html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
