@@ -150,6 +150,15 @@ $(function () {
         window.algoeditor = ace.edit("algorithm-editor");
         algoeditor.session.setMode("ace/mode/javascript");
 
+        $("button,a.button").click(function() {
+            var $el = $(this);
+            var default_html = $el.html();
+            $el.html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+            setTimeout(function() {
+                $el.html(default_html);
+            }, 4000);
+        });
+
         // phone
         $("input[type=tel]").intlTelInput({
             geoIpLookup: function(callback) {
@@ -1402,10 +1411,14 @@ $(function () {
 
                     case 'createFiatDeposit':
                         var bank = $("#bank_id").val();
+                        var amount = money_format.from.fiat($("#valorDeposito").val());
                         if(!bank) {
                             swal("Escolha um banco", "Selecione um banco para realizar o depósito.", 'warning');
                         } else {
-                            var amount = money_format.from.fiat($("#valorDeposito").val());
+                            if(amount<100000) {
+                                swal("Abaixo do Mínimo", "O valor mínimo para depósito é de R$ 1.000,00.", "warning");
+                                return;
+                            }
                             if(amount) {
                                 $("#depositModalBank").html($("#bankdetail-"+bank).html());
                                 socket.emit('deposit.deposit_fiat', {
@@ -2027,6 +2040,10 @@ $(function () {
                     case 'createFiatWithdraw':
                         var amount = money_format.from.fiat($("#valorFiatSaque").val());
                         if(!amount) return;
+                        if(amount<100000) {
+                            swal("Abaixo do Mínimo", "O valor mínimo para saque é de R$ 1.000,00.", "warning");
+                            return;
+                        }
                         socket.emit('withdrawals.withdraw_fiat', {
                             sess_key: localStorage.getItem('sess_key'),
                             bank: {
