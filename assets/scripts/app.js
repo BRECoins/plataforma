@@ -1095,7 +1095,7 @@ $(function () {
                                         <i class="fa fa-upload"></i>\
                                     </span>\
                                     <span class="file-label">\
-                                        '+(doc.doccode ? doc.docname : '<select data-var="doc-0-type"><option value="2">RG</option><option value="4">CNH</option><option value="12">Passaporte</option></select>')+'\
+                                        '+(parseInt(doc.doccode) ? doc.docname : '<select data-var="doc-0-type"><option value="2">RG</option><option value="4">CNH</option><option value="12">Passaporte</option></select>')+'\
                                     </span>\
                                 </span>\
                                 <span class="file-name" data-var="doc-'+doc.doccode+'-filename"><i class="fa fa-paperclip"></i></span>\
@@ -1858,6 +1858,9 @@ $(function () {
                     	if(!$("[data-var=user_cpf]").val() || !$("[data-var=user_gender]").val()) {
                             return swal("CPF Necessário", "Para realizar upgrade de nível, informe seu CPF e gênero.", "error");
                         }
+                        /*if($("[data-var=doc-0-type]").length && !$("[data-var=doc-0-type]").val()) {
+                            return swal("Tipo de documento necessário", "Informe o tipo de documento utilizado no campo Identificação.", "error");
+                        }*/
                         loadingOn();
                         var docs = [];
 
