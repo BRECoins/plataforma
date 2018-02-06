@@ -1105,8 +1105,10 @@ $(function () {
 
                     upgrade_form += '<br><button class="button is-primary" data-do="create_upgrade_process"><b>Enviar Documentos</b></button>';
 
-                    if(!$(".file-name").text().trim() && ((old_next_level_name.trim() && old_next_level_name != $("[data-var=next_level_name]").text()) || !old_next_level_name.trim()))
+                    //if(!$(".file-name").text().trim() && ((old_next_level_name.trim() && old_next_level_name != $("[data-var=next_level_name]").text()) || !old_next_level_name.trim())) {
+                    if(!$("#level_upgrade_form").text().trim() || ( $($("[data-var=user_level]")[0]).text() != data.user_level )) {   
                         $("#level_upgrade_form").html(upgrade_form);
+                    }
                 } else {
                     $("#level_upgrade_btn").hide();
                 }
@@ -1866,6 +1868,7 @@ $(function () {
                             return swal("Tipo de documento necessário", "Informe o tipo de documento utilizado no campo Identificação.", "error");
                         }*/
                         loadingOn();
+                        setTimeout(loadingOff, 10000);
                         var docs = [];
 
                         var create_upgrade_process_finish = function(docs) {
