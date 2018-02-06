@@ -1409,6 +1409,10 @@ $(function () {
                         $("#bankdetail-"+bankid+" div").show();
                         break;
 
+                    case 'go_upgrade_page':
+                        $("[data-goto=account],[data-tab=account_docs][data-group=account]").click();
+                        break;
+
                     case 'createFiatDeposit':
                         var bank = $("#bank_id").val();
                         var amount = money_format.from.fiat($("#valorDeposito").val());
