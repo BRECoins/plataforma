@@ -2550,6 +2550,7 @@ window.takeWebcamPicture = function(cb) {
     }
     
     var errorCallback = function(code, description){
+        closeModal('webcam');
         swal("Erro "+code, "Erro ao abrir webcam: "+description, "error");
     }
 
