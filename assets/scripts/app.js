@@ -1,7 +1,7 @@
 window.VERSION = "0.6";
 
 if(getQueryVariable('testnet')=='1' && confirm("Você está acessando a plataforma no modo Testnet. LEIA ATENTAMENTE AS SEGUINTES INFORMAÇÕES PARA NÃO SER VÍTIMA DE GOLPES.\n\nNeste modo, todos os bitcoins depositados NÃO POSSUEM VALOR ALGUM. As contas registradas na plataforma não estão disponíveis no ambiente testnet (é necessário um novo registro), e a base de dados pode ser redefinida a qualquer momento. Além disso, saques e depósitos em reais NÃO SERÃO REALIZADOS.\nEste ambiente é destinado a DESENVOLVEDORES exclusivamente, para testes de algoritmos sem risco de perdas de fundos.\n\nTem certeza que deseja continuar em testnet?") ) {
-    window.BACKEND = "https://backend-testnet.brecoins.com.br:8443";
+    window.BACKEND = "https://testnet-backend.brecoins.com.br:8443";
     setInterval(function() {
         if(!document.title.match(/^TESTNET/)) document.title = "TESTNET - "+document.title;
     }, 5000);
