@@ -690,16 +690,18 @@ $(function () {
         socket.on('myoldorders', function(rows) {
             $("[data-var=oldorderlist] tr").remove();
             rows.forEach(function(row) {
-                var ordertype = row.type=='sell' ? "Venda" : "Compra";
-                $("[data-var=oldorderlist]").append('\
-                    <tr class="myoldorder_'+row.id+'">\
-                        <td>'+jsmoment(row.created_at).format('llll')+'</td>\
-                        <td>'+ordertype+'</td>\
-                        <td>\
-                            '+money_format.crypto(Math.max(row.initial_amount_fiat, row.initial_amount_crypto))+'<br>\
-                            '+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'\
-                        </td>\
-                    </tr>');
+                if(!parseInt(row.amount_fiat) && !parseInt(row.amount_crypto)) {
+                    var ordertype = row.type=='sell' ? "Venda" : "Compra";
+                    $("[data-var=oldorderlist]").append('\
+                        <tr class="myoldorder_'+row.id+'">\
+                            <td>'+jsmoment(row.created_at).format('llll')+'</td>\
+                            <td>'+ordertype+'</td>\
+                            <td>\
+                                '+money_format.crypto(Math.max(1e8*row.initial_amount_fiat/Math.max(row.crypto_price_min, row.crypto_price_max), row.initial_amount_crypto))+'<br>\
+                                '+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'\
+                            </td>\
+                        </tr>');
+                }
             });
         });
         socket.on('myspecialorders', function(rows) {
