@@ -1,8 +1,35 @@
 <div class="card-content">
     <div id="signup_1">
+        <div class="steps is-small">
+          <div class="step-item is-active">
+            <div class="step-marker"></div>
+            <div class="step-details">
+              <p class="step-title">Conta</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-marker"></div>
+            <div class="step-details">
+              <p class="step-title">Detalhes</p>
+            </div>
+          </div>
+        </div>
         <div class="field">
             <input class="input has-float-label is-fullwidth" required type="text" data-var="signup_name">
             <label><span>Nome</span></label>
+        </div>
+        <div class="field">
+            <input class="input has-float-label is-fullwidth" required type="text" data-mask="cpfCnpj" data-var="signup_cpf">
+            <label><span>CPF</span></label>
+        </div>
+        <div class="field">
+            <div class="select is-fullwidth">
+                <select data-var="signup_gender">
+                    <option selected disabled>Gênero</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                </select>
+            </div>
         </div>
         <div class="field">
             <input class="input has-float-label is-fullwidth" required type="email" data-var="signup_email">
@@ -31,15 +58,33 @@
         </div>
     </div>
     <div id="signup_2" style="display: none">
+        <div class="steps is-small">
+          <div class="step-item is-completed">
+            <div class="step-marker">
+              <span class="icon">
+                <i class="fa fa-check"></i>
+              </span>
+            </div>
+            <div class="step-details">
+              <p class="step-title">Conta</p>
+            </div>
+          </div>
+          <div class="step-item is-active">
+            <div class="step-marker"></div>
+            <div class="step-details">
+              <p class="step-title">Detalhes</p>
+            </div>
+          </div>
+        </div>
         <div class="field">
-            <div class="select">
+            <div class="select is-fullwidth">
                 <select data-var="signup_country" class="countrylist" data-do="georegions">
                     <option selected disabled>País</option>
                 </select>
             </div>
         </div>
         <div class="field">
-            <div class="select">
+            <div class="select is-fullwidth">
                 <select class="regionlist" data-var="signup_region">
                     <option selected disabled>Estado/região</option>
                 </select>
@@ -69,7 +114,7 @@
               </p>
             </div>
             <div class="column">
-                <button class="button is-medium is-fullwidth is-light" data-do="signup">
+                <button class="button is-medium is-fullwidth is-light loadingonclick" data-do="signup">
                   Criar conta
                 </button>
             </div>

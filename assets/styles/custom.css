@@ -721,3 +721,32 @@ h1.title,h2.subtitle {
 .no-hover-color:hover {
   color: black !important;
 }
+
+.intl-tel-input {
+    display: block !important;
+}
+
+.select select {
+  border: none;
+  border-bottom: 1px solid #F0F1F2;
+}
+
+.input[type=tel] {
+    border: none;
+    box-shadow: none;
+    border-bottom: 1px solid #F0F1F2;
+}
+
+[class*=hint--].addallbtc {
+  display: table-cell !important;
+}
+
+#bankdetail {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  #AcessoFrame {
+    transform: translateX(-56%);
+  }
+}

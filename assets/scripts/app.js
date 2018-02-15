@@ -160,14 +160,17 @@ $(function () {
         window.algoeditor = ace.edit("algorithm-editor");
         algoeditor.session.setMode("ace/mode/javascript");
 
-        $(".loadingonclick").click(function() {
-            var $el = $(this);
+        var loadingonclick = function($el) {
             var default_html = $el.html();
+            $el.prop("disabled", true);
             $el.html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
             setTimeout(function() {
+                $el.prop("disabled", false);
                 $el.html(default_html);
             }, 4000);
-        });
+            return false;
+        }
+        //$(".loadingonclick").bind('click', loadingonclick);
 
         // phone
         $("input[type=tel]").intlTelInput({
@@ -179,6 +182,19 @@ $(function () {
             },
             preferredCountries: ["br"],
             utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/12.1.6/js/utils.js"
+        });
+        $("input[type=tel]").on("keyup change", function() {
+          if (typeof intlTelInputUtils !== 'undefined') {
+              var currentText = $(this).intlTelInput("getNumber", intlTelInputUtils.numberFormat.E164);
+              if (typeof currentText === 'string') { 
+                  $(this).intlTelInput('setNumber', currentText);
+              }
+              var numberType = $(this).intlTelInput("getNumberType");
+              if(numberType >= 0 && numberType!=1 && numberType!=2) {
+                $(this).intlTelInput('setNumber', '');
+                swal("Apenas celulares", "Para fins de confirmação via SMS, você precisa informar um número de celular.");
+              }
+          }
         });
 
         // views
@@ -195,11 +211,11 @@ $(function () {
         if(store('trading_interface')=='advanced') {
             loadView('main');
             //$("#sidebar-menu").addClass("is-basic");
-            $(".trader-button").text("BÁSICO");
+            $(".trader-button").text("TRADER");
         }
         else {
             loadView('basic');
-            $(".trader-button").text("TRADER");
+            $(".trader-button").text("BÁSICO");
         }
 
         $("[data-var=version]").text(VERSION);
@@ -265,6 +281,8 @@ $(function () {
                 inputmask($(this)[0], mask);
             });
         })
+
+        /* BOOT FINISHED */
 
         // io callback
         socket.on('geocountrylist', function(countries) {
@@ -603,7 +621,7 @@ $(function () {
                         .setOption("doneLabel", "Fechar")
                         .start();*/
                 }
-            }, 5000);
+            }, 2500);
 
             updateordertypes();
         });
@@ -805,12 +823,13 @@ $(function () {
                             </a>';
                 });
                 $("[data-var=notifications]").html(html_n);
-                $("#notification_icon").addClass('bell fa-bell').removeClass('fa-bell-o');
+                $("#notification_icon").addClass('fa-bell').removeClass('fa-bell-o'); // .bell = ringing effect
+                $("#notification_icon").attr("data-badge", rows.length).addClass("badge is-badge-small is-badge-danger");
 
                 var new_length = $("[data-var=notifications] a").length;
                 if(new_length > old_length) playNotify();
             } else {
-                $("#notification_icon").addClass("fa-bell-o").removeClass("bell fa-bell");
+                $("#notification_icon").addClass("fa-bell-o").removeClass("bell fa-bell badge is-badge-small is-badge-danger").removeAttr("data-badge");
                 $("[data-var=notifications]").html('<div class="item is-fullwidth">\
                                 Sem notificações\
                             </div>');
@@ -871,7 +890,7 @@ $(function () {
                         row_html = '<a class="button is-small is-light" style="border: 1px solid #dbdbdb; height: 24px !important" target="_blank" href="https://blockcypher.com/btc/tx/'+row.txid+'">Ver</a>';
                         break;
                     case 'disapproved':
-                        status = 'Falhou';
+                        status = 'Cancelada';
                         color = 'danger';
                         row_html = "-";
                         break;
@@ -971,6 +990,8 @@ $(function () {
                         color = 'success';
                         row_html = "";
                         break;
+                    case 'cancelled':
+                        return;
                     case 'disapproved':
                         status = 'Reprovado';
                         show_date = true;
@@ -987,7 +1008,7 @@ $(function () {
                             '+row_html+'\
                         </td>\
                         <td>\
-                            <span class="tag is-'+color+'" style="height: 24px !important; '+(border ? 'border: '+border : '')+'">'+status+'</span>\
+                            <span class="tags has-addons"><span class="tag is-'+color+'" style="height: 24px !important; '+(border ? 'border: '+border : '')+'">'+status+'</span>'+(status=='Pendente' ? '<a class="tag is-delete" title="Cancelar Ordem" data-id="'+row.id+'" data-do="cancel_fiat_deposit"></a>' : '')+'</span>\
                             '+(show_date ? '<br><sub>'+jsmoment(row.updated_at).calendar()+'</sub>' : '')+'\
                         </td>\
                     </tr>\
@@ -1146,7 +1167,7 @@ $(function () {
             }
         });
 
-        $(".addallbtc").click(function() {
+        $(".addallbtc").addClass("hint--right").attr("aria-label", "Inserir todo o saldo em BTC").click(function() {
             $("#"+$(this).data('target')).val($($("[data-var=user_funds_crypto]")[0]).text().substr(2));
         });
         /*$(".addallbrl").click(function() {
@@ -1204,6 +1225,7 @@ $(function () {
         })
         $(document).on("click change", "[data-do]", function(e) {
             $this = $(this);
+            if($this.hasClass('loadingonclick')) loadingonclick($this);
             let action_do_list = $(this).data('do').split(" ");
             action_do_list.forEach(function(action_do) {
                 switch (action_do) {
@@ -1417,7 +1439,9 @@ $(function () {
 
                     case 'changeActiveBank':
                         var bankid = $this.data('bank-id');
+                        var bankname = $this.text();
                         $("#bank_id").val(bankid);
+                        $("#bank-name").text(bankname);
                         $("#bankdetail div").hide();
                         $("#bankdetail-" + bankid).show();
                         $("#bankdetail-"+bankid+" div").show();
@@ -1472,7 +1496,7 @@ $(function () {
                             'sess_key': localStorage.getItem('sess_key')
                         });
                         gtag('event', 'basic_trader_create_buy_order');
-                        notifyme("Enviando ordem...", "info");
+                        // notifyme("Enviando ordem...", "info");
                         break;
 
                     case 'basic_sell':
@@ -1494,7 +1518,7 @@ $(function () {
                             'sess_key': localStorage.getItem('sess_key')
                         });
                         gtag('event', 'basic_trader_create_sell_order');
-                        notifyme("Enviando ordem...", "info");
+                        // notifyme("Enviando ordem...", "info");
                         break;
 
                     case 'limit_buy':
@@ -1516,7 +1540,7 @@ $(function () {
                             'sess_key': localStorage.getItem('sess_key')
                         });
                         gtag('event', 'create_limit_buy_order');
-                        notifyme("Enviando ordem...", "info");
+                        // notifyme("Enviando ordem...", "info");
                         break;
 
                     case 'limit_sell':
@@ -1538,7 +1562,7 @@ $(function () {
                             'sess_key': localStorage.getItem('sess_key')
                         });
                         gtag('event', 'create_limit_sell_order');
-                        notifyme("Enviando ordem...", "info");
+                        // notifyme("Enviando ordem...", "info");
                         break;
 
                     case 'limit_buy_basic':
@@ -1561,7 +1585,7 @@ $(function () {
                             'sess_key': localStorage.getItem('sess_key')
                         });
                         gtag('event', 'basic_trader_create_limit_buy_order');
-                        notifyme("Enviando ordem...", "info");
+                        // notifyme("Enviando ordem...", "info");
                         break;
 
                     case 'limit_sell_basic':
@@ -1585,7 +1609,7 @@ $(function () {
                             'sess_key': localStorage.getItem('sess_key')
                         });
                         gtag('event', 'basic_trader_create_limit_sell_order');
-                        notifyme("Enviando ordem...", "info");
+                        // notifyme("Enviando ordem...", "info");
                         break;
 
                     case 'market_buy':
@@ -1607,7 +1631,7 @@ $(function () {
                             'sess_key': localStorage.getItem('sess_key')
                         });
                         gtag('event', 'create_market_buy_order');
-                        notifyme("Enviando ordem...", "info");
+                        // notifyme("Enviando ordem...", "info");
                         break;
 
                     case 'market_sell':
@@ -1631,7 +1655,7 @@ $(function () {
                             'sess_key': localStorage.getItem('sess_key')
                         });
                         gtag('event', 'create_market_sell_order');
-                        notifyme("Enviando ordem...", "info");
+                        // notifyme("Enviando ordem...", "info");
                         break;
 
                     case 'stoplimit_buy':
@@ -1662,7 +1686,7 @@ $(function () {
                                 'sess_key': localStorage.getItem('sess_key')
                             });
                             gtag('event', 'create_stop_limit_buy_order');
-                            notifyme("Enviando ordem...", "info");
+                            // notifyme("Enviando ordem...", "info");
                         })
                         break;
 
@@ -1694,7 +1718,7 @@ $(function () {
                                 'sess_key': localStorage.getItem('sess_key')
                             });
                             gtag('event', 'create_stop_limit_sell_order');
-                            notifyme("Enviando ordem...", "info");
+                            // notifyme("Enviando ordem...", "info");
                         })
                         break;
 
@@ -1745,6 +1769,25 @@ $(function () {
                         $("[data-var=chart]").attr('src', '/chart.html?'+Math.random());
                         break;
 
+                    case 'cancel_fiat_deposit':
+                        var the_id = $this.data('id');
+                        swal({
+                          title: 'Excluir Ordem',
+                          text: "Tem certeza que deseja excluir esta ordem?",
+                          type: 'warning',
+                          showCancelButton: true,
+                          confirmButtonColor: '#d33',
+                          cancelButtonColor: '#3085d6',
+                          confirmButtonText: 'Sim, excluir.'
+                        }).then(function () {
+                          $this.closest('tr').slideUp();
+                          socket.emit('deposit.cancel_fiat', {
+                            f: the_id,
+                            sess_key: localStorage.getItem('sess_key')
+                          });
+                        })
+                        break;
+
                     case 'signup':
                         if(!$("[data-var=signup_telephone]").intlTelInput("isValidNumber")) {
                             swal("Telefone inválido", "Por favor, insira seu telefone corretamente.", "warning");
@@ -1759,6 +1802,8 @@ $(function () {
                                 ,city: $("[data-var=signup_city]").val()
                                 ,phone: $("[data-var=signup_telephone]").intlTelInput("getNumber")
                                 ,fullname: $("[data-var=signup_name]").val()
+                                ,cpf: $("[data-var=signup_cpf]").val()
+                                ,gender: $("[data-var=signup_gender]").val()
                             };
                             $("[data-var=signin-email]").val(data.email);
                             $("[data-var=signin-password]").val(data.password);
@@ -1902,7 +1947,7 @@ $(function () {
                                         name: $("[data-var=user_fullname_input]").val(),
                                         docs: docs
                                     });
-                                    $(".file-name").html('<i class="fa fa-paperclip"></i>');
+                                    //$(".file-name").html('<i class="fa fa-paperclip"></i>');
                                     gtag('event', 'documents_upload');
                                 });
                             }
@@ -2534,55 +2579,67 @@ function mask__money_crypto(v) {
 
 
 window.takeWebcamPicture = function(cb) {
-    showModal('webcam');
-    AcessoCaptureFrame = new CaptureFrame("https://crediariohomolog.acesso.io/", '7E426BC2-652E-4BCE-B6A1-7922FA44EBC9');;
+    swal({
+      title: 'Agora, precisamos de uma foto sua.',
+      text: "Por favor, retire seus óculos, chapéu e objetos que possam ocultar parte de seu rosto.\nQuando estiver pronto, clique em \"Abrir Câmera\".",
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Abrir Câmera',
+      cancelButtonText: 'Cancelar'
+    }).then(function() {
+        showModal('webcam');
 
-    var successCallback = function() {
-        $("#webcamAction").off('click').on('click', function() {
-            AcessoCaptureFrame.takeSnapshot(
-                function (base64, base64_Ir) {
-                    AcessoCaptureFrame.stopCamera();
-                    swal({
-                      title: 'Confirmar Foto',
-                      html:
-                        '<img src="'+base64+'" style="max-height: 60vh;" />',
-                      showCloseButton: true,
-                      showCancelButton: true,
-                      confirmButtonText:
-                        '<i class="fa fa-thumbs-up"></i> Usar',
-                      cancelButtonText:
-                        '<i class="fa fa-thumbs-down"></i> Tentar novamente'
-                    }).then(function(ret) {
-                        closeModal('webcam');
-                        if(ret) {
-                            cb(base64);
-                        } else {
+        AcessoCaptureFrame = new CaptureFrame("https://crediariohomolog.acesso.io/", '7E426BC2-652E-4BCE-B6A1-7922FA44EBC9');;
+
+        var successCallback = function() {
+            $("#webcamAction").off('click').on('click', function() {
+                AcessoCaptureFrame.takeSnapshot(
+                    function (base64, base64_Ir) {
+                        AcessoCaptureFrame.stopCamera();
+                        swal({
+                          title: 'Confirmar Foto',
+                          html:
+                            '<img src="'+base64+'" style="max-height: 60vh;" />',
+                          showCloseButton: true,
+                          showCancelButton: true,
+                          confirmButtonText:
+                            '<i class="fa fa-thumbs-up"></i> Usar',
+                          cancelButtonText:
+                            '<i class="fa fa-thumbs-down"></i> Tentar novamente'
+                        }).then(function(ret) {
+                            closeModal('webcam');
+                            if(ret) {
+                                cb(base64);
+                            } else {
+                                window.takeWebcamPicture(cb);
+                            }
+                        }).catch(function() {
+                            closeModal('webcam');
                             window.takeWebcamPicture(cb);
-                        }
-                    }).catch(function() {
-                        closeModal('webcam');
-                    	window.takeWebcamPicture(cb);
-                    })
-                }
-            );
-        });
-    }
-    
-    var errorCallback = function(code, description){
-        closeModal('webcam');
-        swal("Erro "+code, "Erro ao abrir webcam: "+description, "error");
-    }
+                        })
+                    }
+                );
+            });
+        }
+        
+        var errorCallback = function(code, description){
+            closeModal('webcam');
+            swal("Erro "+code, "Erro ao abrir webcam: "+description, "error");
+        }
 
-    AcessoCaptureFrame.create(successCallback, function(){
-        AcessoCaptureFrame.create(successCallback, errorCallback, { enableIR: false, crop_on_capture: true, showIR: false, frameType: 'face', mirror: true, width: '320px', height: '240px' });
-    }, { enableIR: false, crop_on_capture: true, showIR: true, frameType: 'face', mirror: true, width: '640px', height: '360px' });
+        AcessoCaptureFrame.create(successCallback, function(){
+            AcessoCaptureFrame.create(successCallback, errorCallback, { enableIR: false, crop_on_capture: true, showIR: false, frameType: 'face', mirror: true, width: '320px', height: '240px' });
+        }, { enableIR: false, crop_on_capture: true, showIR: true, frameType: 'face', mirror: true, width: '640px', height: '360px' });
 
 
-    $("#webcamClose").off('click').on('click', function() {
-        AcessoCaptureFrame.stopCamera();
-        closeModal('webcam');
+        $("#webcamClose").off('click').on('click', function() {
+            closeModal('webcam');
+            try {
+                AcessoCaptureFrame.stopCamera();
+            } catch(e) {}
+        })
     })
-    
 }
 
 // loading animation
