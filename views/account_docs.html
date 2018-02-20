@@ -42,7 +42,33 @@
 </div>
 
 <div class="card" id="level_upgrade_card">
-    <div class="card-content">
+    <div class="card-content" id="upgrade__menu">
+        <p data-var="next_level_description"></p>
+        <div class="columns">
+            <div class="column">
+                <button class="button is-large is-dark" data-do="upgrade__sendByMobile">
+                    <span class="icon is-medium">
+                      <i class="fa fa-mobile"></i>
+                    </span>
+                    <br/>
+                    <span>Enviar documentos pelo celular (recomendado)</span>
+                </button>
+            </div>
+            <div class="column">
+                <button class="button is-large is-dark is-outlined" data-do="upgrade__sendByComputer">
+                    <span class="icon is-medium">
+                      <i class="fa fa-desktop"></i>
+                    </span>
+                    <br/>
+                    <span>Enviar documentos pelo computador</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-content" id="upgrade__mobile_upload" style="display: none">
+
+    </div>
+    <div class="card-content" id="upgrade__web_upload" style="display: none">
         <div class="content">
             <!-- <h3 class="title" data-var="next_level_name"></h3> -->
             <p data-var="next_level_description"></p>
@@ -54,4 +80,8 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="card" id="no_level_upgrade_available">
+
 </div>

@@ -750,3 +750,18 @@ h1.title,h2.subtitle {
     transform: translateX(-56%);
   }
 }
+
+#upgrade__menu button {
+  height: 6em;
+  display: block;
+  margin: 0 auto;
+  width: 80%;
+}
+
+#upgrade__menu span {
+  font-size: 0.75em;
+}
+
+#upgrade__menu span.icon {
+  font-size: 2em;
+}

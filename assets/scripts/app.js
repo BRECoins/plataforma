@@ -1,13 +1,12 @@
-window.VERSION = "0.6";
+window.VERSION = "0.7";
 
-if(getQueryVariable('testnet')=='1' && confirm("Você está acessando a plataforma no modo Testnet. LEIA ATENTAMENTE AS SEGUINTES INFORMAÇÕES PARA NÃO SER VÍTIMA DE GOLPES.\n\nNeste modo, todos os bitcoins depositados NÃO POSSUEM VALOR ALGUM. As contas registradas na plataforma não estão disponíveis no ambiente testnet (é necessário um novo registro), e a base de dados pode ser redefinida a qualquer momento. Além disso, saques e depósitos em reais NÃO SERÃO REALIZADOS.\nEste ambiente é destinado a DESENVOLVEDORES exclusivamente, para testes de algoritmos sem risco de perdas de fundos.\n\nTem certeza que deseja continuar em testnet?") ) {
+if (getQueryVariable('testnet') == '1' && confirm("Você está acessando a plataforma no modo Testnet. LEIA ATENTAMENTE AS SEGUINTES INFORMAÇÕES PARA NÃO SER VÍTIMA DE GOLPES.\n\nNeste modo, todos os bitcoins depositados NÃO POSSUEM VALOR ALGUM. As contas registradas na plataforma não estão disponíveis no ambiente testnet (é necessário um novo registro), e a base de dados pode ser redefinida a qualquer momento. Além disso, saques e depósitos em reais NÃO SERÃO REALIZADOS.\nEste ambiente é destinado a DESENVOLVEDORES exclusivamente, para testes de algoritmos sem risco de perdas de fundos.\n\nTem certeza que deseja continuar em testnet?")) {
     window.BACKEND = "https://testnet-backend.brecoins.com.br:8443";
-    document.title = "TESTNET - "+document.title;
+    document.title = "TESTNET - " + document.title;
     setInterval(function() {
-        if(!document.title.match(/^TESTNET/)) document.title = "TESTNET - "+document.title;
+        if (!document.title.match(/^TESTNET/)) document.title = "TESTNET - " + document.title;
     }, 5000);
-}
-else
+} else
     window.BACKEND = "https://backend.brecoins.com.br";
 
 window.CDN = "https://brecoins.s3.amazonaws.com/";
@@ -27,7 +26,9 @@ window.common = {
 window.cb = {};
 
 Array.prototype.remove = function() {
-    var what, a = arguments, L = a.length, ax;
+    var what, a = arguments,
+        L = a.length,
+        ax;
     while (L && this.length) {
         what = a[--L];
         while ((ax = this.indexOf(what)) !== -1) {
@@ -51,7 +52,7 @@ if (top.location.hostname != self.location.hostname) {
     $.fn.textBlink = function(new_text) {
         var el = this;
         if (el.length > 1) el = $(el[0]);
-        if(el.text()!=new_text) {
+        if (el.text() != new_text) {
             el.text(new_text).addClass('blink_me');
             setTimeout(function() {
                 el.removeClass('blink_me');
@@ -63,7 +64,7 @@ if (top.location.hostname != self.location.hostname) {
     $.fn.htmlBlink = function(new_html) {
         var el = this;
         if (el.length > 1) el = $(el[0]);
-        if(this.html()!=new_html) {
+        if (this.html() != new_html) {
             el.html(new_html).addClass('blink_me');
             setTimeout(function() {
                 el.removeClass('blink_me');
@@ -83,9 +84,9 @@ if (top.location.hostname != self.location.hostname) {
 })($);
 
 
-$(function () {
-    w3.includeHTML(function () {
-        const socket = io(window.BACKEND, { path: '/ws', transports: ['websocket'] } );
+$(function() {
+    w3.includeHTML(function() {
+        const socket = io(window.BACKEND, { path: '/ws', transports: ['websocket'] });
 
         recaptchaLoadCaptchas();
 
@@ -105,12 +106,12 @@ $(function () {
 
         //Plays the sound
         function playNotify() {
-           //Set the current time for the audio file to the beginning
-           soundFile.currentTime = 0.01;
-           soundFile.volume = 0.5;
+            //Set the current time for the audio file to the beginning
+            soundFile.currentTime = 0.01;
+            soundFile.volume = 0.5;
 
-           //Due to a bug in Firefox, the audio needs to be played after a delay
-           setTimeout(function(){soundFile.play();},1);
+            //Due to a bug in Firefox, the audio needs to be played after a delay
+            setTimeout(function() { soundFile.play(); }, 1);
         }
 
         loadingOff();
@@ -119,13 +120,13 @@ $(function () {
             opacity: 0
         }, 700);
 
-        $('.navbar-burger').click(function(){
+        $('.navbar-burger').click(function() {
             var target = $(this).data('target');
-            $('#'+target).slideToggle('fast');
+            $('#' + target).slideToggle('fast');
         });
 
         // check if already logged in
-        if(localStorage.getItem('sess_key')) {
+        if (localStorage.getItem('sess_key')) {
             socket.emit('member.checklogin', { 'sess_key': localStorage.getItem('sess_key') });
         }
 
@@ -141,10 +142,10 @@ $(function () {
                 opacity: 1
             }, 1000);
         setTimeout(function() {
-            if(getQueryVariable('p')=='signup') {
+            if (getQueryVariable('p') == 'signup') {
                 $("[data-do=linksignup]").click();
             }
-            if(getQueryVariable('email')) {
+            if (getQueryVariable('email')) {
                 $("[data-var=signup_email]").val(getQueryVariable('email'));
             }
             history.pushState({}, "", "/");
@@ -161,44 +162,44 @@ $(function () {
         algoeditor.session.setMode("ace/mode/javascript");
 
         var loadingonclick = function($el) {
-            var default_html = $el.html();
-            $el.prop("disabled", true);
-            $el.html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-            setTimeout(function() {
-                $el.prop("disabled", false);
-                $el.html(default_html);
-            }, 4000);
-            return false;
-        }
-        //$(".loadingonclick").bind('click', loadingonclick);
+                var default_html = $el.html();
+                $el.prop("disabled", true);
+                $el.html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+                setTimeout(function() {
+                    $el.prop("disabled", false);
+                    $el.html(default_html);
+                }, 4000);
+                return false;
+            }
+            //$(".loadingonclick").bind('click', loadingonclick);
 
         // phone
         $("input[type=tel]").intlTelInput({
             geoIpLookup: function(callback) {
-              $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-                var countryCode = (resp && resp.country) ? resp.country : "";
-                callback(countryCode);
-              });
+                $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
             },
             preferredCountries: ["br"],
             utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/12.1.6/js/utils.js"
         });
         $("input[type=tel]").on("keyup change", function() {
-          if (typeof intlTelInputUtils !== 'undefined') {
-              var currentText = $(this).intlTelInput("getNumber", intlTelInputUtils.numberFormat.E164);
-              if (typeof currentText === 'string') { 
-                  $(this).intlTelInput('setNumber', currentText);
-              }
-              var numberType = $(this).intlTelInput("getNumberType");
-              if(numberType >= 0 && numberType!=1 && numberType!=2) {
-                $(this).intlTelInput('setNumber', '');
-                swal("Apenas celulares", "Para fins de confirmação via SMS, você precisa informar um número de celular.");
-              }
-          }
+            if (typeof intlTelInputUtils !== 'undefined') {
+                var currentText = $(this).intlTelInput("getNumber", intlTelInputUtils.numberFormat.E164);
+                if (typeof currentText === 'string') {
+                    $(this).intlTelInput('setNumber', currentText);
+                }
+                var numberType = $(this).intlTelInput("getNumberType");
+                if (numberType >= 0 && numberType != 1 && numberType != 2) {
+                    $(this).intlTelInput('setNumber', '');
+                    swal("Apenas celulares", "Para fins de confirmação via SMS, você precisa informar um número de celular.");
+                }
+            }
         });
 
         // views
-        $("[data-goto]").click(function () {
+        $("[data-goto]").click(function() {
             $("#main-menu li a.is-active,#navMenu2 .is-active").removeClass("is-active");
             $("#navMenu2").slideUp();
             if (!$(this).hasClass('dropdown-item')) {
@@ -208,12 +209,11 @@ $(function () {
         });
 
 
-        if(store('trading_interface')=='advanced') {
+        if (store('trading_interface') == 'advanced') {
             loadView('main');
             //$("#sidebar-menu").addClass("is-basic");
             $(".trader-button").text("TRADER");
-        }
-        else {
+        } else {
             loadView('basic');
             $(".trader-button").text("BÁSICO");
         }
@@ -222,16 +222,16 @@ $(function () {
         $("[data-var=year]").text((new Date()).getFullYear());
 
         // modals
-        $(".close-modal").click(function () {
+        $(".close-modal").click(function() {
             $(".modal.is-active").removeClass("is-active");
         });
-        $("[data-openmodal]").click(function () {
+        $("[data-openmodal]").click(function() {
             showModal($(this).data('openmodal'));
         });
 
         // tabs
-        $("[data-tab][data-group]").click(function () {
-            if($(this).parent("li").length) {
+        $("[data-tab][data-group]").click(function() {
+            if ($(this).parent("li").length) {
                 $("[data-tab][data-group=" + $(this).data('group') + "]").parent("li").removeClass("is-active");
                 $(this).parent("li").addClass("is-active");
             } else {
@@ -244,11 +244,11 @@ $(function () {
 
         // dropdown
         var dropdown = document.querySelector('.dropdown');
-        dropdown.addEventListener('click', function (event) {
+        dropdown.addEventListener('click', function(event) {
             //event.stopPropagation();
             dropdown.classList.toggle('is-active');
         });
-        $(".dropdown").on('mouseout', function () {
+        $(".dropdown").on('mouseout', function() {
             $(this).removeClass('is-active');
         });
 
@@ -257,26 +257,26 @@ $(function () {
 
         // order types
         $("#ordertypeform input").on('change', function() {
-            var ordertypes = store.get('ordertypes'+window.common.UID);
-            if(typeof ordertypes != 'object') ordertypes = new Array();
+            var ordertypes = store.get('ordertypes' + window.common.UID);
+            if (typeof ordertypes != 'object') ordertypes = new Array();
             var thetype = $(this).attr('value');
 
-            if(ordertypes && ordertypes.length)
+            if (ordertypes && ordertypes.length)
                 ordertypes.remove(thetype);
 
-            if($(this).is(":checked")) {
-                if(ordertypes)
+            if ($(this).is(":checked")) {
+                if (ordertypes)
                     ordertypes.push(thetype);
                 else
                     ordertypes = [thetype];
             }
-            store.set('ordertypes'+window.common.UID, ordertypes);
+            store.set('ordertypes' + window.common.UID, ordertypes);
             updateordertypes();
         });
 
         // input masks
         $("[data-mask]").each(function() {
-            var mask = "mask__"+$(this).data('mask');
+            var mask = "mask__" + $(this).data('mask');
             $(this).keyup(function() {
                 inputmask($(this)[0], mask);
             });
@@ -288,52 +288,52 @@ $(function () {
         socket.on('geocountrylist', function(countries) {
             $(".countrylist option:not([disabled])").remove();
             countries.forEach(function(country) {
-                $(".countrylist").append('<option value="'+country.id+'" data-iso="'+country.code+'">'+country.name+'</option>');
+                $(".countrylist").append('<option value="' + country.id + '" data-iso="' + country.code + '">' + country.name + '</option>');
             });
         });
         socket.on('georegionslist', function(regions) {
             $(".regionlist option:not([disabled])").remove();
             regions.forEach(function(region) {
-                $(".regionlist").append('<option value="'+region.id+'">'+region.name+'</option>');
+                $(".regionlist").append('<option value="' + region.id + '">' + region.name + '</option>');
             });
         });
         socket.on('memberloginpasswordfail', function() {
             swal(
-              'Senha inválida.',
-              'Verifique sua senha.',
-              'error'
+                'Senha inválida.',
+                'Verifique sua senha.',
+                'error'
             )
             gtag('event', 'login_invalid_password');
         });
         socket.on('memberloginaccountfail', function() {
             swal(
-              'Conta indisponível',
-              'Desculpe, sua conta foi desativada.',
-              'error'
+                'Conta indisponível',
+                'Desculpe, sua conta foi desativada.',
+                'error'
             )
             gtag('event', 'login_disabled_account');
         });
         socket.on('memberloginemailfail', function() {
             swal(
-              'E-mail inválido',
-              'Nenhum usuário encontrado com este endereço de e-mail.',
-              'error'
+                'E-mail inválido',
+                'Nenhum usuário encontrado com este endereço de e-mail.',
+                'error'
             )
             gtag('event', 'login_invalid_email');
         });
         socket.on('memberloginmustverify', function() {
             swal({
-              title: 'Confirmar E-mail',
-              text: 'Insira o código enviado ao seu endereço de e-mail:',
-              input: 'text',
-              showCancelButton: false,
-              confirmButtonText: 'Confirmar',
-              allowOutsideClick: false
-            }).then(function (code) {
-              socket.emit('member.confirm', {
-                token: code
-              })
-              gtag('event', 'login_try_confirm_account');
+                title: 'Confirmar E-mail',
+                text: 'Insira o código enviado ao seu endereço de e-mail:',
+                input: 'text',
+                showCancelButton: false,
+                confirmButtonText: 'Confirmar',
+                allowOutsideClick: false
+            }).then(function(code) {
+                socket.emit('member.confirm', {
+                    token: code
+                })
+                gtag('event', 'login_try_confirm_account');
             })
             gtag('event', 'login_unconfirmed_account');
         });
@@ -342,35 +342,35 @@ $(function () {
             gtag('event', 'login_confirm_account_success');
             $("#signupSplash").hide(349);
             $("#loginSplash").delay(350).show();
-            if(!window.common.UID) $("[data-do=signin]").click();
+            if (!window.common.UID) $("[data-do=signin]").click();
         });
         socket.on('memberconfirmdatafail', function() {
             swal({
-              title: 'Token Inválido',
-              text: 'Insira o código enviado ao seu endereço de e-mail:',
-              input: 'text',
-              showCancelButton: false,
-              confirmButtonText: 'Confirmar',
-              allowOutsideClick: false
-            }).then(function (code) {
-              socket.emit('member.confirm', {
-                token: code
-              })
+                title: 'Token Inválido',
+                text: 'Insira o código enviado ao seu endereço de e-mail:',
+                input: 'text',
+                showCancelButton: false,
+                confirmButtonText: 'Confirmar',
+                allowOutsideClick: false
+            }).then(function(code) {
+                socket.emit('member.confirm', {
+                    token: code
+                })
             })
             gtag('event', 'signup_invalid_token');
         });
         socket.on('memberconfirmtokenfail', function() {
             swal({
-              title: 'Token Inválido',
-              text: 'Insira o código enviado ao seu endereço de e-mail:',
-              input: 'text',
-              showCancelButton: false,
-              confirmButtonText: 'Confirmar',
-              allowOutsideClick: false
-            }).then(function (code) {
-              socket.emit('member.confirm', {
-                token: code
-              })
+                title: 'Token Inválido',
+                text: 'Insira o código enviado ao seu endereço de e-mail:',
+                input: 'text',
+                showCancelButton: false,
+                confirmButtonText: 'Confirmar',
+                allowOutsideClick: false
+            }).then(function(code) {
+                socket.emit('member.confirm', {
+                    token: code
+                })
             })
             gtag('event', 'signup_invalid_token');
         });
@@ -379,39 +379,39 @@ $(function () {
                 "E-mail já registrado",
                 "Já existe uma conta registrada com seu endereço de e-mail. Caso tenha perdido sua senha, utilize a ferramenta \"Esqueci minha senha\".",
                 "warning");
-            $("#signup_2").hide("drop", {position: "right"}, 300);
+            $("#signup_2").hide("drop", { position: "right" }, 300);
             $("#signup_1").delay(301).show("drop", 300);
             gtag('event', 'signup_email_already_exists');
         });
         socket.on('membersignupsuccess', function() {
             swal({
-              title: 'Confirmar e-mail',
-              text: 'Para finalizar, insira o código enviado ao seu endereço de e-mail:',
-              input: 'text',
-              showCancelButton: false,
-              confirmButtonText: 'Finalizar',
-              allowOutsideClick: false
-            }).then(function (code) {
-              socket.emit('member.confirm', {
-                token: code
-              })
-              gtag('event', 'signup_try_confirm_account');
+                title: 'Confirmar e-mail',
+                text: 'Para finalizar, insira o código enviado ao seu endereço de e-mail:',
+                input: 'text',
+                showCancelButton: false,
+                confirmButtonText: 'Finalizar',
+                allowOutsideClick: false
+            }).then(function(code) {
+                socket.emit('member.confirm', {
+                    token: code
+                })
+                gtag('event', 'signup_try_confirm_account');
             })
             gtag('event', 'signup_success');
         });
         socket.on('memberrequestotptoken', function(args) {
             var requestOtpToken = function(b64) {
                 var title = args.wrong ? "Token incorreto" : "Token de Login";
-                var text = args.otp ? "Insira o código gerado por seu aplicativo:" : "Insira o código numérico enviado ao seu e-mail:"
+                var text = args.otp ? "Insira o código gerado por seu aplicativo:" : "Insira o código numérico enviado ao seu " + (args.sentby == 'phone' ? 'telefone (via SMS).' : 'e-mail');
                 swal({
-                  title: title,
-                  text: text,
-                  input: 'text',
-                  showCancelButton: true,
-                  confirmButtonText: 'Entrar',
-                  cancelButtonText: 'Cancelar',
-                  allowOutsideClick: false
-                }).then(function (otp_token) {
+                    title: title,
+                    text: text,
+                    input: 'text',
+                    showCancelButton: true,
+                    confirmButtonText: 'Entrar',
+                    cancelButtonText: 'Cancelar',
+                    allowOutsideClick: false
+                }).then(function(otp_token) {
                     socket.emit('member.login', {
                         "email": $("[data-var=signin-email]").val(),
                         "password": $("[data-var=signin-password]").val(),
@@ -425,7 +425,7 @@ $(function () {
             };
 
             // webcam?
-            if(args.webcam) {
+            if (args.webcam) {
                 takeWebcamPicture(requestOtpToken);
             } else {
                 requestOtpToken();
@@ -463,7 +463,7 @@ $(function () {
                 var socketio_emit_loop = function() {
                     socket.emit('balance.getbalance', { sess_key: args.sess_key });
                     socket.emit('orderbook.getbook', { sess_key: args.sess_key });
-                    socket.emit('ledger.list', { sess_key: args.sess_key, page: 0});
+                    socket.emit('ledger.list', { sess_key: args.sess_key, page: 0 });
                     socket.emit('orders.myorders', { sess_key: args.sess_key });
                     socket.emit('orders.myoldorders', { sess_key: args.sess_key });
                     socket.emit('orders.myspecialorders', { sess_key: args.sess_key });
@@ -478,8 +478,8 @@ $(function () {
                     socket.emit('withdrawals.list_fiat', { sess_key: args.sess_key });
                     socket.emit('withdrawals.list_crypto', { sess_key: args.sess_key });
                     socket.emit('userdocuments.checkprocess', { sess_key: args.sess_key });
-                	socket.emit('level.getLevelsData', { sess_key: args.sess_key });
-                	socket.emit('profiledetails.getProfileDetails', { sess_key: args.sess_key });
+                    socket.emit('level.getLevelsData', { sess_key: args.sess_key });
+                    socket.emit('profiledetails.getProfileDetails', { sess_key: args.sess_key });
                 }
                 socketio_emit_loop();
                 socketio_long_loop();
@@ -488,7 +488,7 @@ $(function () {
 
                 socket.emit('profile.getdetails', { sess_key: args.sess_key });
                 socket.emit('profiledetails.getProfileDetails', { sess_key: args.sess_key });
-                socket.emit('sitebankaccs.list', {exchange: EXCHANGE});
+                socket.emit('sitebankaccs.list', { exchange: EXCHANGE });
                 socket.emit('deposit.list_crypto', { sess_key: args.sess_key });
                 socket.emit('deposit.list_fiat', { sess_key: args.sess_key });
                 socket.emit('withdrawals.list_fiat', { sess_key: args.sess_key });
@@ -498,7 +498,7 @@ $(function () {
                 socket.emit('ticker.register');
                 socket.emit('ticker.get');
                 socket.emit('sessions.listActiveSessions', { sess_key: args.sess_key });
-                var range = [1,24];
+                var range = [1, 24];
                 socket.emit('volume.calc', range);
 
                 socket.emit('common.get', {
@@ -507,11 +507,11 @@ $(function () {
                     fiat_currency: window.common.fiat_currency.name
                 });
             }, 500);
-            
+
             $("#splash").fadeOut(1000);
             loadView('basic');
             setTimeout(function() {
-                $("[data-var=chart]").attr('src', '/chart.html?'+Math.random());
+                $("[data-var=chart]").attr('src', '/chart.html?' + Math.random());
             }, 5000);
         });
         socket.on('order_emitted', function() {
@@ -525,19 +525,19 @@ $(function () {
         })
         socket.on('btcwallet', function(wallet) {
             $("[data-var=userwallet]").textBlink(wallet);
-            $("[data-var=userwallet_qrcode]").attr("src", "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl="+encodeURIComponent('bitcoin:'+wallet)+"&choe=UTF-8");
+            $("[data-var=userwallet_qrcode]").attr("src", "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=" + encodeURIComponent('bitcoin:' + wallet) + "&choe=UTF-8");
         });
         socket.on('depositlist_cryptosuccess', function(data) {
             $("#depositos_crypto_tbl tr").remove();
             data.forEach(function(row) {
                 $("#depositos_crypto_tbl").append('<tr>\
-                        <td>'+jsmoment(row.created_at).calendar()+'</td>\
-                        <td>'+money_format.crypto(row.amount)+'</td>\
+                        <td>' + jsmoment(row.created_at).calendar() + '</td>\
+                        <td>' + money_format.crypto(row.amount) + '</td>\
                         <td>\
-                            <a class="button is-light is-small" style="border: 1px solid #dbdbdb; height: 24px !important;" target="_blank" href="https://blockexplorer.com/tx/'+row.txid+'">Ver</a>\
+                            <a class="button is-light is-small" style="border: 1px solid #dbdbdb; height: 24px !important;" target="_blank" href="https://blockexplorer.com/tx/' + row.txid + '">Ver</a>\
                         </td>\
                         <td>\
-                            <span class="tag is-'+(row.status=='confirmed' ? 'success' : 'warning')+'">'+(row.status=='confirmed' ? 'Confirmado' : 'Pendente')+'</span>\
+                            <span class="tag is-' + (row.status == 'confirmed' ? 'success' : 'warning') + '">' + (row.status == 'confirmed' ? 'Confirmado' : 'Pendente') + '</span>\
                         </td>\
                     </tr>');
             });
@@ -547,12 +547,12 @@ $(function () {
             swal("Erro", "Senha inválida.", "error");
         })
         socket.on('user_limits', function(limits) {
-            if(limits.deposit===null)
+            if (limits.deposit === null)
                 $("[data-var=fiat_deposit_limit]").textBlink("∞");
             else
                 $("[data-var=fiat_deposit_limit]").textBlink(money_format.fiat(limits.deposit));
 
-            if(limits.withdraw===null)
+            if (limits.withdraw === null)
                 $("[data-var=fiat_withdraw_limit]").textBlink("∞");
             else
                 $("[data-var=fiat_withdraw_limit]").textBlink(money_format.fiat(limits.withdraw));
@@ -560,7 +560,7 @@ $(function () {
         socket.on('ticker', function(tickerdata) {
             // up/down favicon
             var old_price = money_format.from.fiat($("#ticker_last").text().substr(3));
-            if(old_price && tickerdata.last > old_price) {
+            if (old_price && tickerdata.last > old_price) {
                 document.querySelectorAll("link[rel*='icon'")[0].href = '/assets/ico/icon_up.ico';
             } else if (old_price && tickerdata.last < old_price) {
                 document.querySelectorAll("link[rel*='icon'")[0].href = '/assets/ico/icon_down.ico';
@@ -600,7 +600,7 @@ $(function () {
             $("[data-var=user_telephone_input]").intlTelInput("setNumber", data.phone);
             $("[data-var=user_city]").val(data.city);
 
-            if(data.otp_secret) {
+            if (data.otp_secret) {
                 $("[data-do=enable_otp]").hide();
                 $("[data-do=disable_otp]").show();
             } else {
@@ -613,8 +613,8 @@ $(function () {
                 $("[data-var=user_region]").val(data.region);
 
                 // intro
-                if(!store.get('intro_'+window.common.UID)) {
-                	store.set('intro_'+window.common.UID, 1);
+                if (!store.get('intro_' + window.common.UID)) {
+                    store.set('intro_' + window.common.UID, 1);
                     /*introJs().setOption("nextLabel", " > ")
                         .setOption("prevLabel", " < ")
                         .setOption("skipLabel", "Sair")
@@ -626,78 +626,77 @@ $(function () {
             updateordertypes();
         });
         socket.on('profiledetails', function(data) {
-            if(data.face) {
+            if (data.face) {
                 $("[data-do=enable_facial]").hide();
                 $("[data-do=disable_facial]").show();
             } else {
                 $("[data-do=enable_facial]").show();
                 $("[data-do=disable_facial]").hide();
             }
-            if(data.gender) {
+            if (data.gender) {
                 $("[data-var=user_gender]").val(data.gender);
             }
-            if(data.cpf) {
-                if(!$("[data-var=user_cpf]").is(":focus")) $("[data-var=user_cpf]").val(data.cpf).prop("disabled", true);
+            if (data.cpf) {
+                if (!$("[data-var=user_cpf]").is(":focus")) $("[data-var=user_cpf]").val(data.cpf).prop("disabled", true);
                 $("#usrcpfSaque").val(data.cpf).prop("disabled", true);
             } else {
-            	$("[data-var=user_cpf]").val("").prop("disabled", false);
+                $("[data-var=user_cpf]").val("").prop("disabled", false);
             }
             inputmask($("[data-var=user_cpf]")[0], mask__cpfCnpj);
             inputmask($("#usrcpfSaque")[0], mask__cpfCnpj);
         })
         socket.on('ledgerlist', function(data) {
-            $("[data-var=ledger_page]").text(data.page+1);
+            $("[data-var=ledger_page]").text(data.page + 1);
             $("[data-var=ledger_list] tr").remove();
             data.rows.forEach(function(row) {
-                if(row.curr_type=='crypto') {
+                if (row.curr_type == 'crypto') {
                     var amount = money_format.crypto(row.amount);
                     var balance = money_format.crypto(row.balance);
-                }
-                else {
+                } else {
                     var amount = money_format.fiat(row.amount);
                     var balance = money_format.fiat(row.balance);
                 }
-                if(row.movement===1)
+                if (row.movement === 1)
                     var color = 'success';
                 else
                     var color = 'danger';
                 $("[data-var=ledger_list]").append('<tr>\
-                        <td>'+jsmoment(row.created_at).format('llll')+'</td>\
-                        <td>'+row.description+'</td>\
-                        <td><span class="tag is-'+color+'">'+amount+'</span></td>\
-                        <td><span class="tag is-success">'+balance+'</span></td>\
+                        <td>' + jsmoment(row.created_at).format('llll') + '</td>\
+                        <td>' + row.description + '</td>\
+                        <td><span class="tag is-' + color + '">' + amount + '</span></td>\
+                        <td><span class="tag is-success">' + balance + '</span></td>\
                     </tr>');
             });
         });
         socket.on('myorders', function(rows) {
             $("[data-var=orderlist] tr,[data-var=user_orders] tr").remove();
             rows.forEach(function(row) {
-                var ordertype = row.type=='sell' ? "Venda" : "Compra";
+                var ordertype = row.type == 'sell' ? "Venda" : "Compra";
                 $("[data-var=orderlist]").append('\
-                    <tr class="myorder_'+row.id+'">\
-                        <td>'+jsmoment(row.created_at).format('llll')+'</td>\
-                        <td>'+ordertype+'</td>\
+                    <tr class="myorder_' + row.id + '">\
+                        <td>' + jsmoment(row.created_at).format('llll') + '</td>\
+                        <td>' + ordertype + '</td>\
                         <td>\
-                            '+money_format.crypto(Math.max(1e8*row.amount_fiat/Math.max(row.crypto_price_min, row.crypto_price_max), row.amount_crypto))+'<br>\
-                            '+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'\
+                            ' + money_format.crypto(Math.max(1e8 * row.amount_fiat / Math.max(row.crypto_price_min, row.crypto_price_max), row.amount_crypto)) + '<br>\
+                            ' + money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max)) + '\
                         </td>\
                         <td>\
                             <div class="tags has-addons">\
-                                <a class="tag is-delete" data-do="cancelOrder" data-order-id="'+row.id+'"></a>\
+                                <a class="tag is-delete" data-do="cancelOrder" data-order-id="' + row.id + '"></a>\
                             </div>\
                         </td>\
                     </tr>');
 
-                $("[data-var=user_orders]").append('<tr class="myorder_'+row.id+'">\
+                $("[data-var=user_orders]").append('<tr class="myorder_' + row.id + '">\
                     <td>\
-                        '+money_format.crypto(Math.max(1e8*row.amount_fiat/Math.max(row.crypto_price_min, row.crypto_price_max), row.amount_crypto))+'\
+                        ' + money_format.crypto(Math.max(1e8 * row.amount_fiat / Math.max(row.crypto_price_min, row.crypto_price_max), row.amount_crypto)) + '\
                          • \
-                        <b>'+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'</b>\
+                        <b>' + money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max)) + '</b>\
                         <div class="is-pulled-right">\
                             <div class="control">\
                                 <div class="tags has-addons">\
-                                    <span class="tag is-'+(ordertype=='Venda' ? 'danger' : 'success')+'">'+ordertype+'</span>\
-                                    <a class="tag is-delete" data-do="cancelOrder" data-order-id="'+row.id+'"></a>\
+                                    <span class="tag is-' + (ordertype == 'Venda' ? 'danger' : 'success') + '">' + ordertype + '</span>\
+                                    <a class="tag is-delete" data-do="cancelOrder" data-order-id="' + row.id + '"></a>\
                                 </div>\
                             </div>\
                         </div>\
@@ -708,15 +707,15 @@ $(function () {
         socket.on('myoldorders', function(rows) {
             $("[data-var=oldorderlist] tr").remove();
             rows.forEach(function(row) {
-                if(!parseInt(row.amount_fiat) && !parseInt(row.amount_crypto)) {
-                    var ordertype = row.type=='sell' ? "Venda" : "Compra";
+                if (!parseInt(row.amount_fiat) && !parseInt(row.amount_crypto)) {
+                    var ordertype = row.type == 'sell' ? "Venda" : "Compra";
                     $("[data-var=oldorderlist]").append('\
-                        <tr class="myoldorder_'+row.id+'">\
-                            <td>'+jsmoment(row.created_at).format('llll')+'</td>\
-                            <td>'+ordertype+'</td>\
+                        <tr class="myoldorder_' + row.id + '">\
+                            <td>' + jsmoment(row.created_at).format('llll') + '</td>\
+                            <td>' + ordertype + '</td>\
                             <td>\
-                                '+money_format.crypto(Math.max(1e8*row.initial_amount_fiat/Math.max(row.crypto_price_min, row.crypto_price_max), row.initial_amount_crypto))+'<br>\
-                                '+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'\
+                                ' + money_format.crypto(Math.max(1e8 * row.initial_amount_fiat / Math.max(row.crypto_price_min, row.crypto_price_max), row.initial_amount_crypto)) + '<br>\
+                                ' + money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max)) + '\
                             </td>\
                         </tr>');
                 }
@@ -725,16 +724,16 @@ $(function () {
         socket.on('myspecialorders', function(rows) {
             $("[data-var=orderspecial] tr").remove();
             rows.forEach(function(row) {
-                var ordertype = row.type=='sell' ? "Venda" : "Compra";
+                var ordertype = row.type == 'sell' ? "Venda" : "Compra";
                 $("[data-var=orderspecial]").append('\
-                    <tr id="myspecialorder_'+row.id+'">\
-                        <td>'+money_format.fiat(row.trigger)+'</td>\
-                        <td>'+ordertype+'</td>\
-                        <td>'+money_format.crypto(Math.max(row.fiat_amount, row.crypto_amount))+'</td>\
-                        <td>'+money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max))+'</td>\
+                    <tr id="myspecialorder_' + row.id + '">\
+                        <td>' + money_format.fiat(row.trigger) + '</td>\
+                        <td>' + ordertype + '</td>\
+                        <td>' + money_format.crypto(Math.max(row.fiat_amount, row.crypto_amount)) + '</td>\
+                        <td>' + money_format.fiat(Math.max(row.crypto_price_min, row.crypto_price_max)) + '</td>\
                         <td>\
                             <div class="tags has-addons">\
-                                <a class="tag is-delete" data-do="cancelSpecialOrder" data-order-id="'+row.id+'"></a>\
+                                <a class="tag is-delete" data-do="cancelSpecialOrder" data-order-id="' + row.id + '"></a>\
                             </div>\
                         </td>\
                     </tr>');
@@ -761,30 +760,30 @@ $(function () {
         socket.on('orderbook', function(rows) {
             $("[data-var=offerbook_buy] tr,[data-var=offerbook_sell] tr").remove();
             rows.forEach(function(row) {
-                var theprice,theamount;
-                if(row.type=='buy') {
-                    theprice = row.crypto_price_max/1e2;
-                    theamount = (row.amount_fiat/row.crypto_price_max);
+                var theprice, theamount;
+                if (row.type == 'buy') {
+                    theprice = row.crypto_price_max / 1e2;
+                    theamount = (row.amount_fiat / row.crypto_price_max);
                 } else {
-                    theprice = row.crypto_price_min/1e2;
-                    theamount = row.amount_crypto/1e8;
+                    theprice = row.crypto_price_min / 1e2;
+                    theamount = row.amount_crypto / 1e8;
                 }
 
                 var is_acumulado = $(".acumulado").hasClass('is-dark');
-                var $possible_row = $("[data-var=offerbook_"+row.type+"] tr[data-price=\""+theprice+"\"]");
+                var $possible_row = $("[data-var=offerbook_" + row.type + "] tr[data-price=\"" + theprice + "\"]");
 
-                if(is_acumulado && $possible_row.length) {
-                    var newamount = parseFloat($possible_row.data('amount'))+parseFloat(theamount);
+                if (is_acumulado && $possible_row.length) {
+                    var newamount = parseFloat($possible_row.data('amount')) + parseFloat(theamount);
                     $possible_row.data('amount', newamount);
-                    $possible_row.children("td:nth-child(2)").text(money_format.crypto(newamount*1e8));
+                    $possible_row.children("td:nth-child(2)").text(money_format.crypto(newamount * 1e8));
                 } else {
-                    var table_row = '<tr data-price="'+theprice+'" data-amount="'+theamount+'" data-do="offerclick">\
-                            <td>'+row.nick+'</td>\
-                            <td>'+money_format.crypto(theamount*1e8)+'</td>\
-                            <td>'+money_format.fiat(theprice*1e2)+'</td>\
+                    var table_row = '<tr data-price="' + theprice + '" data-amount="' + theamount + '" data-do="offerclick">\
+                            <td>' + row.nick + '</td>\
+                            <td>' + money_format.crypto(theamount * 1e8) + '</td>\
+                            <td>' + money_format.fiat(theprice * 1e2) + '</td>\
                         </tr>';
                     //if(row.type=='buy')
-                        $("[data-var=offerbook_"+row.type+"]").append(table_row);
+                    $("[data-var=offerbook_" + row.type + "]").append(table_row);
                     //else
                     //    $("[data-var=offerbook_"+row.type+"]").prepend(table_row);
                 }
@@ -792,34 +791,34 @@ $(function () {
         });
         socket.on('simulatemarketbuy', function(amount) {
             //$("[data-var=user_funds_brl-btc]").textBlink(money_format.crypto(amount));
-            $("[data-var=user_funds_brl-btc]").textBlink( money_format.crypto( money_format.from.fiat($("[data-var=user_funds_fiat]").text().substr(2))*1e8 / money_format.from.fiat($("#ticker_last").text().substr(3)) ) );
+            $("[data-var=user_funds_brl-btc]").textBlink(money_format.crypto(money_format.from.fiat($("[data-var=user_funds_fiat]").text().substr(2)) * 1e8 / money_format.from.fiat($("#ticker_last").text().substr(3))));
         });
         socket.on('simulatemarketsell', function(amount) {
             //$("[data-var=user_funds_btc-brl]").textBlink(money_format.fiat(amount));
-            $("[data-var=user_funds_btc-brl]").textBlink( money_format.fiat ( money_format.from.fiat($("#ticker_last").text().substr(3)) * money_format.from.crypto( $("[data-var=user_funds_crypto]").text().substr(2) )/1e8 ) );
+            $("[data-var=user_funds_btc-brl]").textBlink(money_format.fiat(money_format.from.fiat($("#ticker_last").text().substr(3)) * money_format.from.crypto($("[data-var=user_funds_crypto]").text().substr(2)) / 1e8));
         });
         socket.on('activesessionslist', function(data) {
             $("[data-var=activesessions] tr").remove();
             data.forEach(function(as) {
                 $("[data-var=activesessions]").append('<tr>\
-                    <td><span aria-label="'+as.ua+'" class="hint--right">'+as.browser+'</span></td>\
-                    <td>'+as.ip+'</td>\
-                    <td><span aria-label="Localização aproximada, com base no endereço IP" class="hint--top">'+as.location+'</span></td>\
-                    <td>'+jsmoment(as.created_at).format('llll')+'</td>\
-                    <td>'+jsmoment(as.updated_at).calendar()+'</td>\
-                    <td>'+(localStorage.sess_key!=as.key ? '<button class="button is-danger is-small" data-do="closeactivesession" data-sess="'+as.key+'">\
+                    <td><span aria-label="' + as.ua + '" class="hint--right">' + as.browser + '</span></td>\
+                    <td>' + as.ip + '</td>\
+                    <td><span aria-label="Localização aproximada, com base no endereço IP" class="hint--top">' + as.location + '</span></td>\
+                    <td>' + jsmoment(as.created_at).format('llll') + '</td>\
+                    <td>' + jsmoment(as.updated_at).calendar() + '</td>\
+                    <td>' + (localStorage.sess_key != as.key ? '<button class="button is-danger is-small" data-do="closeactivesession" data-sess="' + as.key + '">\
                         <i class="fa fa-times fa-fw"></i>\
-                    </button>' : '(atual)')+'</td>\
+                    </button>' : '(atual)') + '</td>\
                     </tr>');
             })
         });
         socket.on('notifications.unreadList', function(rows) {
             var old_length = $("[data-var=notifications] a").length;
-            if(rows.length) {
+            if (rows.length) {
                 var html_n = '';
                 rows.forEach(function(row) {
-                    html_n += '<a class="item is-fullwidth" data-do="notification-mark-as-read" data-nid="'+row.id+'">\
-                                '+row.message+'<br><sub>'+jsmoment(row.date).format('llll')+'</sub>\
+                    html_n += '<a class="item is-fullwidth" data-do="notification-mark-as-read" data-nid="' + row.id + '">\
+                                ' + row.message + '<br><sub>' + jsmoment(row.date).format('llll') + '</sub>\
                             </a>';
                 });
                 $("[data-var=notifications]").html(html_n);
@@ -827,7 +826,7 @@ $(function () {
                 $("#notification_icon").attr("data-badge", rows.length).addClass("badge is-badge-small is-badge-danger");
 
                 var new_length = $("[data-var=notifications] a").length;
-                if(new_length > old_length) playNotify();
+                if (new_length > old_length) playNotify();
             } else {
                 $("#notification_icon").addClass("fa-bell-o").removeClass("bell fa-bell badge is-badge-small is-badge-danger").removeAttr("data-badge");
                 $("[data-var=notifications]").html('<div class="item is-fullwidth">\
@@ -843,33 +842,33 @@ $(function () {
             $("[data-var=sitebanklist] a,#bankdetail div,[data-var=sitebanknames] option").remove();
             rows.forEach(function(row) {
                 $("[data-var=sitebanklist]").append('\
-                    <a href="#" class="dropdown-item" data-do="changeActiveBank" data-bank-id="'+row.id+'">\
-                        '+row.bank_name+'\
+                    <a href="#" class="dropdown-item" data-do="changeActiveBank" data-bank-id="' + row.id + '">\
+                        ' + row.bank_name + '\
                     </a>');
                 $("#bankdetail").append('\
-                    <div id="bankdetail-'+row.id+'" style="display: none">\
-                        <h2 class="subtitle">'+row.bank_name+'</h2>\
-                        <p class="container">'+row.bank_data+'</p>\
+                    <div id="bankdetail-' + row.id + '" style="display: none">\
+                        <h2 class="subtitle">' + row.bank_name + '</h2>\
+                        <p class="container">' + row.bank_data + '</p>\
                     </div>');
-                $("[data-var=sitebanknames]").append('<option value="'+row.bank_name+'">'+row.bank_name+'</option>');
+                $("[data-var=sitebanknames]").append('<option value="' + row.bank_name + '">' + row.bank_name + '</option>');
             });
         });
         socket.on('allbanks', function(rows) {
             $("[data-var=allbanks] option,[data-var=mainbanks] option").remove();
             rows.forEach(function(row) {
-            	if(!row) return;
-            	var optgroup;
+                if (!row) return;
+                var optgroup;
 
-            	if(row.is_favorite)
-            		optgroup = 'mainbanks';
-            	else
-            		optgroup = 'allbanks';
+                if (row.is_favorite)
+                    optgroup = 'mainbanks';
+                else
+                    optgroup = 'allbanks';
 
-                $("[data-var="+optgroup+"]").append('<option value="'+row.bank_name+'">'+row.bank_name+'</option>');
+                $("[data-var=" + optgroup + "]").append('<option value="' + row.bank_name + '">' + row.bank_name + '</option>');
             });
         });
         socket.on('depositdeposit_fiatsuccess', function(id) {
-            socket.emit('depositdeposit_fiatsuccess', {sess_key: localStorage.getItem('sess_key')});
+            socket.emit('depositdeposit_fiatsuccess', { sess_key: localStorage.getItem('sess_key') });
             $("[data-var=lastFiatDepositId]").textBlink(id);
             showModal('depositModal');
         });
@@ -877,8 +876,8 @@ $(function () {
             $("[data-var=saqueslist_crypto_tbl] tr").remove();
             rows.reverse();
             rows.forEach(function(row) {
-                let status,color,row_html;
-                switch(row.status) {
+                let status, color, row_html;
+                switch (row.status) {
                     case 'pending':
                         status = 'Pendente';
                         row_html = "-";
@@ -887,7 +886,7 @@ $(function () {
                     case 'done':
                         status = 'Realizado';
                         color = 'success';
-                        row_html = '<a class="button is-small is-light" style="border: 1px solid #dbdbdb; height: 24px !important" target="_blank" href="https://blockcypher.com/btc/tx/'+row.txid+'">Ver</a>';
+                        row_html = '<a class="button is-small is-light" style="border: 1px solid #dbdbdb; height: 24px !important" target="_blank" href="https://blockcypher.com/btc/tx/' + row.txid + '">Ver</a>';
                         break;
                     case 'disapproved':
                         status = 'Cancelada';
@@ -897,13 +896,13 @@ $(function () {
                 }
                 $("[data-var=saqueslist_crypto_tbl]").append('\
                     <tr>\
-                        <td>'+jsmoment(row.created_at).calendar()+'</td>\
-                        <td>'+money_format.crypto(row.amount)+'</td>\
+                        <td>' + jsmoment(row.created_at).calendar() + '</td>\
+                        <td>' + money_format.crypto(row.amount) + '</td>\
                         <td>\
-                            '+row_html+'\
+                            ' + row_html + '\
                         </td>\
                         <td>\
-                            <span class="tag is-'+color+'">'+status+'</span>\
+                            <span class="tag is-' + color + '">' + status + '</span>\
                         </td>\
                     </tr>\
                     ');
@@ -913,8 +912,8 @@ $(function () {
             $("#saqueslist_fiat_tbl tr").remove();
             rows.reverse();
             rows.forEach(function(row) {
-                let status,color,row_html,show_date,border = '';
-                switch(row.status) {
+                let status, color, row_html, show_date, border = '';
+                switch (row.status) {
                     case 'pending':
                         status = 'Pendente';
                         row_html = "-";
@@ -937,14 +936,14 @@ $(function () {
                 }
                 $("#saqueslist_fiat_tbl").append('\
                     <tr>\
-                        <td>'+jsmoment(row.created_at).calendar()+'</td>\
-                        <td>'+money_format.fiat(row.amount)+'</td>\
+                        <td>' + jsmoment(row.created_at).calendar() + '</td>\
+                        <td>' + money_format.fiat(row.amount) + '</td>\
                         <td>\
-                            '+row_html+'\
+                            ' + row_html + '\
                         </td>\
                         <td>\
-                            <span style="height: 24px !important" class="tag is-'+color+'" style="height: 24px !important; '+(border ? 'border: '+border : '')+'">'+status+'</span>\
-                            '+(show_date ? '<br><sub>'+jsmoment(row.updated_at).calendar()+'</sub>' : '')+' \
+                            <span style="height: 24px !important" class="tag is-' + color + '" style="height: 24px !important; ' + (border ? 'border: ' + border : '') + '">' + status + '</span>\
+                            ' + (show_date ? '<br><sub>' + jsmoment(row.updated_at).calendar() + '</sub>' : '') + ' \
                         </td>\
                     </tr>\
                     ');
@@ -955,17 +954,17 @@ $(function () {
             var final_html = "";
             rows.reverse();
             rows.forEach(function(row) {
-                let status,color,row_html,show_date,border = '';
-                switch(row.status) {
+                let status, color, row_html, show_date, border = '';
+                switch (row.status) {
                     case 'pending':
                         status = 'Pendente';
                         color = 'gray';
                         show_date = false;
                         border = '1px solid #dbdbdb';
-                        row_html = '<code>#'+row.id+'</code>\
+                        row_html = '<code>#' + row.id + '</code>\
                             <div class="file is-small">\
                                 <label class="file-label">\
-                                    <input class="file-input | fiatdeposit_uploadreceipt" data-deposit-id="'+row.id+'" type="file" data-do="upload_receipt">\
+                                    <input class="file-input | fiatdeposit_uploadreceipt" data-deposit-id="' + row.id + '" type="file" data-do="upload_receipt">\
                                     <span class="file-cta">\
                                         <span class="file-icon">\
                                             <i class="fa fa-upload"></i>\
@@ -1002,29 +1001,29 @@ $(function () {
                 //$("#depositos_fiat_tbl").append('\
                 final_html += ('\
                     <tr>\
-                        <td>'+jsmoment(row.created_at).calendar()+'</td>\
-                        <td>'+money_format.fiat(row.amount)+'</td>\
+                        <td>' + jsmoment(row.created_at).calendar() + '</td>\
+                        <td>' + money_format.fiat(row.amount) + '</td>\
                         <td>\
-                            '+row_html+'\
+                            ' + row_html + '\
                         </td>\
                         <td>\
-                            <span class="tags has-addons"><span class="tag is-'+color+'" style="height: 24px !important; '+(border ? 'border: '+border : '')+'">'+status+'</span>'+(status=='Pendente' ? '<a class="tag is-delete" title="Cancelar Ordem" data-id="'+row.id+'" data-do="cancel_fiat_deposit"></a>' : '')+'</span>\
-                            '+(show_date ? '<br><sub>'+jsmoment(row.updated_at).calendar()+'</sub>' : '')+'\
+                            <span class="tags has-addons"><span class="tag is-' + color + '" style="height: 24px !important; ' + (border ? 'border: ' + border : '') + '">' + status + '</span>' + (status == 'Pendente' ? '<a class="tag is-delete" title="Cancelar Ordem" data-id="' + row.id + '" data-do="cancel_fiat_deposit"></a>' : '') + '</span>\
+                            ' + (show_date ? '<br><sub>' + jsmoment(row.updated_at).calendar() + '</sub>' : '') + '\
                         </td>\
                     </tr>\
                     ');
             });
-            if($("#depositos_fiat_tbl").html()!=final_html) $("#depositos_fiat_tbl").html(final_html);
+            if ($("#depositos_fiat_tbl").html() != final_html) $("#depositos_fiat_tbl").html(final_html);
         });
         socket.on('balance_crypto', function(bal) {
             window.common.max_crypto = bal;
-            $("[data-var=user_funds_crypto]").textBlink('฿ ' + (bal/1e8).toFixed(8));
-            socket.emit('balance.simulateMarketSell', {amount_crypto: bal});
+            $("[data-var=user_funds_crypto]").textBlink('฿ ' + (bal / 1e8).toFixed(8));
+            socket.emit('balance.simulateMarketSell', { amount_crypto: bal });
         });
         socket.on('balance_fiat', function(bal) {
             window.common.max_fiat = bal;
             $("[data-var=user_funds_fiat]").textBlink(money_format.fiat(bal));
-            socket.emit('balance.simulateMarketBuy', { amount_fiat: bal});
+            socket.emit('balance.simulateMarketBuy', { amount_fiat: bal });
         });
         socket.on('memberupdatedatafail', function() {
             gtag('event', 'change_password_invalid_old_password');
@@ -1039,11 +1038,10 @@ $(function () {
             swal("E-mail já existe", "Já existe uma conta registrada neste endereço de e-mail.", "error");
         });
         socket.on('enableotp_error', function(data) {
-            if(data.err=='test') {
+            if (data.err == 'test') {
                 gtag('event', 'enableotp_error_invalid_token');
                 swal("Erro", "Token inválido. Tente novamente.", "error");
-            }
-            else if(data.err=='pwd') {
+            } else if (data.err == 'pwd') {
                 gtag('event', 'enableotp_error_invalid_password');
                 swal("Erro", "Senha incorreta. Tente novamente.", "error");
             }
@@ -1074,23 +1072,23 @@ $(function () {
         });
         socket.on('withdrawals.overlimit', function(limitdata) {
             gtag('event', 'withdraw_try_over_limit');
-            swal("Limite Diário Excedido", "Seu limite diário de saque foi atingido e esta ordem não pôde ser enviada. Seu limite restante é: "+money_format.fiat(limitdata.limit-limitdata.used));
+            swal("Limite Diário Excedido", "Seu limite diário de saque foi atingido e esta ordem não pôde ser enviada. Seu limite restante é: " + money_format.fiat(limitdata.limit - limitdata.used));
         });
         socket.on('deposit.overlimit', function(limitdata) {
             gtag('event', 'deposit_try_over_limit');
-            swal("Limite Diário Excedido", "Seu limite diário de depósito foi atingido e esta ordem não pôde ser enviada. Seu limite restante é: "+money_format.fiat(limitdata.limit-limitdata.used));
+            swal("Limite Diário Excedido", "Seu limite diário de depósito foi atingido e esta ordem não pôde ser enviada. Seu limite restante é: " + money_format.fiat(limitdata.limit - limitdata.used));
         });
         socket.on('cpfcnpjerr', function(reason) {
             var $cpfinput = $("[data-var=user_cpf]");
-            if(reason=='invalid' && $cpfinput.val()) {
-            	$cpfinput.prop("disabled", false);
+            if (reason == 'invalid' && $cpfinput.val()) {
+                $cpfinput.prop("disabled", false);
                 gtag('event', 'invalid_cpf_cnpj');
                 swal("CPF/CNPJ inválido", "O CPF ou CNPJ informado não é válido.", "error");
             } else {
-            	if($cpfinput.val()) {
-	                gtag('event', 'already_registered_cpf_cnpj');
-	                swal("CPF/CNPJ já registrado", "Já existe uma conta utilizando o CPF/CNPJ informado. Por favor, confira seus dados. Se acredita que isto seja um erro, entre em contato com o suporte.", "error");
-	            }
+                if ($cpfinput.val()) {
+                    gtag('event', 'already_registered_cpf_cnpj');
+                    swal("CPF/CNPJ já registrado", "Já existe uma conta utilizando o CPF/CNPJ informado. Por favor, confira seus dados. Se acredita que isto seja um erro, entre em contato com o suporte.", "error");
+                }
             }
             $("[data-var=user_cpf]").val("");
             $("[data-var=user_cpf]")[0].focus();
@@ -1098,40 +1096,43 @@ $(function () {
         socket.on('level.getLevelsData', function(data) {
             // stars
             var stars_html = '';
-            for(i = 1; i <= data.user_level; i++) {
+            for (i = 1; i <= data.user_level; i++) {
                 stars_html += '<i class="fa fa-star"></i>';
             }
-            for(i = data.user_level; i < data.max_level; i++) {
+            for (i = data.user_level; i < data.max_level; i++) {
                 //stars_html += '<i class="fa fa-star-o"></i>';
             }
             $("[data-var=user_level_stars]").html(stars_html);
             $("[data-var=user_level]").text(data.user_level);
             $("[data-var=user_level_name]").text(data.user_level_name);
 
-            if(data.user_level<data.next_level) {
+            $("[data-var=next_level_description]").html("").append(data.next_level_description).html($($("[data-var=next_level_description]")[0]).text());
+
+            if (data.user_level < data.next_level) {
                 $("#level_upgrade_card").show();
+                $("#no_level_upgrade_available").hide();
                 var old_next_level_name = $("[data-var=next_level_name]").text();
-                $("[data-var=next_level_name]").text("Nível "+data.next_level);
-                $("[data-var=next_level_description]").html("").append(data.next_level_description).html($("[data-var=next_level_description]").text());
+                $("[data-var=next_level_name]").text("Nível " + data.next_level);
+
 
                 // form
-                if(data.user_level>0) {
+                if (data.user_level > 0) {
                     var upgrade_form = '<button class="button is-white is-invisible" data-do="level_upgrade_toggle" style="display: none"><i class="fa fa-fw fa-arrow-left"></i> Voltar</button><hr/>';
 
                     data.required_documents.forEach(function(doc) {
                         upgrade_form += '\
                         <div class="file">\
                             <label class="file-label">\
-                                <input class="file-input | docupload" data-do="docselected" data-doc="'+doc.doccode+'" type="file" />\
+                                <input class="file-input | docupload" data-do="docselected" data-doc="' + doc.doccode + '" type="file" />\
                                 <span class="file-cta">\
                                     <span class="file-icon">\
                                         <i class="fa fa-upload"></i>\
                                     </span>\
                                     <span class="file-label">\
-                                        '+(parseInt(doc.doccode) ? doc.docname : '<select data-var="doc-0-type"><option value="2">RG</option><option value="4">CNH</option><option value="12">Passaporte</option></select>')+'\
+                                        ' + (parseInt(doc.doccode) ? doc.docname : '<select data-var="doc-0-type"><option value="2">RG</option><option value="4">CNH</option><option value="12">Passaporte</option></select>') + '\
                                     </span>\
                                 </span>\
-                                <span class="file-name" data-var="doc-'+doc.doccode+'-filename"><i class="fa fa-paperclip"></i></span>\
+                                <span class="file-name" data-var="doc-' + doc.doccode + '-filename"><i class="fa fa-paperclip"></i></span>\
                             </label>\
                         </div><br>';
                     });
@@ -1139,7 +1140,7 @@ $(function () {
                     upgrade_form += '<br><button class="button is-primary" data-do="create_upgrade_process"><b>Enviar Documentos</b></button>';
 
                     //if(!$(".file-name").text().trim() && ((old_next_level_name.trim() && old_next_level_name != $("[data-var=next_level_name]").text()) || !old_next_level_name.trim())) {
-                    if(!$("#level_upgrade_form").text().trim() || ( $($("[data-var=user_level]")[0]).text() != data.user_level )) {   
+                    if (!$("#level_upgrade_form").text().trim() || ($($("[data-var=user_level]")[0]).text() != data.user_level)) {
                         $("#level_upgrade_form").html(upgrade_form);
                     }
                 } else {
@@ -1147,20 +1148,21 @@ $(function () {
                 }
             } else {
                 $("#level_upgrade_card").hide();
+                $("#no_level_upgrade_available").show();
             }
         });
         socket.on('volumechart', function(data) {
             $("[data-var=volumechart] tr").remove();
             $("[data-var=volumelow]").textBlink(money_format.fiat(data.low));
             $("[data-var=volumehigh]").textBlink(money_format.fiat(data.high));
-            $("[data-var=volumeavg]").textBlink(money_format.fiat((data.low+data.high)/2));
-            $("[data-var=volincrease]").textBlink('Δ '+money_format.fiat(data.high-data.low)+" "+((100*data.high)/data.low).toFixed(1)+"%");
+            $("[data-var=volumeavg]").textBlink(money_format.fiat((data.low + data.high) / 2));
+            $("[data-var=volincrease]").textBlink('Δ ' + money_format.fiat(data.high - data.low) + " " + ((100 * data.high) / data.low).toFixed(1) + "%");
             var j = Object.keys(data.periods).length;
-            for(i = 1; i <= j; i++) {
-                var x = parseInt((data.periods['p'+i].volume*100)/data.total_volume);
-                var y = 100-x;
+            for (i = 1; i <= j; i++) {
+                var x = parseInt((data.periods['p' + i].volume * 100) / data.total_volume);
+                var y = 100 - x;
                 $("[data-var=volumechart]").append('\
-                    <tr class="hint--'+(i>=(j/2) ? 'top' : 'bottom')+' hint--medium" aria-label=\"Vol.: '+money_format.crypto(data.periods['p'+i].volume)+'&#10;&#10;Faixa de '+money_format.fiat(data.periods['p'+i].price_min)+'&#10;Preço: '+money_format.fiat(data.periods['p'+i].price_max)+'&#10;&#10;Vol. do dia: '+(x.toFixed(1))+'%\" style="background: linear-gradient(to right, #fff 0%, #fff '+Math.max(1, Math.abs((y/2)-1))+'%, #09a589 '+(y/2)+'%, #09a589 '+Math.min(98, (x+(y/2)))+'%, #fff '+Math.min(99, (x+(y/2)))+'%, #fff 100%);">\
+                    <tr class="hint--' + (i >= (j / 2) ? 'top' : 'bottom') + ' hint--medium" aria-label=\"Vol.: ' + money_format.crypto(data.periods['p' + i].volume) + '&#10;&#10;Faixa de ' + money_format.fiat(data.periods['p' + i].price_min) + '&#10;Preço: ' + money_format.fiat(data.periods['p' + i].price_max) + '&#10;&#10;Vol. do dia: ' + (x.toFixed(1)) + '%\" style="background: linear-gradient(to right, #fff 0%, #fff ' + Math.max(1, Math.abs((y / 2) - 1)) + '%, #09a589 ' + (y / 2) + '%, #09a589 ' + Math.min(98, (x + (y / 2))) + '%, #fff ' + Math.min(99, (x + (y / 2))) + '%, #fff 100%);">\
                         <td>&nbsp;</td>\
                     </tr>\
                     ');
@@ -1168,7 +1170,7 @@ $(function () {
         });
 
         $(".addallbtc").addClass("hint--right").attr("aria-label", "Inserir todo o saldo em BTC").click(function() {
-            $("#"+$(this).data('target')).val($($("[data-var=user_funds_crypto]")[0]).text().substr(2));
+            $("#" + $(this).data('target')).val($($("[data-var=user_funds_crypto]")[0]).text().substr(2));
         });
         /*$(".addallbrl").click(function() {
             $("#"+$(this).data('target')).val($("[data-var=user_funds_fiat]").text());
@@ -1176,41 +1178,41 @@ $(function () {
 
         // preview amount
         $("#limitbuy_maxprice_basic,#limitbuy_amount_basic").on('keyup', function() {
-            $("#limitbuy_basic_preview").textBlink((money_format.fiat(money_format.from.fiat(($("#limitbuy_maxprice_basic").val()))*(money_format.from.crypto($("#limitbuy_amount_basic").val())/1e8))));
+            $("#limitbuy_basic_preview").textBlink((money_format.fiat(money_format.from.fiat(($("#limitbuy_maxprice_basic").val())) * (money_format.from.crypto($("#limitbuy_amount_basic").val()) / 1e8))));
         });
         $("#limitsell_minprice_basic,#limitsell_amount_basic").on('keyup', function() {
-            $("#limitsell_basic_preview").textBlink(money_format.fiat(money_format.from.fiat($("#limitsell_minprice_basic").val())*money_format.from.crypto($("#limitsell_amount_basic").val())/1e8));
+            $("#limitsell_basic_preview").textBlink(money_format.fiat(money_format.from.fiat($("#limitsell_minprice_basic").val()) * money_format.from.crypto($("#limitsell_amount_basic").val()) / 1e8));
         });
         $("#basic_orders_buy_amount,#basic_orders_buy_price").on('keyup', function() {
-            $("#basic_order_buy_preview").textBlink(money_format.fiat(money_format.from.fiat($("#basic_orders_buy_price").val())*money_format.from.crypto($("#basic_orders_buy_amount").val())/1e8));
+            $("#basic_order_buy_preview").textBlink(money_format.fiat(money_format.from.fiat($("#basic_orders_buy_price").val()) * money_format.from.crypto($("#basic_orders_buy_amount").val()) / 1e8));
         });
         $("#basic_orders_sell_amount,#basic_orders_sell_price").on('keyup', function() {
-            $("#basic_order_sell_preview").textBlink(money_format.fiat(money_format.from.fiat($("#basic_orders_sell_price").val())*money_format.from.crypto($("#basic_orders_sell_amount").val())/1e8));
+            $("#basic_order_sell_preview").textBlink(money_format.fiat(money_format.from.fiat($("#basic_orders_sell_price").val()) * money_format.from.crypto($("#basic_orders_sell_amount").val()) / 1e8));
         });
         $("#limitbuy_maxprice,#limitbuy_amount").on('keyup', function() {
-            var preview = money_format.from.fiat($("#limitbuy_maxprice").val())*(money_format.from.crypto($("#limitbuy_amount").val())/1e8);
-            if(preview)
+            var preview = money_format.from.fiat($("#limitbuy_maxprice").val()) * (money_format.from.crypto($("#limitbuy_amount").val()) / 1e8);
+            if (preview)
                 $("#limitbuy_preview").textBlink(money_format.fiat(preview)).parent("p.orderform_preview").slideDown();
             else
                 $("#limitbuy_preview").parent("p.orderform_preview").slideUp();
         });
         $("#limitsell_minprice,#limitsell_amount").on('keyup', function() {
-            var preview = money_format.from.fiat($("#limitsell_minprice").val())*(money_format.from.crypto($("#limitsell_amount").val())/1e8);
-            if(preview)
+            var preview = money_format.from.fiat($("#limitsell_minprice").val()) * (money_format.from.crypto($("#limitsell_amount").val()) / 1e8);
+            if (preview)
                 $("#limitsell_preview").textBlink(money_format.fiat(preview)).parent("p.orderform_preview").slideDown();
             else
                 $("#limitsell_preview").parent("p.orderform_preview").slideUp();
         });
         $("#marketbuy_maxprice,#marketbuy_amount").on('keyup', function() {
-            var preview = money_format.from.fiat($("#marketbuy_maxprice").val())*(money_format.from.crypto($("#marketbuy_amount").val())/1e8);
-            if(preview)
+            var preview = money_format.from.fiat($("#marketbuy_maxprice").val()) * (money_format.from.crypto($("#marketbuy_amount").val()) / 1e8);
+            if (preview)
                 $("#marketbuy_preview").textBlink(money_format.fiat(preview)).parent("p.orderform_preview").slideDown();
             else
                 $("#marketbuy_preview").parent("p.orderform_preview").slideUp();
         });
         $("#marketsell_minprice,#marketsell_amount").on('keyup', function() {
-            var preview = money_format.from.fiat($("#marketsell_minprice").val())*(money_format.from.crypto($("#marketsell_amount").val())/1e8);
-            if(preview)
+            var preview = money_format.from.fiat($("#marketsell_minprice").val()) * (money_format.from.crypto($("#marketsell_amount").val()) / 1e8);
+            if (preview)
                 $("#marketsell_preview").textBlink(money_format.fiat(preview)).parent("p.orderform_preview").slideDown();
             else
                 $("#marketsell_preview").parent("p.orderform_preview").slideUp();
@@ -1221,11 +1223,11 @@ $(function () {
         $(document).on("submit", "[data-alias]", function(e) {
             e.preventDefault();
             var target = $(this).data('alias');
-            $("[data-do="+target+"]").click();
+            $("[data-do=" + target + "]").click();
         })
         $(document).on("click change", "[data-do]", function(e) {
             $this = $(this);
-            if($this.hasClass('loadingonclick')) loadingonclick($this);
+            if ($this.hasClass('loadingonclick')) loadingonclick($this);
             let action_do_list = $(this).data('do').split(" ");
             action_do_list.forEach(function(action_do) {
                 switch (action_do) {
@@ -1237,8 +1239,8 @@ $(function () {
                     case 'linksignup':
                         $(".splashwnd").fadeOut(300);
                         $("#signupSplash").delay(300).fadeIn(300);
-                        var user_country = navigator.language.substr(3,2).toLowerCase();
-                        $("[data-var=signup_country]").val($("[data-iso="+user_country+"]").val()).trigger('change');
+                        var user_country = navigator.language.substr(3, 2).toLowerCase();
+                        $("[data-var=signup_country]").val($("[data-iso=" + user_country + "]").val()).trigger('change');
                         gtag('event', 'click_signup');
                         break;
 
@@ -1268,7 +1270,7 @@ $(function () {
 
                     case 'recover_changepwd':
                         var newpwd = $("[data-var=recover-newpwd]").val();
-                        if(newpwd==$("[data-var=recover-newpwd-2]").val()) {
+                        if (newpwd == $("[data-var=recover-newpwd-2]").val()) {
                             socket.emit('member.recover_checktoken', {
                                 exchange: EXCHANGE,
                                 email: $("[data-var=recover-email]").val(),
@@ -1282,7 +1284,7 @@ $(function () {
                         break;
 
                     case 'go_home':
-                        if(store('trading_interface')=='basic') {
+                        if (store('trading_interface') == 'basic') {
                             loadView('basic');
                             gtag('event', 'view_basic_trader');
                             //$("#sidebar-menu").addClass("is-basic");
@@ -1298,7 +1300,7 @@ $(function () {
                         break;
 
                     case 'toggleTrader':
-                        if(store('trading_interface')=='basic') {
+                        if (store('trading_interface') == 'basic') {
                             store('trading_interface', 'advanced');
                             $(".trader-button").text("BÁSICO");
                             loadView('main');
@@ -1317,7 +1319,7 @@ $(function () {
                         $("#main-menu li a.is-active,#navMenu2 .is-active").removeClass("is-active");
                         $("#navMenu2").slideUp('fast');
                         $("#main-menu [data-do=go_main],#navMenu2 [data-do=go_main]").addClass("is-active");
-                        if(store('trading_interface')=='basic') {
+                        if (store('trading_interface') == 'basic') {
                             //$("#sidebar-menu").addClass("is-basic");
                             loadView('basic');
                             gtag('event', 'view_basic_trader');
@@ -1331,13 +1333,13 @@ $(function () {
                     case 'notification-mark-as-read':
                         var nid = $this.data('nid');
                         $this.hide('fold');
-                        socket.emit('notifications.markAsRead', { sess_key: localStorage.getItem('sess_key'), id: nid});
+                        socket.emit('notifications.markAsRead', { sess_key: localStorage.getItem('sess_key'), id: nid });
                         gtag('event', 'read_notification');
                         break;
 
                     case 'cancelOrder':
                         var order_id = $this.data('order-id');
-                        $(".myorder_"+order_id).slideUp();
+                        $(".myorder_" + order_id).slideUp();
                         socket.emit('orders.deleteorder', {
                             sess_id: localStorage.getItem('sess_key'),
                             order_id: order_id
@@ -1347,7 +1349,7 @@ $(function () {
 
                     case 'cancelSpecialOrder':
                         var order_id = $this.data('order-id');
-                        $("#myspecialorder_"+order_id).slideUp();
+                        $("#myspecialorder_" + order_id).slideUp();
                         socket.emit('orders.deletespecialorder', {
                             sess_id: localStorage.getItem('sess_key'),
                             order_id: order_id
@@ -1367,7 +1369,7 @@ $(function () {
                         break;
 
                     case 'logout':
-                        socket.emit('member.logout', {sess_key: localStorage.getItem('sess_key')});
+                        socket.emit('member.logout', { sess_key: localStorage.getItem('sess_key') });
                         localStorage.removeItem('sess_key');
                         $("#splash").fadeIn(1000);
                         grecaptcha.reset();
@@ -1380,7 +1382,7 @@ $(function () {
                         var amount = $($this.children("td")[1]).text().substr(2);
                         var price = $($this.children("td")[2]).text().substr(3);
                         $(".offerbuy_price,.offerbuy_amount,.offersell_price,.offersell_amount").val("");
-                        if(type=='buy') {
+                        if (type == 'buy') {
                             $(".offersell_price").val(price);
                             $(".offersell_amount").val(amount);
                         } else {
@@ -1398,7 +1400,7 @@ $(function () {
                         break;
 
                     case "copyuserwallet":
-                        (function (text) {
+                        (function(text) {
                             var node = document.createElement('textarea');
                             var selection = document.getSelection();
 
@@ -1444,7 +1446,7 @@ $(function () {
                         $("#bank-name").text(bankname);
                         $("#bankdetail div").hide();
                         $("#bankdetail-" + bankid).show();
-                        $("#bankdetail-"+bankid+" div").show();
+                        $("#bankdetail-" + bankid + " div").show();
                         break;
 
                     case 'go_upgrade_page':
@@ -1454,15 +1456,15 @@ $(function () {
                     case 'createFiatDeposit':
                         var bank = $("#bank_id").val();
                         var amount = money_format.from.fiat($("#valorDeposito").val());
-                        if(!bank) {
+                        if (!bank) {
                             swal("Escolha um banco", "Selecione um banco para realizar o depósito.", 'warning');
                         } else {
-                            if(amount<100000) {
+                            if (amount < 100000) {
                                 swal("Abaixo do Mínimo", "O valor mínimo para depósito é de R$ 1.000,00.", "warning");
                                 return;
                             }
-                            if(amount) {
-                                $("#depositModalBank").html($("#bankdetail-"+bank).html());
+                            if (amount) {
+                                $("#depositModalBank").html($("#bankdetail-" + bank).html());
                                 socket.emit('deposit.deposit_fiat', {
                                     sess_key: localStorage.getItem('sess_key'),
                                     bank: $("#bank_id").val(),
@@ -1470,8 +1472,7 @@ $(function () {
                                     currency: window.common.crypto_currency_id
                                 });
                                 gtag('event', 'create_fiat_deposit');
-                            }
-                            else {
+                            } else {
                                 swal("Valor inválido", "Insira um valor válido", "warning");
                             }
                         }
@@ -1482,7 +1483,7 @@ $(function () {
 
                         var price = money_format.from.fiat($("#basic_orders_buy_price").val());
 
-                        if(price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida ("+money_format.fiat(best.selling())+"). Continuar?")) return;
+                        if (price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida (" + money_format.fiat(best.selling()) + "). Continuar?")) return;
 
                         $("#basic_orders_buy_amount").val("");
                         $("#basic_orders_buy_price").val("");
@@ -1504,7 +1505,7 @@ $(function () {
 
                         var price = money_format.from.fiat($("#basic_orders_sell_price").val());
 
-                        if(price > best.buying() && !confirm("Seu preço está acima da melhor oferta ("+money_format.fiat(best.buying())+"). Continuar?")) return;
+                        if (price > best.buying() && !confirm("Seu preço está acima da melhor oferta (" + money_format.fiat(best.buying()) + "). Continuar?")) return;
 
                         $("#basic_orders_sell_amount").val("");
                         $("#basic_orders_sell_price").val("");
@@ -1526,7 +1527,7 @@ $(function () {
 
                         var price = money_format.from.fiat($("#limitbuy_maxprice").val());
 
-                        if(price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida ("+money_format.fiat(best.selling())+"). Continuar?")) return;
+                        if (price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida (" + money_format.fiat(best.selling()) + "). Continuar?")) return;
 
                         $("#limitbuy_amount").val("");
                         $("#limitbuy_maxprice").val("");
@@ -1548,7 +1549,7 @@ $(function () {
 
                         var price = money_format.from.fiat($("#limitsell_minprice").val());
 
-                        if(price > best.buying() && !confirm("Seu preço está acima da melhor oferta ("+money_format.fiat(best.buying())+"). Continuar?")) return;
+                        if (price > best.buying() && !confirm("Seu preço está acima da melhor oferta (" + money_format.fiat(best.buying()) + "). Continuar?")) return;
 
                         $("#limitsell_amount").val("");
                         $("#limitsell_minprice").val("");
@@ -1570,7 +1571,7 @@ $(function () {
 
                         var price = money_format.from.fiat($("#limitbuy_maxprice_basic").val());
 
-                        if(price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida ("+money_format.fiat(best.selling())+"). Continuar?")) return;
+                        if (price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida (" + money_format.fiat(best.selling()) + "). Continuar?")) return;
 
                         $("#limitbuy_amount_basic").val("");
                         $("#limitbuy_maxprice_basic").val("");
@@ -1594,7 +1595,7 @@ $(function () {
                         var price = money_format.from.fiat($("#limitsell_minprice_basic").val());
 
 
-                        if(price > best.buying() && !confirm("Seu preço está acima da melhor oferta ("+money_format.fiat(best.buying())+"). Continuar?")) return;
+                        if (price > best.buying() && !confirm("Seu preço está acima da melhor oferta (" + money_format.fiat(best.buying()) + "). Continuar?")) return;
 
                         $("#limitsell_amount_basic").val("");
                         $("#limitsell_minprice_basic").val("");
@@ -1617,7 +1618,7 @@ $(function () {
 
                         var price = money_format.from.fiat($("#marketbuy_maxprice").val());
 
-                        if(price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida ("+money_format.fiat(best.selling())+") e uma ordem de limite será lançada. Continuar?")) return;
+                        if (price < best.selling() && !confirm("Seu preço está abaixo da melhor pedida (" + money_format.fiat(best.selling()) + ") e uma ordem de limite será lançada. Continuar?")) return;
 
                         $("#marketbuy_amount").val("");
                         $("#marketbuy_maxprice").val("");
@@ -1640,7 +1641,7 @@ $(function () {
                         var price = money_format.from.fiat($("#marketsell_minprice").val());
 
 
-                        if(price > best.buying() && !confirm("Seu preço está acima da melhor oferta ("+money_format.fiat(best.buying())+") e uma ordem de limite será lançada. Continuar?")) return;
+                        if (price > best.buying() && !confirm("Seu preço está acima da melhor oferta (" + money_format.fiat(best.buying()) + ") e uma ordem de limite será lançada. Continuar?")) return;
 
 
                         $("#marketsell_amount").val("");
@@ -1665,13 +1666,13 @@ $(function () {
 
 
                         swal({
-                          title: 'Preço máximo de compra',
-                          input: 'text',
-                          showCancelButton: true,
-                          confirmButtonText: 'Criar Ordem',
-                          showLoaderOnConfirm: true,
-                          allowOutsideClick: true
-                        }).then(function (price) {
+                            title: 'Preço máximo de compra',
+                            input: 'text',
+                            showCancelButton: true,
+                            confirmButtonText: 'Criar Ordem',
+                            showLoaderOnConfirm: true,
+                            allowOutsideClick: true
+                        }).then(function(price) {
                             price = money_format.from.fiat(price);
                             $("#stoplimitbuy_amount").val("");
                             $("#stoplimitbuy_trigger").val("");
@@ -1697,13 +1698,13 @@ $(function () {
 
 
                         swal({
-                          title: 'Preço mínimo de venda',
-                          input: 'text',
-                          showCancelButton: true,
-                          confirmButtonText: 'Criar Ordem',
-                          showLoaderOnConfirm: true,
-                          allowOutsideClick: true
-                        }).then(function (price) {
+                            title: 'Preço mínimo de venda',
+                            input: 'text',
+                            showCancelButton: true,
+                            confirmButtonText: 'Criar Ordem',
+                            showLoaderOnConfirm: true,
+                            allowOutsideClick: true
+                        }).then(function(price) {
                             $("#stoplimitsell_amount").val("");
                             $("#stoplimitsell_trigger").val("");
                             $("#orderform_preview").slideUp();
@@ -1723,7 +1724,7 @@ $(function () {
                         break;
 
                     case 'georegions':
-                        if(e.type=='change') {
+                        if (e.type == 'change') {
                             var country = $this.val();
                             socket.emit('geo.regionslist', { country: country });
                         }
@@ -1731,79 +1732,76 @@ $(function () {
 
                     case 'signup_2':
                         var email_regexp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-                        if(!$('[data-var=signup_name]').val()) {
+                        if (!$('[data-var=signup_name]').val()) {
                             swal(
                                 'Nome inválido',
                                 'Por favor informe seu nome.',
                                 'warning'
-                                );
-                        }
-                        else if(!email_regexp.test($('[data-var=signup_email]').val())) {
+                            );
+                        } else if (!email_regexp.test($('[data-var=signup_email]').val())) {
                             swal(
                                 'E-mail inválido',
                                 'Por favor informe seu e-mail corretamente.',
                                 'warning'
-                                );
-                        }
-                        else if($('[data-var=signup_password]').val().length <= 5) {
+                            );
+                        } else if ($('[data-var=signup_password]').val().length <= 5) {
                             swal(
                                 'Senha inválida',
                                 'Por favor informe uma senha maior que 5 caracteres.',
                                 'warning'
-                                );
-                        }
-                        else if($('[data-var=signup_password2]').val() != $("[data-var=signup_password]").val()) {
+                            );
+                        } else if ($('[data-var=signup_password2]').val() != $("[data-var=signup_password]").val()) {
                             swal(
                                 'Senhas não conferem.',
                                 'Por favor informe a mesma senha em ambos os campos.',
                                 'warning'
-                                );
+                            );
                         } else {
                             $("#signup_1").hide('drop', 300);
-                            $("#signup_2").delay(350).show('drop', {direction: 'right'}, 300);
+                            $("#signup_2").delay(350).show('drop', { direction: 'right' }, 300);
                             gtag('event', 'signup_step_1_complete');
                         }
                         break;
 
                     case 'chartload':
-                        $("[data-var=chart]").attr('src', '/chart.html?'+Math.random());
+                        $("[data-var=chart]").attr('src', '/chart.html?' + Math.random());
                         break;
 
                     case 'cancel_fiat_deposit':
                         var the_id = $this.data('id');
                         swal({
-                          title: 'Excluir Ordem',
-                          text: "Tem certeza que deseja excluir esta ordem?",
-                          type: 'warning',
-                          showCancelButton: true,
-                          confirmButtonColor: '#d33',
-                          cancelButtonColor: '#3085d6',
-                          confirmButtonText: 'Sim, excluir.'
-                        }).then(function () {
-                          $this.closest('tr').slideUp();
-                          socket.emit('deposit.cancel_fiat', {
-                            f: the_id,
-                            sess_key: localStorage.getItem('sess_key')
-                          });
+                            title: 'Excluir Ordem',
+                            text: "Tem certeza que deseja excluir esta ordem?",
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Sim, excluir.'
+                        }).then(function() {
+                            $this.closest('tr').slideUp();
+                            socket.emit('deposit.cancel_fiat', {
+                                f: the_id,
+                                sess_key: localStorage.getItem('sess_key')
+                            });
                         })
                         break;
 
                     case 'signup':
-                        if(!$("[data-var=signup_telephone]").intlTelInput("isValidNumber")) {
+                        if (!$("[data-var=signup_telephone]").intlTelInput("isValidNumber")) {
                             swal("Telefone inválido", "Por favor, insira seu telefone corretamente.", "warning");
-                        } else if(!$("[data-var=accept-tos]").is(":checked")) {
+                        } else if (!$("[data-var=accept-tos]").is(":checked")) {
                             swal("Termos e Condições", "É necessário aceitar os termos de uso e a política de privacidade para utilizar a plataforma.", "warning");
                         } else {
                             var data = {
-                                 email: $("[data-var=signup_email]").val()
-                                ,password: $("[data-var=signup_password]").val()
-                                ,exchange: EXCHANGE
-                                ,region: $("[data-var=signup_region]").val()
-                                ,city: $("[data-var=signup_city]").val()
-                                ,phone: $("[data-var=signup_telephone]").intlTelInput("getNumber")
-                                ,fullname: $("[data-var=signup_name]").val()
-                                ,cpf: $("[data-var=signup_cpf]").val()
-                                ,gender: $("[data-var=signup_gender]").val()
+                                email: $("[data-var=signup_email]").val(),
+                                password: $("[data-var=signup_password]").val(),
+                                exchange: EXCHANGE,
+                                region: $("[data-var=signup_region]").val(),
+                                city: $("[data-var=signup_city]").val(),
+                                phone: $("[data-var=signup_telephone]").intlTelInput("getNumber"),
+                                fullname: $("[data-var=signup_name]").val(),
+                                cpf: $("[data-var=signup_cpf]").val(),
+                                gender: $("[data-var=signup_gender]").val()
                             };
                             $("[data-var=signin-email]").val(data.email);
                             $("[data-var=signin-password]").val(data.password);
@@ -1815,7 +1813,7 @@ $(function () {
                     case 'changeEmail':
                         var email_regexp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
                         var new_email = $("[data-var=user_email_input]").val();
-                        if(!email_regexp.test(new_email)) {
+                        if (!email_regexp.test(new_email)) {
                             swal("E-mail inválido", "Por favor informe um e-mail válido.", "warning");
                         } else {
                             socket.emit('member.update', {
@@ -1827,25 +1825,24 @@ $(function () {
                         }
                         break;
                     case 'change_profile':
-                        if(e.type=='change') {
+                        if (e.type == 'change') {
                             changeprofile_timeout = 0;
                             var data = {
-                                 fullname: $("[data-var=user_fullname_input]").val()
-                                ,phone: $("[data-var=user_telephone_input]").intlTelInput("getNumber")
-                                ,region: $("[data-var=user_region]").val()
-                                ,city: $("[data-var=user_city]").val()
+                                fullname: $("[data-var=user_fullname_input]").val(),
+                                phone: $("[data-var=user_telephone_input]").intlTelInput("getNumber"),
+                                region: $("[data-var=user_region]").val(),
+                                city: $("[data-var=user_city]").val()
                             }
-                            if(!data.fullname) {
+                            if (!data.fullname) {
                                 swal("Nome inválido", "Por favor, insira seu nome.", "warning");
-                            }
-                            else if(!$("[data-var=user_telephone_input]").intlTelInput("isValidNumber")) {
+                            } else if (!$("[data-var=user_telephone_input]").intlTelInput("isValidNumber")) {
                                 swal("Telefone inválido", "Por favor, insira seu número de telefone corretamente.", "warning");
-                            /*}
-                            else if(!data.region) {
-                                swal("Região inválida", "Por favor, insira seu estado ou região.", "warning");
-                            }
-                            else if(!data.city) {
-                                swal("Cidade inválida", "Por favor, digite o nome de sua cidade.", "warning");*/
+                                /*}
+                                else if(!data.region) {
+                                    swal("Região inválida", "Por favor, insira seu estado ou região.", "warning");
+                                }
+                                else if(!data.city) {
+                                    swal("Cidade inválida", "Por favor, digite o nome de sua cidade.", "warning");*/
                             } else {
                                 socket.emit('profile.editdetails', {
                                     sess_key: localStorage.getItem('sess_key'),
@@ -1854,20 +1851,19 @@ $(function () {
                                 gtag('event', 'update_profile_details');
                                 clearTimeout(changeprofile_timeout);
                                 changeprofile_timeout = setTimeout(function() {
-                                    socket.emit('profile.getdetails', {sess_key: localStorage.getItem('sess_key')});
+                                    socket.emit('profile.getdetails', { sess_key: localStorage.getItem('sess_key') });
                                 }, 1500);
                             }
                         }
                         break;
-                    
+
                     case 'change_password':
                         var current_password = $("[data-var=current_pwd]").val();
                         var new_pwd = $("[data-var=new_pwd]").val();
                         var new_pwd2 = $("[data-var=new_pwd2]").val();
-                        if(new_pwd.length < 5) {
+                        if (new_pwd.length < 5) {
                             swal("Senha inválida", "Escolha uma senha maior.", "warning");
-                        }
-                        else if(new_pwd!=new_pwd2) {
+                        } else if (new_pwd != new_pwd2) {
                             swal("Senhas não conferem", "A senha não coincide com a confirmação da senha.", "warning");
                         } else {
                             swal("Senha Atualizada", "Sua senha foi modificada com sucesso.", "success");
@@ -1881,7 +1877,7 @@ $(function () {
                         break;
 
                     case 'statementPrev':
-                        gtag('event', 'statement_page_'+parseInt($("[data-var=ledger_page]").text())+1);
+                        gtag('event', 'statement_page_' + parseInt($("[data-var=ledger_page]").text()) + 1);
                         socket.emit('ledger.list', {
                             sess_key: localStorage.sess_key,
                             page: parseInt($("[data-var=ledger_page]").text())
@@ -1889,10 +1885,10 @@ $(function () {
                         break;
 
                     case 'statementNext':
-                        gtag('event', 'statement_page_'+parseInt($("[data-var=ledger_page]").text())-1);
+                        gtag('event', 'statement_page_' + parseInt($("[data-var=ledger_page]").text()) - 1);
                         socket.emit('ledger.list', {
                             sess_key: localStorage.sess_key,
-                            page: parseInt($("[data-var=ledger_page]").text())-2
+                            page: parseInt($("[data-var=ledger_page]").text()) - 2
                         })
                         break;
 
@@ -1910,15 +1906,25 @@ $(function () {
                         gtag('event', 'close_active_session');
                         break;
 
+                    case 'upgrade__sendByMobile':
+                        $("#upgrade__menu").fadeOut(300);
+                        $("#upgrade__mobile_upload").delay(300).fadeIn(300);
+                        break;
+
+                    case 'upgrade__sendByComputer':
+                        $("#upgrade__menu").fadeOut(300);
+                        $("#upgrade__web_upload").delay(300).fadeIn(300);
+                        break;
+
                     case 'docselected':
                         var doc_type = $this.data('doc');
                         var filename = $this[0].files.length ? $this[0].files[0].name : '';
-                        $("[data-var=doc-"+doc_type+"-filename]").text(filename);
+                        $("[data-var=doc-" + doc_type + "-filename]").text(filename);
                         gtag('event', 'document_select');
                         break;
 
                     case 'create_upgrade_process':
-                    	if(!$("[data-var=user_cpf]").val() || !$("[data-var=user_gender]").val()) {
+                        if (!$("[data-var=user_cpf]").val() || !$("[data-var=user_gender]").val()) {
                             return swal("CPF Necessário", "Para realizar upgrade de nível, informe seu CPF e gênero.", "error");
                         }
                         /*if($("[data-var=doc-0-type]").length && !$("[data-var=doc-0-type]").val()) {
@@ -1932,9 +1938,9 @@ $(function () {
                             // check if all were uploaded
                             var alluploaded = true;
                             $(".docupload").each(function() {
-                                if(!$(this).data('uploaded_url')) alluploaded = false;
+                                if (!$(this).data('uploaded_url')) alluploaded = false;
                             });
-                            if(alluploaded) {
+                            if (alluploaded) {
                                 takeWebcamPicture(function(b64) {
                                     loadingOn();
                                     setTimeout(loadingOff, 5000);
@@ -1956,19 +1962,19 @@ $(function () {
                         $(".docupload").each(function() {
                             var $up = $(this);
                             var type = $up.data('doc');
-                            if(!type) {
+                            if (!type) {
                                 type = $("[data-var=doc-0-type]").val()
                             }
-                            var filename = $("[data-var=doc-"+type+"-filename]").text();
-                            if(!$up.data('uploaded_url')) {
-                                notifyme("Enviando "+filename, "info");
+                            var filename = $("[data-var=doc-" + type + "-filename]").text();
+                            if (!$up.data('uploaded_url')) {
+                                notifyme("Enviando " + filename, "info");
                                 upload($up[0].files[0], function(err, url) {
-                                    if(!err) {
-                                        notifyme(filename+" enviado", "success");
+                                    if (!err) {
+                                        notifyme(filename + " enviado", "success");
                                         $up.data('uploaded_url', url);
                                         docs.push({
                                             'type': type,
-                                            'url': CDN+url
+                                            'url': CDN + url
                                         });
 
                                         create_upgrade_process_finish(docs);
@@ -1981,7 +1987,7 @@ $(function () {
                             } else {
                                 docs.push({
                                     'type': type,
-                                    'url': CDN+$up.data('uploaded_url')
+                                    'url': CDN + $up.data('uploaded_url')
                                 });
                                 create_upgrade_process_finish(docs);
                             }
@@ -1991,18 +1997,18 @@ $(function () {
 
                     case 'disable_otp':
                         swal({
-                          title: 'Desabilitar Autenticação em Dois Fatores',
-                          text: 'Digite a senha de sua conta para desabilitar a autenticação em dois fatores.',
-                          input: 'password',
-                          showCancelButton: true,
-                          confirmButtonText: 'Desabilitar OTP',
-                          showLoaderOnConfirm: true,
-                        }).then(function (pwd) {
-                          socket.emit('member.disable_otp', {
-                            sess_key: localStorage.sess_key,
-                            password: pwd
-                          });
-                          gtag('event', 'disable_otp');
+                            title: 'Desabilitar Autenticação em Dois Fatores',
+                            text: 'Digite a senha de sua conta para desabilitar a autenticação em dois fatores.',
+                            input: 'password',
+                            showCancelButton: true,
+                            confirmButtonText: 'Desabilitar OTP',
+                            showLoaderOnConfirm: true,
+                        }).then(function(pwd) {
+                            socket.emit('member.disable_otp', {
+                                sess_key: localStorage.sess_key,
+                                password: pwd
+                            });
+                            gtag('event', 'disable_otp');
                         });
                         break;
 
@@ -2010,37 +2016,37 @@ $(function () {
                         var secret = randomString(20);
                         var uri = "otpauth://totp/" + encodeURIComponent('BRECoins' + ":" + window.common.udata.email) + "?secret=" + base32.encode(secret) + "&issuer=BRE+Coins";
                         swal({
-                          title: 'Ativar 2FA',
-                          text: 'Digite a senha de sua conta para habilitar a autenticação em dois fatores.',
-                          input: 'password',
-                          showCancelButton: true,
-                          confirmButtonText: 'Prosseguir',
-                          showLoaderOnConfirm: true,
-                          allowOutsideClick: true
-                        }).then(function (password) {
+                            title: 'Ativar 2FA',
+                            text: 'Digite a senha de sua conta para habilitar a autenticação em dois fatores.',
+                            input: 'password',
+                            showCancelButton: true,
+                            confirmButtonText: 'Prosseguir',
+                            showLoaderOnConfirm: true,
+                            allowOutsideClick: true
+                        }).then(function(password) {
                             swal({
-                              title: 'Ativar 2FA',
-                              html: 'Escaneie o QR Code com o Authy ou o Google Authenticator e insira o código gerado no campo abaixo.\
-                                    <br><img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='+encodeURIComponent(uri)+'" />',
-                              input: 'text',
-                              showCancelButton: true,
-                              confirmButtonText: 'Checar',
-                              showLoaderOnConfirm: true,
-                              allowOutsideClick: true
+                                title: 'Ativar 2FA',
+                                html: 'Escaneie o QR Code com o Authy ou o Google Authenticator e insira o código gerado no campo abaixo.\
+                                    <br><img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' + encodeURIComponent(uri) + '" />',
+                                input: 'text',
+                                showCancelButton: true,
+                                confirmButtonText: 'Checar',
+                                showLoaderOnConfirm: true,
+                                allowOutsideClick: true
                             }).then(function(token) {
-                              socket.emit('member.enable_otp', {
-                                secret: secret.toString(),
-                                test: token,
-                                password: password,
-                                sess_key: localStorage.getItem('sess_key')
-                              });
-                              gtag('event', 'enable_otp');
+                                socket.emit('member.enable_otp', {
+                                    secret: secret.toString(),
+                                    test: token,
+                                    password: password,
+                                    sess_key: localStorage.getItem('sess_key')
+                                });
+                                gtag('event', 'enable_otp');
                             })
                         })
                         break;
 
                     case 'enable_facial':
-                        if($("[data-var=user_cpf]").val() && $("[data-var=user_gender]").val()) {
+                        if ($("[data-var=user_cpf]").val() && $("[data-var=user_gender]").val()) {
                             takeWebcamPicture(function(b64) {
                                 loadingOn();
                                 setTimeout(loadingOff, 5000);
@@ -2068,32 +2074,32 @@ $(function () {
                         break;
 
                     case 'update_profile_details':
-                        if(e.type=='change') {
+                        if (e.type == 'change') {
                             socket.emit('profiledetails.setProfileDetail', {
                                 sess_key: localStorage.getItem('sess_key'),
                                 key: 'gender',
                                 value: $("[data-var=user_gender]").val()
                             });
-                            if($("[data-var=user_cpf]").val() && !$("[data-var=user_cpf]").is(":disabled")) {
+                            if ($("[data-var=user_cpf]").val() && !$("[data-var=user_cpf]").is(":disabled")) {
                                 var the_cpf = $("[data-var=user_cpf]").val();
-                            	swal({
-								  title: 'Confirme seu CPF/CNPJ',
-								  text: "Você digitou o CPF/CNPJ: "+$("[data-var=user_cpf]").val()+"\nNote que não será possível alterar o seu CPF/CNPJ posteriormente. Além disso, você só poderá realizar saques para contas bancárias em contas cadastradas sob o mesmo CPF/CNPJ. Também não será possível o cadastro de outra conta na BRE Coins utilizando este mesmo documento.",
-								  type: 'warning',
-								  showCancelButton: true,
-								  confirmButtonText: 'Confirmar Dados',
-								  cancelButtonText: 'Corrigir',
-								}).then(function () {
-		                            socket.emit('profiledetails.setProfileDetail', {
-		                                sess_key: localStorage.getItem('sess_key'),
-		                                key: 'cpf',
-		                                value: the_cpf.replace(/[^0-9]/g, "")
-		                            });
+                                swal({
+                                    title: 'Confirme seu CPF/CNPJ',
+                                    text: "Você digitou o CPF/CNPJ: " + $("[data-var=user_cpf]").val() + "\nNote que não será possível alterar o seu CPF/CNPJ posteriormente. Além disso, você só poderá realizar saques para contas bancárias em contas cadastradas sob o mesmo CPF/CNPJ. Também não será possível o cadastro de outra conta na BRE Coins utilizando este mesmo documento.",
+                                    type: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Confirmar Dados',
+                                    cancelButtonText: 'Corrigir',
+                                }).then(function() {
+                                    socket.emit('profiledetails.setProfileDetail', {
+                                        sess_key: localStorage.getItem('sess_key'),
+                                        key: 'cpf',
+                                        value: the_cpf.replace(/[^0-9]/g, "")
+                                    });
                                     $("[data-var=user_cpf]").val(the_cpf).prop("disabled", true);
-								}, function() {
-									$("[data-var=user_cpf]").val("");
-								})
-	                        }
+                                }, function() {
+                                    $("[data-var=user_cpf]").val("");
+                                })
+                            }
                             gtag('event', 'update_profile_details');
                         }
                         break;
@@ -2106,8 +2112,8 @@ $(function () {
 
                     case 'createFiatWithdraw':
                         var amount = money_format.from.fiat($("#valorFiatSaque").val());
-                        if(!amount) return;
-                        if(amount<100000) {
+                        if (!amount) return;
+                        if (amount < 100000) {
                             swal("Abaixo do Mínimo", "O valor mínimo para saque é de R$ 1.000,00.", "warning");
                             return;
                         }
@@ -2128,7 +2134,7 @@ $(function () {
 
                     case 'createCryptoWithdraw':
                         var amount = money_format.from.crypto($("#valorCryptoSaque").val());
-                        if(!amount) return;
+                        if (!amount) return;
                         swal({
                             title: "Saque de Criptomoedas",
                             text: "Insira sua senha para confirmar.",
@@ -2155,23 +2161,23 @@ $(function () {
                         var algo_title = $("#algorithmName").val();
                         var algo_code = window.algoeditor.getValue();
 
-                        if(algodb(algo_title)) {
+                        if (algodb(algo_title)) {
                             swal(
-                              'Nome Duplicado',
-                              'Já existe um algoritmo neste navegador utilizando o mesmo nome. Por favor, insira outro nome.',
-                              'error'
+                                'Nome Duplicado',
+                                'Já existe um algoritmo neste navegador utilizando o mesmo nome. Por favor, insira outro nome.',
+                                'error'
                             )
-                        } else if(!algo_title) {
+                        } else if (!algo_title) {
                             swal(
-                              'Nome Inválido',
-                              'Por favor insira um nome para seu algoritmo.',
-                              'error'
+                                'Nome Inválido',
+                                'Por favor insira um nome para seu algoritmo.',
+                                'error'
                             )
-                        } else if(!algo_code) {
+                        } else if (!algo_code) {
                             swal(
-                              'Código em Branco',
-                              'Por favor insira o código do seu algoritmo.',
-                              'error'
+                                'Código em Branco',
+                                'Por favor insira o código do seu algoritmo.',
+                                'error'
                             )
                         } else {
                             closeModal('add-algorithm');
@@ -2190,8 +2196,8 @@ $(function () {
                         var sequential = 1;
                         do {
                             sequential++;
-                        } while(algodb(algoname+" "+sequential));
-                        $("#algorithmName").val(algoname+" "+sequential);
+                        } while (algodb(algoname + " " + sequential));
+                        $("#algorithmName").val(algoname + " " + sequential);
                         window.algoeditor.setValue(algocode);
                         showModal('add-algorithm');
                         gtag('event', 'edit_algorithm');
@@ -2201,7 +2207,7 @@ $(function () {
                         gtag('event', 'run_algorithm');
                         var algodb = store.namespace('algo');
                         var algoname = $this.data('algo-key');
-                        if(typeof window.workers[algoname]!='undefined') {
+                        if (typeof window.workers[algoname] != 'undefined') {
                             window.workers[algoname].terminate();
                             delete window.workers[algoname];
                         } else {
@@ -2236,10 +2242,10 @@ $(function () {
                             var blob = new Blob([code]);
                             var blobURL = window.URL.createObjectURL(blob);
                             worker = new Worker(blobURL);
-                            worker.onmessage = function (event) {
+                            worker.onmessage = function(event) {
                                 document.getElementById("result").innerHTML = event.data;
                                 val = event.data;
-                                if(val.cmd=='cryptowithdraw') {
+                                if (val.cmd == 'cryptowithdraw') {
                                     socket.emit('withdrawals.withdraw_crypto', {
                                         sess_key: localStorage.getItem('sess_key'),
                                         wallet: val.data.wallet,
@@ -2248,17 +2254,16 @@ $(function () {
                                         password: val.data.pwd,
                                         currency: window.common.crypto_currency_id
                                     });
-                                }
-                                else if(val.cmd=='console') {
-                                    console.log("Algotrading: ",val.data);
+                                } else if (val.cmd == 'console') {
+                                    console.log("Algotrading: ", val.data);
                                 }
                             };
                             worker.addEventListener('error', function onError(e) {
                                 console.error([
-                                  'Algotrading ERROR: Line ', e.lineno, ' in ', e.filename, ': ', e.message
+                                    'Algotrading ERROR: Line ', e.lineno, ' in ', e.filename, ': ', e.message
                                 ].join(''));
-                              }, false);
-                            worker.postMessage({cmd: 'start'});
+                            }, false);
+                            worker.postMessage({ cmd: 'start' });
                         }
                         updatealgo();
                         break;
@@ -2267,23 +2272,22 @@ $(function () {
                         var algodb = store.namespace('algo');
                         var algoname = $this.data('algo-key');
                         swal({
-                          title: 'Excluir Algoritmo',
-                          text: "Tem certeza que deseja excluir este algoritmo?",
-                          type: 'question',
-                          showCancelButton: true,
-                          confirmButtonColor: '#3085d6',
-                          cancelButtonColor: '#d33',
-                          confirmButtonText: 'Sim, excluir',
-                          cancelButtonText: 'Não, cancelar',
-                          confirmButtonClass: 'btn btn-success',
-                          cancelButtonClass: 'btn btn-danger',
-                          buttonsStyling: false
-                        }).then(function () {
+                            title: 'Excluir Algoritmo',
+                            text: "Tem certeza que deseja excluir este algoritmo?",
+                            type: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Sim, excluir',
+                            cancelButtonText: 'Não, cancelar',
+                            confirmButtonClass: 'btn btn-success',
+                            cancelButtonClass: 'btn btn-danger',
+                            buttonsStyling: false
+                        }).then(function() {
                             algodb.remove(algoname);
                             updatealgo();
                             gtag('event', 'delete_algorithm');
-                        }, function (dismiss) {}
-                        )
+                        }, function(dismiss) {})
                         break;
 
                     case 'calculator':
@@ -2301,17 +2305,17 @@ $(function () {
         $("[data-var=deposits]").on('change', '.fiatdeposit_uploadreceipt', function(event) {
             loadingOn();
             var deposit_id = $(this).data('deposit-id');
-            if(event.target.files.length) {
+            if (event.target.files.length) {
                 upload(event.target.files[0], function(err, url) {
                     loadingOff();
-                    if(!err) {
+                    if (!err) {
                         socket.emit('deposit.send_receipt', {
                             sess_key: localStorage.getItem('sess_key'),
                             file: url,
                             deposit_id: deposit_id
                         });
                         setInterval(function() {
-                           socket.emit('deposit.list_fiat', { sess_key: localStorage.getItem('sess_key') });
+                            socket.emit('deposit.list_fiat', { sess_key: localStorage.getItem('sess_key') });
                         }, 3000);
                     }
                 });
@@ -2320,8 +2324,8 @@ $(function () {
 
         // coinmarketcap price
         (function updateCoinmarketcap() {
-            $.getJSON('https://api.coinmarketcap.com/v1/ticker/bitcoin/', function (data) {
-                $("[data-var=coinmarketcap]").textBlink('US'+accounting.formatMoney(data[0].price_usd, '$ '));
+            $.getJSON('https://api.coinmarketcap.com/v1/ticker/bitcoin/', function(data) {
+                $("[data-var=coinmarketcap]").textBlink('US' + accounting.formatMoney(data[0].price_usd, '$ '));
                 setTimeout(updateCoinmarketcap, 15000);
             });
         })();
@@ -2345,92 +2349,91 @@ $(function () {
         });
 
         // calculator
-          var currentNum = '';
-          var total = 0;
-          var operation = '';
+        var currentNum = '';
+        var total = 0;
+        var operation = '';
 
-          function updateDisplay(disp) {
+        function updateDisplay(disp) {
             $('#calculator p').text(disp);
-          }
+        }
 
-          function opPush(op) {
+        function opPush(op) {
             if (op === 'percent') {
-              var currentNumInt = Number(currentNum);
-              currentNumInt= currentNumInt / 100;
-              currentNum = currentNumInt;
-              updateDisplay(currentNumInt);
-            } else {
-              if (op !== 'ce') {
                 var currentNumInt = Number(currentNum);
-                if (currentNumInt) {
-                  switch (operation) {
-                    case '':
-                      total = currentNumInt;
-                      break;
-                    case 'divide':
-                      total = total / currentNumInt;
-                      break;
-                    case 'times':
-                      total = total * currentNumInt;
-                      break;
-                    case 'minus':
-                      total = total - currentNumInt;
-                      break;
-                    case 'plus':
-                      total = total + currentNumInt;
-                      break;
-                    case 'equals':
-                      break;
-                  }
+                currentNumInt = currentNumInt / 100;
+                currentNum = currentNumInt;
+                updateDisplay(currentNumInt);
+            } else {
+                if (op !== 'ce') {
+                    var currentNumInt = Number(currentNum);
+                    if (currentNumInt) {
+                        switch (operation) {
+                            case '':
+                                total = currentNumInt;
+                                break;
+                            case 'divide':
+                                total = total / currentNumInt;
+                                break;
+                            case 'times':
+                                total = total * currentNumInt;
+                                break;
+                            case 'minus':
+                                total = total - currentNumInt;
+                                break;
+                            case 'plus':
+                                total = total + currentNumInt;
+                                break;
+                            case 'equals':
+                                break;
+                        }
+                    }
+                    if (op === 'ca') {
+                        total = 0;
+                        op = '';
+                    }
+                    operation = op;
                 }
-                if (op === 'ca') {
-                  total = 0;
-                  op = '';
-                }
-                operation = op;
-              }
-              updateDisplay(total);
-              currentNum = '';
+                updateDisplay(total);
+                currentNum = '';
             }
-          }
+        }
 
-          function numPush(num) {
+        function numPush(num) {
             currentNum += num;
             if (currentNum === '.') {
-              currentNum = '0.';
+                currentNum = '0.';
             }
             updateDisplay(currentNum);
-          }
+        }
 
-          function buttonPush(btn) {
+        function buttonPush(btn) {
             if (btn === 'decimal') {
-              numPush('.');
+                numPush('.');
             } else if (isNaN(btn)) {
-              opPush(btn);
+                opPush(btn);
             } else {
-              numPush(btn);
+                numPush(btn);
             }
-          }
+        }
 
-          // superfluous?
-          function updateTotal(op,num) {
-          }
+        // superfluous?
+        function updateTotal(op, num) {}
 
 
-          $('#calculator button').click(function() {
+        $('#calculator button').click(function() {
             var btn = $(this).attr("id");
             buttonPush(btn);
-          });
+        });
 
-          $("#calculator").draggable();
-          // end calculator
+        $("#calculator").draggable();
+        // end calculator
     });
 });
 
 window.upload = function(file, cb) {
     var form = new FormData();
 
-    if(!file || typeof file == 'undefined') {
+    if (!file || typeof file == 'undefined') {
         swal("Nenhum Arquivo Selecionado", "Por favor, selecione um arquivo.", "warning");
         cb(true);
         return;
@@ -2439,22 +2442,22 @@ window.upload = function(file, cb) {
     form.append('file', file);
 
     var ext = file.name.split(".");
-        ext = String(ext[ext.length-1]).toLowerCase();
-    
-    if(!ext.match(/^(pdf|jpg|jpeg|gif|bmp|png)$/)) {
+    ext = String(ext[ext.length - 1]).toLowerCase();
+
+    if (!ext.match(/^(pdf|jpg|jpeg|gif|bmp|png)$/)) {
         swal("Formato Inválido", "Os formatos aceitos para o upload são: PDF, JPEG, GIF, BMP e PNG.", "error");
         cb(true);
         return;
     }
 
-    if(file.size > 25000000) {
+    if (file.size > 25000000) {
         swal("Tamanho Inválido", "Os arquivos enviados não devem ultrapassar o limite de 25MB.", "error");
         cb(true);
         return;
     }
 
     $.ajax({
-        url: window.BACKEND+'/upload?sess_key='+localStorage.getItem('sess_key'),
+        url: window.BACKEND + '/upload?sess_key=' + localStorage.getItem('sess_key'),
         data: form,
         processData: false,
         contentType: false,
@@ -2468,125 +2471,125 @@ window.upload = function(file, cb) {
     });
 }
 
-function getQueryVariable(variable, queryString){
+function getQueryVariable(variable, queryString) {
     queryString = queryString || window.location.search;
 
     var query = queryString.substr(1),
-        vars  = query.split('&'),
+        vars = query.split('&'),
         pairs;
 
-    for(var i = 0, j = vars.length; i < j; i++){
+    for (var i = 0, j = vars.length; i < j; i++) {
         pairs = vars[i].split('=');
 
-        if(decodeURIComponent(pairs[0]) == variable){
+        if (decodeURIComponent(pairs[0]) == variable) {
             return decodeURIComponent(pairs[1]);
         }
     }
 };
 
-function inputmask(o,f){
-    if(typeof f == 'string') f = window[f];
-    v_obj=o;
-    v_fun=f;
+function inputmask(o, f) {
+    if (typeof f == 'string') f = window[f];
+    v_obj = o;
+    v_fun = f;
     return execmask(v_obj, v_fun);
 }
- 
-function execmask(v_obj, v_fun){
-    v_obj.value=v_fun(v_obj.value)
+
+function execmask(v_obj, v_fun) {
+    v_obj.value = v_fun(v_obj.value)
 }
- 
-function mask__cpfCnpj(v){
- 
+
+function mask__cpfCnpj(v) {
+
     //Remove tudo o que não é dígito
-    v=v.replace(/\D/g,"")
- 
+    v = v.replace(/\D/g, "")
+
     if (v.length <= 14) { //CPF
- 
+
         //Coloca um ponto entre o terceiro e o quarto dígitos
-        v=v.replace(/(\d{3})(\d)/,"$1.$2")
- 
+        v = v.replace(/(\d{3})(\d)/, "$1.$2")
+
         //Coloca um ponto entre o terceiro e o quarto dígitos
         //de novo (para o segundo bloco de números)
-        v=v.replace(/(\d{3})(\d)/,"$1.$2")
- 
+        v = v.replace(/(\d{3})(\d)/, "$1.$2")
+
         //Coloca um hífen entre o terceiro e o quarto dígitos
-        v=v.replace(/(\d{3})(\d{1,2})$/,"$1-$2")
- 
+        v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2")
+
     } else { //CNPJ
- 
+
         //Coloca ponto entre o segundo e o terceiro dígitos
-        v=v.replace(/^(\d{2})(\d)/,"$1.$2")
- 
+        v = v.replace(/^(\d{2})(\d)/, "$1.$2")
+
         //Coloca ponto entre o quinto e o sexto dígitos
-        v=v.replace(/^(\d{2})\.(\d{3})(\d)/,"$1.$2.$3")
- 
+        v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+
         //Coloca uma barra entre o oitavo e o nono dígitos
-        v=v.replace(/\.(\d{3})(\d)/,".$1/$2")
- 
+        v = v.replace(/\.(\d{3})(\d)/, ".$1/$2")
+
         //Coloca um hífen depois do bloco de quatro dígitos
-        v=v.replace(/(\d{4})(\d)/,"$1-$2")
- 
+        v = v.replace(/(\d{4})(\d)/, "$1-$2")
+
     }
- 
+
     return v
- 
+
 }
 
 function mask__money_fiat(v) {
-     v = v.replace(/\D/g,"");
-     v = new String(Number(v));
-     var len = v.length;
-     if (1== len)
-        v = v.replace(/(\d)/,"0,0$1");
-     else if (2 == len)
-        v = v.replace(/(\d)/,"0,$1");
-     else if (len > 2) {
-        v = v.replace(/(\d{2})$/,',$1');
+    v = v.replace(/\D/g, "");
+    v = new String(Number(v));
+    var len = v.length;
+    if (1 == len)
+        v = v.replace(/(\d)/, "0,0$1");
+    else if (2 == len)
+        v = v.replace(/(\d)/, "0,$1");
+    else if (len > 2) {
+        v = v.replace(/(\d{2})$/, ',$1');
         v = v.split(",");
         v = v[0].replace(/\d(?=(?:\d{3})+(?:\D|$))/g, "$&.") + "," + v[1];
-     }
-     if(v=='0,00') v = '';
-     return v;
+    }
+    if (v == '0,00') v = '';
+    return v;
 }
 
 function mask__money_crypto(v) {
-     v = v.replace(/\D/g,"");
-     v = new String(Number(v));
-     var len = v.length;
-     if (1== len)
-        v = v.replace(/(\d)/,"0.0000000$1");
-     else if (2 == len)
-        v = v.replace(/(\d)/,"0.000000$1");
-     else if (3 == len)
-        v = v.replace(/(\d)/,"0.00000$1");
-     else if (4 == len)
-        v = v.replace(/(\d)/,"0.0000$1");
-     else if (5 == len)
-        v = v.replace(/(\d)/,"0.000$1");
-     else if (6 == len)
-        v = v.replace(/(\d)/,"0.00$1");
-     else if (7 == len)
-        v = v.replace(/(\d)/,"0.0$1");
-     else if (8 == len)
-        v = v.replace(/(\d)/,"0.$1");
-     else if (len > 8) {
-        v = v.replace(/(\d{8})$/,'.$1');
-     }
-     if(v=='0.00000000') v = '';
-     return v;
+    v = v.replace(/\D/g, "");
+    v = new String(Number(v));
+    var len = v.length;
+    if (1 == len)
+        v = v.replace(/(\d)/, "0.0000000$1");
+    else if (2 == len)
+        v = v.replace(/(\d)/, "0.000000$1");
+    else if (3 == len)
+        v = v.replace(/(\d)/, "0.00000$1");
+    else if (4 == len)
+        v = v.replace(/(\d)/, "0.0000$1");
+    else if (5 == len)
+        v = v.replace(/(\d)/, "0.000$1");
+    else if (6 == len)
+        v = v.replace(/(\d)/, "0.00$1");
+    else if (7 == len)
+        v = v.replace(/(\d)/, "0.0$1");
+    else if (8 == len)
+        v = v.replace(/(\d)/, "0.$1");
+    else if (len > 8) {
+        v = v.replace(/(\d{8})$/, '.$1');
+    }
+    if (v == '0.00000000') v = '';
+    return v;
 }
 
 
 
 window.takeWebcamPicture = function(cb) {
     swal({
-      title: 'Agora, precisamos de uma foto sua.',
-      text: "Por favor, retire seus óculos, chapéu e objetos que possam ocultar parte de seu rosto.\nQuando estiver pronto, clique em \"Abrir Câmera\".",
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Abrir Câmera',
-      cancelButtonText: 'Cancelar'
+        title: 'Agora, precisamos de uma foto sua.',
+        text: "Por favor, retire seus óculos, chapéu e objetos que possam ocultar parte de seu rosto.\nQuando estiver pronto, clique em \"Abrir Câmera\".",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Abrir Câmera',
+        cancelButtonText: 'Cancelar'
     }).then(function() {
         showModal('webcam');
 
@@ -2595,21 +2598,18 @@ window.takeWebcamPicture = function(cb) {
         var successCallback = function() {
             $("#webcamAction").off('click').on('click', function() {
                 AcessoCaptureFrame.takeSnapshot(
-                    function (base64, base64_Ir) {
+                    function(base64, base64_Ir) {
                         AcessoCaptureFrame.stopCamera();
                         swal({
-                          title: 'Confirmar Foto',
-                          html:
-                            '<img src="'+base64+'" style="max-height: 60vh;" />',
-                          showCloseButton: true,
-                          showCancelButton: true,
-                          confirmButtonText:
-                            '<i class="fa fa-thumbs-up"></i> Usar',
-                          cancelButtonText:
-                            '<i class="fa fa-thumbs-down"></i> Tentar novamente'
+                            title: 'Confirmar Foto',
+                            html: '<img src="' + base64 + '" style="max-height: 60vh;" />',
+                            showCloseButton: true,
+                            showCancelButton: true,
+                            confirmButtonText: '<i class="fa fa-thumbs-up"></i> Usar',
+                            cancelButtonText: '<i class="fa fa-thumbs-down"></i> Tentar novamente'
                         }).then(function(ret) {
                             closeModal('webcam');
-                            if(ret) {
+                            if (ret) {
                                 cb(base64);
                             } else {
                                 window.takeWebcamPicture(cb);
@@ -2622,13 +2622,13 @@ window.takeWebcamPicture = function(cb) {
                 );
             });
         }
-        
-        var errorCallback = function(code, description){
+
+        var errorCallback = function(code, description) {
             closeModal('webcam');
-            swal("Erro "+code, "Erro ao abrir webcam: "+description, "error");
+            swal("Erro " + code, "Erro ao abrir webcam: " + description, "error");
         }
 
-        AcessoCaptureFrame.create(successCallback, function(){
+        AcessoCaptureFrame.create(successCallback, function() {
             AcessoCaptureFrame.create(successCallback, errorCallback, { enableIR: false, crop_on_capture: true, showIR: false, frameType: 'face', mirror: true, width: '320px', height: '240px' });
         }, { enableIR: false, crop_on_capture: true, showIR: true, frameType: 'face', mirror: true, width: '640px', height: '360px' });
 
@@ -2637,16 +2637,16 @@ window.takeWebcamPicture = function(cb) {
             closeModal('webcam');
             try {
                 AcessoCaptureFrame.stopCamera();
-            } catch(e) {}
+            } catch (e) {}
         })
     })
 }
 
 // loading animation
-window.loadingOn = function () {
+window.loadingOn = function() {
     $("#loading").show();
 }
-window.loadingOff = function () {
+window.loadingOff = function() {
     $("#loading").fadeOut();
 }
 
@@ -2655,7 +2655,7 @@ window.recaptchaLoadCaptchas = function() {
         $(this).data('sitekey', '6Ldgjz8UAAAAANvRAcAil8FV4S9S8BMgStr38t0d');
         var el = $(this)[0];
         grecaptcha.render(el, {
-          'sitekey' : '6Ldgjz8UAAAAANvRAcAil8FV4S9S8BMgStr38t0d'
+            'sitekey': '6Ldgjz8UAAAAANvRAcAil8FV4S9S8BMgStr38t0d'
         });
     });
 }
@@ -2663,17 +2663,17 @@ window.recaptchaLoadCaptchas = function() {
 // accounting
 window.money_format = {
     "crypto": function(val) {
-        return accounting.formatMoney(val/1e8, '฿ ', 8, '.', ',');
+        return accounting.formatMoney(val / 1e8, '฿ ', 8, '.', ',');
     },
     "fiat": function(val) {
-        return accounting.formatMoney(val/1e2, 'R$ ', 2, '.', ',');
+        return accounting.formatMoney(val / 1e2, 'R$ ', 2, '.', ',');
     },
     "from": {
         "crypto": function(amount) {
             amount = String(amount);
-            if(amount.indexOf(",") == -1 && amount.indexOf(".") == -1) {
-                amount = parseInt(amount.toString()+"00000000");
-            } else if(amount.indexOf(",") > -1 && amount.indexOf(".") == -1) {
+            if (amount.indexOf(",") == -1 && amount.indexOf(".") == -1) {
+                amount = parseInt(amount.toString() + "00000000");
+            } else if (amount.indexOf(",") > -1 && amount.indexOf(".") == -1) {
                 amount = parseInt(parseFloat(amount.replace(",", ".")).toFixed(8).replace(".", ""));
             } else {
                 amount = parseInt(parseFloat(amount.replace(",", ".")).toFixed(8).replace(".", ""));
@@ -2682,9 +2682,9 @@ window.money_format = {
         },
         "fiat": function(amount) {
             amount = String(amount);
-            if(amount.indexOf(",") == -1 && amount.indexOf(".") == -1) {
+            if (amount.indexOf(",") == -1 && amount.indexOf(".") == -1) {
                 amount = parseInt(parseFloat(amount.replace(/\./g, "").replace(",", ".")).toFixed(2).replace(".", ""));
-            } else if(amount.indexOf(",") > -1 && amount.indexOf(".") == -1) {
+            } else if (amount.indexOf(",") > -1 && amount.indexOf(".") == -1) {
                 amount = parseInt(parseFloat(amount.replace(",", ".")).toFixed(2).replace(".", ""));
             } else {
                 amount = parseInt(parseFloat(amount.replace(/\./g, "").replace(",", ".")).toFixed(2).replace(".", ""));
@@ -2704,6 +2704,7 @@ function loadView(view) {
 function showModal(modal) {
     $("[data-modal=" + modal + "]").addClass("is-active");
 }
+
 function closeModal(modal) {
     $("[data-modal=" + modal + "]").removeClass("is-active");
 }
@@ -2712,7 +2713,7 @@ function closeModal(modal) {
 window.closesweetalert = function() {
     $(".sweet-overlay, .sweet-alert").remove();
 }
-window.notifyme = function (message, template, position, duration) {
+window.notifyme = function(message, template, position, duration) {
     if (typeof template == 'undefined') template = "primary";
     if (typeof position == 'undefined') position = "top-right";
     if (typeof duration == 'undefined') duration = 3000;
@@ -2724,7 +2725,7 @@ window.notifyme = function (message, template, position, duration) {
 ' + message + '\
 </div>');
     $("body").prepend($el);
-    setTimeout(function () {
+    setTimeout(function() {
         $("#notification-" + notification_id).fadeOut(300).delay(300).remove();
     }, duration);
 };
@@ -2748,37 +2749,31 @@ window.best = {
     }
 }
 
-function randomString(length)
-{
+function randomString(length) {
     var charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     var i;
     var result = "";
     var isOpera = Object.prototype.toString.call(window.opera) == '[object Opera]';
-    if(window.crypto && window.crypto.getRandomValues)
-    {
+    if (window.crypto && window.crypto.getRandomValues) {
         values = new Uint32Array(length);
         window.crypto.getRandomValues(values);
-        for(i=0; i<length; i++)
-        {
+        for (i = 0; i < length; i++) {
             result += charset[values[i] % charset.length];
         }
         return result;
-    }
-    else if(isOpera)//Opera's Math.random is secure, see http://lists.w3.org/Archives/Public/public-webcrypto/2013Jan/0063.html
+    } else if (isOpera) //Opera's Math.random is secure, see http://lists.w3.org/Archives/Public/public-webcrypto/2013Jan/0063.html
     {
-        for(i=0; i<length; i++)
-        {
-            result += charset[Math.floor(Math.random()*charset.length)];
+        for (i = 0; i < length; i++) {
+            result += charset[Math.floor(Math.random() * charset.length)];
         }
         return result;
-    }
-    else throw new Error("Your browser is out of date.");
+    } else throw new Error("Your browser is out of date.");
 }
 
 // order types
 window.updateordertypes = function() {
-    var ordertypes = store.get('ordertypes'+window.common.UID);
-    if(typeof ordertypes != 'object' || !ordertypes || !ordertypes.length) {
+    var ordertypes = store.get('ordertypes' + window.common.UID);
+    if (typeof ordertypes != 'object' || !ordertypes || !ordertypes.length) {
         ordertypes = new Array();
         ordertypes.push('buy_limit');
         ordertypes.push('sell_limit');
@@ -2786,16 +2781,16 @@ window.updateordertypes = function() {
         ordertypes.push('sell_market');
         ordertypes.push('buy_stop_limit');
         ordertypes.push('sell_stop_limit');
-        store.set('ordertypes'+window.common.UID, ordertypes);
+        store.set('ordertypes' + window.common.UID, ordertypes);
     }
     $(".ordertype").each(function() {
         $(this).hide();
     });
 
-    if(ordertypes && ordertypes.length) {
+    if (ordertypes && ordertypes.length) {
         ordertypes.forEach(function(val) {
-            $("#ordertype-"+val).show();
-            $("#ordertypeform [value="+val+"]").prop("checked", true);
+            $("#ordertype-" + val).show();
+            $("#ordertypeform [value=" + val + "]").prop("checked", true);
         });
     }
 }
@@ -2805,14 +2800,14 @@ window.updatealgo = function() {
     var algodb = store.namespace('algo');
     algodb.each(function(key, data) {
         $("[data-var=algotrading]").append('<tr>\
-                                <td>'+key.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</td>\
+                                <td>' + key.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</td>\
                                 <td>\
-                                    <button data-do="runAlgorithm" data-algo-key="'+key.replace(/[\""]/g, '\\"')+'" class="button is-dark is-small">\
-                                        '+(typeof window.workers[key]=='undefined' ? '<i class="fa fa-fw fa-play"></i> Executar</button>' : '<i class="fa fa-fw fa-stop"></i> Stop</button>')+'\
-                                    <button data-do="editAlgorithm" data-algo-key="'+key.replace(/[\""]/g, '\\"')+'" class="button is-dark is-small">\
+                                    <button data-do="runAlgorithm" data-algo-key="' + key.replace(/[\""]/g, '\\"') + '" class="button is-dark is-small">\
+                                        ' + (typeof window.workers[key] == 'undefined' ? '<i class="fa fa-fw fa-play"></i> Executar</button>' : '<i class="fa fa-fw fa-stop"></i> Stop</button>') + '\
+                                    <button data-do="editAlgorithm" data-algo-key="' + key.replace(/[\""]/g, '\\"') + '" class="button is-dark is-small">\
                                         <i class="fa fa-fw fa-pencil"></i> Editar\
                                     </button>\
-                                    <button data-do="delAlgorithm" data-algo-key="'+key.replace(/[\""]/g, '\\"')+'" class="button is-dark is-small">\
+                                    <button data-do="delAlgorithm" data-algo-key="' + key.replace(/[\""]/g, '\\"') + '" class="button is-dark is-small">\
                                         <i class="fa fa-fw fa-trash-o"></i> Excluir\
                                     </button>\
                                 </td>\
