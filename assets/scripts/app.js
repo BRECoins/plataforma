@@ -1112,7 +1112,7 @@ $(function() {
 
             $("[data-var=next_level_description]").html("").append(data.next_level_description).html($($("[data-var=next_level_description]")[0]).text());
 
-            if (data.user_level < data.next_level-1) {
+            if(data.user_level == 1) { //if (data.user_level < data.next_level) {
                 $("#level_upgrade_card").show();
                 $("#no_level_upgrade_available").hide();
                 var old_next_level_name = $("[data-var=next_level_name]").text();
