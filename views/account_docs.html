@@ -44,6 +44,7 @@
 <div class="card" id="level_upgrade_card">
     <div class="card-content" id="upgrade__menu">
         <p data-var="next_level_description"></p>
+        <hr/>
         <div class="columns">
             <div class="column">
                 <button class="button is-large is-dark" data-do="upgrade__sendByMobile">
@@ -54,6 +55,7 @@
                     <span>Enviar documentos pelo celular (recomendado)</span>
                 </button>
             </div>
+            <div class="is-divider-vertical" data-content="OU"></div>
             <div class="column">
                 <button class="button is-large is-dark is-outlined" data-do="upgrade__sendByComputer">
                     <span class="icon is-medium">
@@ -66,7 +68,8 @@
         </div>
     </div>
     <div class="card-content" id="upgrade__mobile_upload" style="display: none">
-
+        <p>Ao clicar em Continuar, você receberá um SMS contendo um link. Ao clicar neste link, você será guiado pelos passos necessários para a captura das imagens dos documentos necessários para realizar o upgrade de sua conta.</p>
+        <br><button class="button is-dark" data-do="create_mobile_upgrade_process"><b>Continuar</b></button><button class="button is-secondary" data-do="upgrade__menu">Cancelar</button>
     </div>
     <div class="card-content" id="upgrade__web_upload" style="display: none">
         <div class="content">
@@ -83,5 +86,12 @@
 </div>
 
 <div class="card" id="no_level_upgrade_available">
-
+    <header class="card-header">
+        <p class="card-header-title">
+            Sua Conta foi Confirmada
+        </p>
+    </header>
+    <div class="card-content">
+        Se deseja aumentar seus limites de saque e depósito, por favor, <a href="https://brecoins.zendesk.com/hc/pt-br/requests/new" target="_blank">entre em contato com o suporte</a>.
+    </div>
 </div>

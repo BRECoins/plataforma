@@ -582,6 +582,10 @@ $(function() {
             swal("Solicitação de Confirmação de Conta", "Seus documentos foram enviados e serão analisados no menor tempo possível.", "success");
             loadingOff();
         })
+        socket.on('mobile_upgrade_process_sent', function() {
+            pageloaderoff();
+            swal("SMS Enviado", "Aguarde o recebimento do SMS e continue o processo seguindo as instruções na tela de seu aparelho.", "info");
+        })
         socket.on('profilegetdetailssuccess', function(data) {
             window.common.UID = data.id;
             window.common.udata = data;
@@ -1108,7 +1112,7 @@ $(function() {
 
             $("[data-var=next_level_description]").html("").append(data.next_level_description).html($($("[data-var=next_level_description]")[0]).text());
 
-            if (data.user_level < data.next_level) {
+            if (data.user_level < data.next_level-1) {
                 $("#level_upgrade_card").show();
                 $("#no_level_upgrade_available").hide();
                 var old_next_level_name = $("[data-var=next_level_name]").text();
@@ -1137,7 +1141,7 @@ $(function() {
                         </div><br>';
                     });
 
-                    upgrade_form += '<br><button class="button is-primary" data-do="create_upgrade_process"><b>Enviar Documentos</b></button>';
+                    upgrade_form += '<br><button class="button is-dark" data-do="create_upgrade_process"><b>Enviar Documentos</b></button><button class="button is-secondary" data-do="upgrade__menu">Cancelar</button>';
 
                     //if(!$(".file-name").text().trim() && ((old_next_level_name.trim() && old_next_level_name != $("[data-var=next_level_name]").text()) || !old_next_level_name.trim())) {
                     if (!$("#level_upgrade_form").text().trim() || ($($("[data-var=user_level]")[0]).text() != data.user_level)) {
@@ -1916,6 +1920,22 @@ $(function() {
                         $("#upgrade__web_upload").delay(300).fadeIn(300);
                         break;
 
+                    case 'upgrade__menu':
+                        $("#upgrade__web_upload,#upgrade__mobile_upload").fadeOut(300);
+                        $("#upgrade__menu").delay(300).fadeIn(300);
+                        break;
+
+                    case 'create_mobile_upgrade_process':
+                        pageloaderOn("Enviando SMS...");
+                        gtag('event', 'mobile_upgrade_process');
+                        socket.emit('userdocuments.mobileprocess', {
+                            cpf: $("[data-var=user_cpf]").val().replace(/[^0-9]/g, ""),
+                            gender: $("[data-var=user_gender]").val(),
+                            name: $("[data-var=user_fullname_input]").val(),
+                            sess_key: localStorage.getItem('sess_key')
+                        })
+                        break;
+
                     case 'docselected':
                         var doc_type = $this.data('doc');
                         var filename = $this[0].files.length ? $this[0].files[0].name : '';
@@ -2648,6 +2668,14 @@ window.loadingOn = function() {
 }
 window.loadingOff = function() {
     $("#loading").fadeOut();
+}
+window.pageloaderOn = function(text) {
+    $("#pageloader_title").html(text);
+    $("#pageloader").addClass('is-active');
+}
+window.pageloaderoff = function() {
+    $("#pageloader_title").html("");
+    $("#pageloader").removeClass('is-active');
 }
 
 window.recaptchaLoadCaptchas = function() {
