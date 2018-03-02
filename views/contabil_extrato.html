@@ -1,0 +1,30 @@
+<section class="hero is-light">
+    <div class="hero-body">
+        <div class="container is-fluid">
+            <h2 class="subtitle">
+                Toda a Movimentação de Sua Conta
+            </h2>
+            <hr>
+            <!-- <div style="overflow-x: auto"> -->
+                <table class="table is-fullwidth is-stripped is-responsive">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Descrição</th>
+                            <th>Valor</th>
+                            <th>Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody data-var="ledger_list">
+                    </tbody>
+                </table>
+            <!-- </div> -->
+    
+            <p>Página <span data-var="ledger_page"></span></p>
+            <div class="buttons has-addons">
+                <span class="button" data-do="statementNext"><i class="fa fa-fw fa-arrow-left"></i></span>
+                <span class="button" data-do="statementPrev"><i class="fa fa-fw fa-arrow-right"></i></span>
+            </div>
+        </div>
+    </div>
+</section>

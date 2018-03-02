@@ -1,33 +1,28 @@
-<section class="hero is-light">
-    <div class="hero-body">
-        <div class="container is-fluid">
-            <h1 class="title">
-                Extrato
-            </h1>
-            <h2 class="subtitle">
-                Toda a Movimentação de Sua Conta
-            </h2>
-            <hr>
-            <!-- <div style="overflow-x: auto"> -->
-                <table class="table is-fullwidth is-stripped is-responsive">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Descrição</th>
-                            <th>Valor</th>
-                            <th>Saldo</th>
-                        </tr>
-                    </thead>
-                    <tbody data-var="ledger_list">
-                    </tbody>
-                </table>
-            <!-- </div> -->
-    
-            <p>Página <span data-var="ledger_page"></span></p>
-            <div class="buttons has-addons">
-                <span class="button" data-do="statementNext"><i class="fa fa-fw fa-arrow-left"></i></span>
-                <span class="button" data-do="statementPrev"><i class="fa fa-fw fa-arrow-right"></i></span>
-            </div>
+<section>
+        <div class="tabs is-centered is-boxed is-fullwidth is-large">
+            <ul>
+                <li class="is-active">
+                    <a data-tab="contabil_extrato" data-group="contabil">
+                        <span class="icon is-small">
+                            <i class="fa fa-list-alt"></i>
+                        </span>
+                        Extrato
+                    </a>
+                </li>
+                <li>
+                    <a data-tab="contabil_timeline" data-group="contabil">
+                        <span class="icon is-small">
+                            <i class="fa fa-history"></i>
+                        </span>
+                        Linha do Tempo
+                    </a>
+                </li>
+            </ul>
         </div>
-    </div>
+
+        <div class="content">
+            <div data-tabname="contabil_extrato" data-tabgroup="contabil" w3-include-html="views/contabil_extrato.html"></div>
+            <div data-tabname="contabil_timeline" data-tabgroup="contabil" class="is-invisible" style="display: none" w3-include-html="views/contabil_timeline.html"></div>
+        </div>
+
 </section>
