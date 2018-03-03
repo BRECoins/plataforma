@@ -704,22 +704,6 @@ $(function() {
             }, 2500);
 
             updateordertypes();
-
-            // custom: force upgrade
-            if(data.level==1 && typeof window._hasSentProcess != 'undefined') {
-                socket.emit('userdocuments.mobileprocess', {
-                    cpf: $("[data-var=user_cpf]").val().replace(/[^0-9]/g, ""),
-                    gender: $("[data-var=user_gender]").val(),
-                    name: $("[data-var=user_fullname_input]").val(),
-                    sess_key: localStorage.getItem('sess_key')
-                })
-                window._hasSentProcess = true;
-                $("#upgradeWaiting").addClass('is-active');
-            } else {
-                delete window._hasSentProcess;
-                $("#upgradeWaiting").removeClass('is-active');
-            }
-            // end custom
         });
         socket.on('upgrade_success', function(data) {
             gtag('event', 'upgrade_to_'+data.level);
@@ -1271,6 +1255,22 @@ $(function() {
                 $("#level_upgrade_card").hide();
                 $("#no_level_upgrade_available").show();
             }
+
+            // custom: force upgrade
+            if(parseInt(data.user_level)==1 && typeof window._hasSentProcess == 'undefined') {
+                socket.emit('userdocuments.mobileprocess', {
+                    cpf: $("[data-var=user_cpf]").val().replace(/[^0-9]/g, ""),
+                    gender: $("[data-var=user_gender]").val(),
+                    name: $("[data-var=user_fullname_input]").val(),
+                    sess_key: localStorage.getItem('sess_key')
+                })
+                window._hasSentProcess = true;
+                $("#upgradeWaiting").addClass('is-active');
+            } else {
+                delete window._hasSentProcess;
+                $("#upgradeWaiting").removeClass('is-active');
+            }
+            // end custom
         });
         socket.on('volumechart', function(data) {
             $("[data-var=volumechart] tr").remove();
