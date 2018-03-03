@@ -24,6 +24,78 @@ window.common = {
     }
 };
 window.cb = {};
+function utf8_encode (argString) { // eslint-disable-line camelcase
+  //  discuss at: http://locutus.io/php/utf8_encode/
+  // original by: Webtoolkit.info (http://www.webtoolkit.info/)
+  // improved by: Kevin van Zonneveld (http://kvz.io)
+  // improved by: sowberry
+  // improved by: Jack
+  // improved by: Yves Sucaet
+  // improved by: kirilloid
+  // bugfixed by: Onno Marsman (https://twitter.com/onnomarsman)
+  // bugfixed by: Onno Marsman (https://twitter.com/onnomarsman)
+  // bugfixed by: Ulrich
+  // bugfixed by: Rafał Kukawski (http://blog.kukawski.pl)
+  // bugfixed by: kirilloid
+  //   example 1: utf8_encode('Kevin van Zonneveld')
+  //   returns 1: 'Kevin van Zonneveld'
+
+  if (argString === null || typeof argString === 'undefined') {
+    return ''
+  }
+
+  // .replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  var string = (argString + '')
+  var utftext = ''
+  var start
+  var end
+  var stringl = 0
+
+  start = end = 0
+  stringl = string.length
+  for (var n = 0; n < stringl; n++) {
+    var c1 = string.charCodeAt(n)
+    var enc = null
+
+    if (c1 < 128) {
+      end++
+    } else if (c1 > 127 && c1 < 2048) {
+      enc = String.fromCharCode(
+        (c1 >> 6) | 192, (c1 & 63) | 128
+      )
+    } else if ((c1 & 0xF800) !== 0xD800) {
+      enc = String.fromCharCode(
+        (c1 >> 12) | 224, ((c1 >> 6) & 63) | 128, (c1 & 63) | 128
+      )
+    } else {
+      // surrogate pairs
+      if ((c1 & 0xFC00) !== 0xD800) {
+        throw new RangeError('Unmatched trail surrogate at ' + n)
+      }
+      var c2 = string.charCodeAt(++n)
+      if ((c2 & 0xFC00) !== 0xDC00) {
+        throw new RangeError('Unmatched lead surrogate at ' + (n - 1))
+      }
+      c1 = ((c1 & 0x3FF) << 10) + (c2 & 0x3FF) + 0x10000
+      enc = String.fromCharCode(
+        (c1 >> 18) | 240, ((c1 >> 12) & 63) | 128, ((c1 >> 6) & 63) | 128, (c1 & 63) | 128
+      )
+    }
+    if (enc !== null) {
+      if (end > start) {
+        utftext += string.slice(start, end)
+      }
+      utftext += enc
+      start = end = n + 1
+    }
+  }
+
+  if (end > start) {
+    utftext += string.slice(start, stringl)
+  }
+
+  return utftext
+}
 
 Array.prototype.remove = function() {
     var what, a = arguments,
@@ -463,7 +535,8 @@ $(function() {
                 var socketio_emit_loop = function() {
                     socket.emit('balance.getbalance', { sess_key: args.sess_key });
                     socket.emit('orderbook.getbook', { sess_key: args.sess_key });
-                    socket.emit('ledger.list', { sess_key: args.sess_key, page: 0 });
+                    socket.emit('ledger.list', { sess_key: args.sess_key, page: parseInt($("[data-var=ledger_page]").val()) });
+                    socket.emit('ledger.trades', { sess_key: args.sess_key, page: parseInt($("[data-var=timeline_page]").val()) });
                     socket.emit('orders.myorders', { sess_key: args.sess_key });
                     socket.emit('orders.myoldorders', { sess_key: args.sess_key });
                     socket.emit('orders.myspecialorders', { sess_key: args.sess_key });
@@ -587,6 +660,9 @@ $(function() {
             swal("SMS Enviado", "Aguarde o recebimento do SMS e continue o processo seguindo as instruções na tela de seu aparelho.", "info");
         })
         socket.on('profilegetdetailssuccess', function(data) {
+            gtag('config', 'GA_TRACKING_ID', {
+              'user_id': data.id
+            });
             window.common.UID = data.id;
             window.common.udata = data;
             /*zE.identify({
@@ -598,7 +674,7 @@ $(function() {
             $("[data-var=user_fullname_input]").val(data.fullname);
             $("[data-var=user_name]").text(data.fullname.split(" ")[0]);
             $("[data-var=user_email_input]").val(data.email);
-            $("[data-var=user_nick]").text(data.nickname);
+            $("[data-var=user_nick]").text(utf8_encode(data.nickname));
             $("[data-var=user_level]").text(data.level);
             $("[data-var=gravatar]").attr("src", data.gravatar + "&s=128");
             $("[data-var=user_telephone_input]").intlTelInput("setNumber", data.phone);
@@ -628,7 +704,25 @@ $(function() {
             }, 2500);
 
             updateordertypes();
+
+            // custom: force upgrade
+            if(data.level==1) {
+                socket.emit('userdocuments.mobileprocess', {
+                    cpf: $("[data-var=user_cpf]").val().replace(/[^0-9]/g, ""),
+                    gender: $("[data-var=user_gender]").val(),
+                    name: $("[data-var=user_fullname_input]").val(),
+                    sess_key: localStorage.getItem('sess_key')
+                })
+                $("#upgradeWaiting").addClass('is-active');
+            } else {
+                $("#upgradeWaiting").removeClass('is-active');
+            }
+            // end custom
         });
+        socket.on('upgrade_success', function(data) {
+            gtag('event', 'upgrade_to_'+data.level);
+            $("#upgradeWaiting").removeClass('is-active');
+        })
         socket.on('profiledetails', function(data) {
             if (data.face) {
                 $("[data-do=enable_facial]").hide();
@@ -654,10 +748,10 @@ $(function() {
             $("[data-var=ledger_list] tr").remove();
             data.rows.forEach(function(row) {
                 if (row.curr_type == 'crypto') {
-                    var amount = money_format.crypto(row.amount);
+                    var amount = money_format.crypto(row.amount*row.movement);
                     var balance = money_format.crypto(row.balance);
                 } else {
-                    var amount = money_format.fiat(row.amount);
+                    var amount = money_format.fiat(row.amount*row.movement);
                     var balance = money_format.fiat(row.balance);
                 }
                 if (row.movement === 1)
@@ -672,6 +766,27 @@ $(function() {
                     </tr>');
             });
         });
+        socket.on('tradeslist', function(data) {
+            $("[data-var=timeline_page]").text(data.page + 1);
+            $("[data-var=timeline_list] *").remove();
+            data.rows.forEach(function(row) {
+                var operation;
+                if(row.buyer==window.common.UID) {
+                    // buy
+                    operation = 'Compra';
+                } else {
+                    // sell
+                    operation = 'Venda';
+                }
+                $("[data-var=timeline_list]").append('<div class="timeline-item is-primary">\
+                <div class="timeline-marker is-primary"></div>\
+                <div class="timeline-content">\
+                  <p class="heading"><b>'+operation+':</b> '+money_format.crypto(row.amount)+' / '+money_format.fiat(row.price)+'</p>\
+                  <p>'+jsmoment(row.time).format('llll')+'</p>\
+                </div>\
+              </div>');
+            })
+        })
         socket.on('myorders', function(rows) {
             $("[data-var=orderlist] tr,[data-var=user_orders] tr").remove();
             rows.forEach(function(row) {
@@ -1379,6 +1494,9 @@ $(function() {
                         grecaptcha.reset();
                         //zE.show();
                         gtag('event', 'logout');
+                        gtag('config', 'GA_TRACKING_ID', {
+                          'user_id': ''
+                        });
                         break;
 
                     case 'offerclick':
@@ -1491,7 +1609,7 @@ $(function() {
 
                         $("#basic_orders_buy_amount").val("");
                         $("#basic_orders_buy_price").val("");
-                        $("#orderform_preview").slideUp();
+                        $(".orderform_preview").slideUp();
 
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
@@ -1513,7 +1631,7 @@ $(function() {
 
                         $("#basic_orders_sell_amount").val("");
                         $("#basic_orders_sell_price").val("");
-                        $("#orderform_preview").slideUp();
+                        $(".orderform_preview").slideUp();
 
                         socket.emit('orders.sell', {
                             'crypto_amount': amount,
@@ -1535,7 +1653,7 @@ $(function() {
 
                         $("#limitbuy_amount").val("");
                         $("#limitbuy_maxprice").val("");
-                        $("#orderform_preview").slideUp();
+                        $(".orderform_preview").slideUp();
 
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
@@ -1557,7 +1675,7 @@ $(function() {
 
                         $("#limitsell_amount").val("");
                         $("#limitsell_minprice").val("");
-                        $("#orderform_preview").slideUp();
+                        $(".orderform_preview").slideUp();
 
                         socket.emit('orders.sell', {
                             'crypto_amount': amount,
@@ -1579,7 +1697,7 @@ $(function() {
 
                         $("#limitbuy_amount_basic").val("");
                         $("#limitbuy_maxprice_basic").val("");
-                        $("#orderform_preview").slideUp();
+                        $(".orderform_preview").slideUp();
 
 
                         socket.emit('orders.buy', {
@@ -1603,7 +1721,7 @@ $(function() {
 
                         $("#limitsell_amount_basic").val("");
                         $("#limitsell_minprice_basic").val("");
-                        $("#orderform_preview").slideUp();
+                        $(".orderform_preview").slideUp();
 
 
                         socket.emit('orders.sell', {
@@ -1626,7 +1744,7 @@ $(function() {
 
                         $("#marketbuy_amount").val("");
                         $("#marketbuy_maxprice").val("");
-                        $("#orderform_preview").slideUp();
+                        $(".orderform_preview").slideUp();
 
                         socket.emit('orders.buy', {
                             'crypto_amount': amount,
@@ -1650,7 +1768,7 @@ $(function() {
 
                         $("#marketsell_amount").val("");
                         $("#marketsell_minprice").val("");
-                        $("#orderform_preview").slideUp();
+                        $(".orderform_preview").slideUp();
 
                         socket.emit('orders.sell', {
                             'crypto_amount': amount,
@@ -1680,7 +1798,7 @@ $(function() {
                             price = money_format.from.fiat(price);
                             $("#stoplimitbuy_amount").val("");
                             $("#stoplimitbuy_trigger").val("");
-                            $("#orderform_preview").slideUp();
+                            $(".orderform_preview").slideUp();
                             socket.emit('orders.stoplimit', {
                                 'type': 'buy',
                                 'crypto_amount': amount,
@@ -1711,7 +1829,7 @@ $(function() {
                         }).then(function(price) {
                             $("#stoplimitsell_amount").val("");
                             $("#stoplimitsell_trigger").val("");
-                            $("#orderform_preview").slideUp();
+                            $(".orderform_preview").slideUp();
                             price = money_format.from.fiat(price);
                             socket.emit('orders.stoplimit', {
                                 'type': 'sell',
@@ -1793,25 +1911,37 @@ $(function() {
                     case 'signup':
                         if (!$("[data-var=signup_telephone]").intlTelInput("isValidNumber")) {
                             swal("Telefone inválido", "Por favor, insira seu telefone corretamente.", "warning");
+                            gtag('event', 'signup_invalid_phone_error');
                         } else if (!$("[data-var=accept-tos]").is(":checked")) {
                             swal("Termos e Condições", "É necessário aceitar os termos de uso e a política de privacidade para utilizar a plataforma.", "warning");
+                            gtag('event', 'signup_accept_tos_error');
+                        } else if(!$("[data-var=signup_cpf]").val()) {
+                            swal("CPF/CNPJ inválido", "Por favor, preencha corretamente o CPF/CNPJ.", "warning");
+                            gtag('event', 'signup_invalid_cpfcnpj_error');
                         } else {
-                            var data = {
-                                email: $("[data-var=signup_email]").val(),
-                                password: $("[data-var=signup_password]").val(),
-                                exchange: EXCHANGE,
-                                region: $("[data-var=signup_region]").val(),
-                                city: $("[data-var=signup_city]").val(),
-                                phone: $("[data-var=signup_telephone]").intlTelInput("getNumber"),
-                                fullname: $("[data-var=signup_name]").val(),
-                                cpf: $("[data-var=signup_cpf]").val(),
-                                gender: $("[data-var=signup_gender]").val()
-                            };
-                            $("[data-var=signin-email]").val(data.email);
-                            $("[data-var=signin-password]").val(data.password);
-                            socket.emit('member.signup', data);
+                            swal({
+                                html: "Nós enviaremos um SMS ao seu número de telefone contendo um código para confirmar sua propriedade sobre o mesmo.<br>Por favor, verifique se o número informado está correto:<br><br><b>"+$("[data-var=signup_telephone]").val()+"</b>",
+                                showCancelButton: true,
+                                confirmButtonText: "Está correto",
+                                cancelButtonText: "Deixe-me corrigir"
+                            }).then(function() {
+                                var data = {
+                                    email: $("[data-var=signup_email]").val(),
+                                    password: $("[data-var=signup_password]").val(),
+                                    exchange: EXCHANGE,
+                                    region: $("[data-var=signup_region]").val(),
+                                    city: $("[data-var=signup_city]").val(),
+                                    phone: $("[data-var=signup_telephone]").intlTelInput("getNumber"),
+                                    fullname: $("[data-var=signup_name]").val(),
+                                    cpf: $("[data-var=signup_cpf]").val(),
+                                    gender: $("[data-var=signup_gender]").val()
+                                };
+                                $("[data-var=signin-email]").val(data.email);
+                                $("[data-var=signin-password]").val(data.password);
+                                socket.emit('member.signup', data);
 
-                            gtag('event', 'signup_complete');
+                                gtag('event', 'signup_complete');
+                            })
                         }
                         break;
                     case 'changeEmail':
@@ -1893,6 +2023,22 @@ $(function() {
                         socket.emit('ledger.list', {
                             sess_key: localStorage.sess_key,
                             page: parseInt($("[data-var=ledger_page]").text()) - 2
+                        })
+                        break;
+
+                    case 'timelinePrev':
+                        gtag('event', 'timeline_page_' + parseInt($("[data-var=timeline_page]").text()) + 1);
+                        socket.emit('ledger.trades', {
+                            sess_key: localStorage.sess_key,
+                            page: parseInt($("[data-var=timeline_page]").text())
+                        })
+                        break;
+
+                    case 'timelineNext':
+                        gtag('event', 'timeline_page_' + parseInt($("[data-var=timeline_page]").text()) - 1);
+                        socket.emit('ledger.trades', {
+                            sess_key: localStorage.sess_key,
+                            page: parseInt($("[data-var=timeline_page]").text()) - 2
                         })
                         break;
 
