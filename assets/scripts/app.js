@@ -1,4 +1,4 @@
-window.VERSION = "0.9";
+window.VERSION = "0.9.2";
 
 if (getQueryVariable('testnet') == '1' && confirm("Você está acessando a plataforma no modo Testnet. LEIA ATENTAMENTE AS SEGUINTES INFORMAÇÕES PARA NÃO SER VÍTIMA DE GOLPES.\n\nNeste modo, todos os bitcoins depositados NÃO POSSUEM VALOR ALGUM. As contas registradas na plataforma não estão disponíveis no ambiente testnet (é necessário um novo registro), e a base de dados pode ser redefinida a qualquer momento. Além disso, saques e depósitos em reais NÃO SERÃO REALIZADOS.\nEste ambiente é destinado a DESENVOLVEDORES exclusivamente, para testes de algoritmos sem risco de perdas de fundos.\n\nTem certeza que deseja continuar em testnet?")) {
     window.BACKEND = "https://testnet-backend.brecoins.com.br:8443";
@@ -1983,6 +1983,7 @@ $(function() {
                                     sess_key: localStorage.getItem('sess_key'),
                                     new_data: data
                                 });
+                                notifyme("Informações atualizadas!", "success");
                                 gtag('event', 'update_profile_details');
                                 clearTimeout(changeprofile_timeout);
                                 changeprofile_timeout = setTimeout(function() {
@@ -2266,6 +2267,8 @@ $(function() {
                                 }, function() {
                                     $("[data-var=user_cpf]").val("");
                                 })
+                            } else {
+                                notifyme("Informações atualizadas!", "success");
                             }
                             gtag('event', 'update_profile_details');
                         }
@@ -2663,6 +2666,19 @@ function inputmask(o, f) {
 
 function execmask(v_obj, v_fun) {
     v_obj.value = v_fun(v_obj.value)
+}
+
+function mask__name(v) { 
+    v = v.split(" ")
+    v.forEach(function(p, k) {
+        p = p.toLowerCase()
+
+        if(p.length > 3)
+            p = p[0].toUpperCase() + p.substr(1)
+
+        v[k] = p
+    })
+    return v.join(" ")
 }
 
 function mask__cpfCnpj(v) {
