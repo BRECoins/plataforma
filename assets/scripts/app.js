@@ -1919,6 +1919,9 @@ $(function() {
                         } else if(!$("[data-var=signup_cpf]").val()) {
                             swal("CPF/CNPJ inválido", "Por favor, preencha corretamente o CPF/CNPJ.", "warning");
                             gtag('event', 'signup_invalid_cpfcnpj_error');
+                        } else if(!$("[data-var=signup_gender]").val()) {
+                            swal("Selecione um Gênero", "Por favor, preencha corretamente o gênero.", "warning");
+                            gtag('event', 'signup_invalid_gender_error');
                         } else {
                             swal({
                                 html: "Nós enviaremos um SMS ao seu número de telefone contendo um código para confirmar sua propriedade sobre o mesmo.<br>Por favor, verifique se o número informado está correto:<br><br><b>"+$("[data-var=signup_telephone]").val()+"</b>",
