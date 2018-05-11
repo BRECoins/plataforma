@@ -24,22 +24,7 @@ window.common = {
     }
 };
 window.cb = {};
-function utf8_encode (argString) { // eslint-disable-line camelcase
-  //  discuss at: http://locutus.io/php/utf8_encode/
-  // original by: Webtoolkit.info (http://www.webtoolkit.info/)
-  // improved by: Kevin van Zonneveld (http://kvz.io)
-  // improved by: sowberry
-  // improved by: Jack
-  // improved by: Yves Sucaet
-  // improved by: kirilloid
-  // bugfixed by: Onno Marsman (https://twitter.com/onnomarsman)
-  // bugfixed by: Onno Marsman (https://twitter.com/onnomarsman)
-  // bugfixed by: Ulrich
-  // bugfixed by: Rafał Kukawski (http://blog.kukawski.pl)
-  // bugfixed by: kirilloid
-  //   example 1: utf8_encode('Kevin van Zonneveld')
-  //   returns 1: 'Kevin van Zonneveld'
-
+function utf8_encode (argString) {
   if (argString === null || typeof argString === 'undefined') {
     return ''
   }
@@ -122,35 +107,41 @@ if (top.location.hostname != self.location.hostname) {
 
 (function($) {
     $.fn.textBlink = function(new_text) {
-        var el = this;
-        if (el.length > 1) el = $(el[0]);
-        if (el.text() != new_text) {
-            el.text(new_text).addClass('blink_me');
-            setTimeout(function() {
-                el.removeClass('blink_me');
-            }, 1000)
-        }
+        var e, el = this;
+        el.each(function() {
+            e = $(this);
+            if (e.text() != new_text) {
+                e.text(new_text).addClass('blink_me');
+                setTimeout((function(e) {
+                    e.removeClass('blink_me');
+                })(e), 1000)
+            }
+        })
         return el;
 
     }
     $.fn.htmlBlink = function(new_html) {
-        var el = this;
-        if (el.length > 1) el = $(el[0]);
-        if (this.html() != new_html) {
-            el.html(new_html).addClass('blink_me');
-            setTimeout(function() {
-                el.removeClass('blink_me');
-            }, 1000)
-        }
+        var e, el = this;
+        el.each(function() {
+            e = $(this);
+            if (e.html() != new_html) {
+                e.html(new_html).addClass('blink_me');
+                setTimeout((function(e) {
+                    e.removeClass('blink_me');
+                })(e), 1000)
+            }
+        })
         return el;
     }
     $.fn.blink = function() {
-        var el = this;
-        if (el.length > 1) el = $(el[0]);
-        this.addClass('blink_me');
-        setTimeout(function() {
-            el.removeClass('blink_me');
-        }, 1000)
+        var e, el = this;
+        el.each(function() {
+            e = $(this);
+            e.addClass('blink_me');
+            setTimeout((function(e) {
+                e.removeClass('blink_me');
+            })(e), 1000)
+        })
         return el;
     }
 })($);
@@ -981,7 +972,7 @@ $(function() {
             $("[data-var=saqueslist_crypto_tbl] tr").remove();
             rows.reverse();
             rows.forEach(function(row) {
-                let status, color, row_html;
+                var status, color, row_html;
                 switch (row.status) {
                     case 'pending':
                         status = 'Pendente';
@@ -1017,7 +1008,7 @@ $(function() {
             $("#saqueslist_fiat_tbl tr").remove();
             rows.reverse();
             rows.forEach(function(row) {
-                let status, color, row_html, show_date, border = '';
+                var status, color, row_html, show_date, border = '';
                 switch (row.status) {
                     case 'pending':
                         status = 'Pendente';
@@ -1059,7 +1050,7 @@ $(function() {
             var final_html = "";
             rows.reverse();
             rows.forEach(function(row) {
-                let status, color, row_html, show_date, border = '';
+                var status, color, row_html, show_date, border = '';
                 switch (row.status) {
                     case 'pending':
                         status = 'Pendente';
@@ -1348,7 +1339,7 @@ $(function() {
         $(document).on("click change", "[data-do]", function(e) {
             $this = $(this);
             if ($this.hasClass('loadingonclick')) loadingonclick($this);
-            let action_do_list = $(this).data('do').split(" ");
+            var action_do_list = $(this).data('do').split(" ");
             action_do_list.forEach(function(action_do) {
                 switch (action_do) {
                     case 'linklogin':
@@ -3027,7 +3018,10 @@ function verifica_cpf_cnpj(valor) {
  @param string soma_digitos A soma das multiplicações entre posições e dígitos
  @return string Os dí­gitos enviados concatenados com o Algorítimo 
  */
-function calc_digitos_posicoes(digitos, posicoes = 10, soma_digitos = 0) {
+function calc_digitos_posicoes(digitos, posicoes, soma_digitos) {
+
+    if (typeof posicoes === 'undefined') posicoes = 10;
+    if (typeof soma_digitos === 'undefined') soma_digitos = 0;
 
     // Garante que o valor são uma string
     digitos = digitos.toString();

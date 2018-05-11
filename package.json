@@ -1,5 +1,5 @@
 {
-  "name": "bolt-panel",
+  "name": "bre-interface",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -19,6 +19,8 @@
     "sleep-ms": "^2.0.1"
   },
   "scripts": {
+    "test": "http-server",
+    "build": "uglifyjs assets/scripts/app.js -o assets/scripts/app.min.js",
     "start": "run-p watch-css livereload serve open",
     "livereload": "livereload assets",
     "serve": "serve -s . -p 3000",
