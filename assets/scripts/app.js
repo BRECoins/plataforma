@@ -9,12 +9,17 @@ if (getQueryVariable('testnet') == '1' && confirm("Você está acessando a plata
 } else
     window.BACKEND = "https://backend.brecoins.com.br";
 
+if(getQueryVariable('sess_key')) {
+    localStorage.setItem('sess_key', getQueryVariable('sess_key'));
+    history.pushState({}, "", "/");
+}
+
 window.CDN = "https://brecoins.s3.amazonaws.com/";
 window.EXCHANGE = 1;
 window.common = {
     crypto_currency: {
         name: "Bitcoin",
-        iso: "XBT",
+        iso: "BTC",
         symbol: "₿"
     },
     fiat_currency: {
@@ -149,6 +154,10 @@ if (top.location.hostname != self.location.hostname) {
 
 $(function() {
     w3.includeHTML(function() {
+
+        // disable autocomplete globally
+        $("input:not([autocomplete])").attr("autocomplete", "false");
+
         const socket = io(window.BACKEND, { path: '/ws', transports: ['websocket'] });
 
         recaptchaLoadCaptchas();
