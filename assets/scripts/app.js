@@ -991,8 +991,14 @@ $(function() {
                     case 'done':
                         status = 'Realizado';
                         color = 'success';
-                        row_html = '<a class="button is-small is-light" style="border: 1px solid #dbdbdb; height: 24px !important" target="_blank" href="https://blockcypher.com/btc/tx/' + row.txid + '">Ver</a>';
+                        row_html = '<a class="button is-small is-light" style="border: 1px solid #dbdbdb; height: 24px !important" target="_blank" href="https://live.blockcypher.com/btc/tx/' + row.txid + '/">Ver</a>';
                         break;
+                    case 'working':
+                        status = 'Executando...';
+                        color = 'info';
+                    case 'hold':
+                        status = 'A ser realizado';
+                        color = 'info';
                     case 'disapproved':
                         status = 'Cancelada';
                         color = 'danger';
