@@ -1177,7 +1177,7 @@ $(function() {
             gtag('event', 'too_small_amount');
             swal("Valor Inválido", "Você não inseriu fundos suficientes para essa operação.", "error");
         });
-        socket.on('withdraw_fiat_sent', function() {
+        socket.on('withdraw_sent', function() {
             swal("Ordem enviada", "Sua ordem de saque foi enviada.", "success");
             socket.emit('deposit.list_fiat', { sess_key: args.sess_key });
         });
@@ -2389,65 +2389,40 @@ $(function() {
                         gtag('event', 'run_algorithm');
                         var algodb = store.namespace('algo');
                         var algoname = $this.data('algo-key');
+                        var algocode = algodb(algoname);
+
                         if (typeof window.workers[algoname] != 'undefined') {
-                            window.workers[algoname].terminate();
+                            $this.removeClass('is-danger').addClass('is-black');
+                            window.workers[algoname].disconnect();
                             delete window.workers[algoname];
                         } else {
-                            var algocode = algodb(algoname);
-                            var code = "(" + algocode + ")();";
-                            /*
-                                function() {
-                                    
-                                    // call postNumber on worker start
-                                    onmessage = function(e) {
-                                        switch(e.data.cmd) {
-                                            case 'start':
-                                                postMessage({cmd: 'console', data: 'start called'});
-                                                break;
-                                            case 'ticker':
-                                                postMessage({cmd: 'console', data: 'ticker called'});
-                                                break;
-                                            case 'offerbook':
-                                                postMessage({cmd: 'console', data: 'offerbook called'});
-                                                break;
-                                            case 'myorders':
-                                                postMessage({cmd: 'console', data: 'myorders called'});
-                                                break;
-                                        }
-                                    };
-                                    
-                                    // FYI: window is undefined in algo
-                                    // console.log(typeof(window));
-                                };
-                            */
-                            // Obtain a blob URL reference to our virtual worker 'file'.
-                            var blob = new Blob([code]);
-                            var blobURL = window.URL.createObjectURL(blob);
-                            worker = new Worker(blobURL);
-                            worker.onmessage = function(event) {
-                                document.getElementById("result").innerHTML = event.data;
-                                val = event.data;
-                                if (val.cmd == 'cryptowithdraw') {
-                                    socket.emit('withdrawals.withdraw_crypto', {
-                                        sess_key: localStorage.getItem('sess_key'),
-                                        wallet: val.data.wallet,
-                                        fee: val.data.fee,
-                                        amount: val.data.amount,
-                                        password: val.data.pwd,
-                                        currency: window.common.crypto_currency_id
-                                    });
-                                } else if (val.cmd == 'console') {
-                                    console.log("Algotrading: ", val.data);
+                            $this.removeClass('is-black').addClass('is-danger');
+                            window.workers[algoname] = new jailed.DynamicPlugin(algocode, {
+                                alert: alert,
+                                console: {
+                                    log: console.log,
+                                    error: console.error
+                                },
+                                socketio_on: function(event, callback) {
+                                    return socket.on(event, callback)
+                                },
+                                socketio_emit: function(method, args) {
+                                    return socket.emit(method, args)
                                 }
-                            };
-                            worker.addEventListener('error', function onError(e) {
-                                console.error([
-                                    'Algotrading ERROR: Line ', e.lineno, ' in ', e.filename, ': ', e.message
-                                ].join(''));
-                            }, false);
-                            worker.postMessage({ cmd: 'start' });
+                            })
+                            window.workers[algoname].whenFailed(function() {
+                                console.error("AlgoTrading Bot "+algoname+" Stopped");
+                                window.workers[algoname].disconnect();
+                                delete window.workers[algoname];
+                                updatealgo();
+                                swal("Algotrading", "O robô \""+algoname+"\" encontrou um problema e precisou ser fechado.\nConsulte mais informações em seu console Javascript, nas ferramentas de desenvolvedor do seu navegador.", "error");
+                            })
+                            window.workers[algoname].whenConnected(function() {
+
+                            })
                         }
                         updatealgo();
+
                         break;
 
                     case 'delAlgorithm':
@@ -2463,8 +2438,7 @@ $(function() {
                             confirmButtonText: 'Sim, excluir',
                             cancelButtonText: 'Não, cancelar',
                             confirmButtonClass: 'btn btn-success',
-                            cancelButtonClass: 'btn btn-danger',
-                            buttonsStyling: false
+                            cancelButtonClass: 'btn btn-danger'
                         }).then(function() {
                             algodb.remove(algoname);
                             updatealgo();
